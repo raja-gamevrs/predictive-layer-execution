@@ -20,7 +20,7 @@ import torch
 
 from ple.activation_capture import capture_residual_stream
 from ple.data import WIKITEXT as DATASET, WIKITEXT_REV as DATASET_REV, wikitext_chunks as chunks
-from ple.model_loader import attention_input_projection, decoder_layers, load, load_config
+from ple.model_loader import attention_input_projection, decoder_layers, load, load_config, run_name
 from ple.predictors import identity, residual_extrapolation, velocity
 from ple.predictors.linear import RidgeAccumulator
 
@@ -118,7 +118,7 @@ def main() -> None:
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    stem = cfg["model"]["id"].split("/")[-1]
+    stem = run_name(cfg)
     with open(out / f"{stem}_predictability.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))
         writer.writeheader()

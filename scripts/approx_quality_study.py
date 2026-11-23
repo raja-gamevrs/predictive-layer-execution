@@ -21,9 +21,9 @@ import torch
 from ple.activation_capture import capture_residual_stream
 from ple.correction import basis_correction, channel_topk_correction
 from ple.data import WIKITEXT, WIKITEXT_REV, wikitext_chunks
-from ple.model_loader import decoder_layers, load, load_config
+from ple.model_loader import decoder_layers, load, load_config, run_name
 from ple.predictors.fitting import fit_error_bases, fit_linear
-from ple.speculation_policy import speculate_attention_inputs
+from ple.speculation_policy import apply_without_bias, speculate_attention_inputs
 
 RANK, TOPK_FRAC = 256, 0.25
 
@@ -36,6 +36,9 @@ def main() -> None:
     ap.add_argument("--basis-seqs", type=int, default=128)
     ap.add_argument("--eval-seqs", type=int, default=16)
     ap.add_argument("--single-layers", type=int, nargs="*", default=None)
+    ap.add_argument("--corrections", nargs="+",
+                    default=["none", f"basis_r{RANK}", "topk_25pct", "full", "full_fp32", "full_module"],
+                    help="quantized models: use only none and full_module (weight-based ones need dense weights)")
     ap.add_argument("--out", default="results/processed")
     args = ap.parse_args()
 
@@ -64,16 +67,24 @@ def main() -> None:
 
     def corrections(pred_name):
         # e arrives in FP32. BF16 corrections round it to the weight dtype first, as a BF16 kernel would.
+        # Weight-based corrections need a dense float weight; `full_module` goes through the module's own
+        # kernel, so for activation-quantized projections it quantizes e (and is then no longer exact).
         def basis(l):
             u = bases[(l, pred_name)]
-            return lambda w, y_hat, e: basis_correction((w.float() @ u).to(w.dtype), u.to(w.dtype), y_hat, e.to(w.dtype))
-        return {
-            "none": lambda l: (lambda w, y_hat, e: y_hat),
+
+            def fix(mod, y_hat, e):
+                w = mod.weight
+                return basis_correction((w.float() @ u).to(w.dtype), u.to(w.dtype), y_hat, e.to(w.dtype))
+            return fix
+        table = {
+            "none": lambda l: (lambda mod, y_hat, e: y_hat),
             f"basis_r{RANK}": basis,
-            "topk_25pct": lambda l: (lambda w, y_hat, e: channel_topk_correction(w, y_hat, e.to(w.dtype), k)),
-            "full": lambda l: (lambda w, y_hat, e: y_hat + torch.nn.functional.linear(e.to(w.dtype), w)),
-            "full_fp32": lambda l: (lambda w, y_hat, e: y_hat.float() + torch.nn.functional.linear(e, w.float())),
+            "topk_25pct": lambda l: (lambda mod, y_hat, e: channel_topk_correction(mod.weight, y_hat, e.to(mod.weight.dtype), k)),
+            "full": lambda l: (lambda mod, y_hat, e: y_hat + torch.nn.functional.linear(e.to(mod.weight.dtype), mod.weight)),
+            "full_fp32": lambda l: (lambda mod, y_hat, e: y_hat.float() + torch.nn.functional.linear(e, mod.weight.float())),
+            "full_module": lambda l: (lambda mod, y_hat, e: y_hat + apply_without_bias(mod, e.to(y_hat.dtype))),
         }
+        return {name: table[name] for name in args.corrections}
 
     singles = args.single_layers if args.single_layers is not None else sorted(
         {*range(2, n_layers - 1, 4), n_layers - 2})
@@ -112,7 +123,7 @@ def main() -> None:
             for (b, p, c), s in stats.items()]
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
-    stem = cfg["model"]["id"].split("/")[-1]
+    stem = run_name(cfg)
     with open(out_dir / f"{stem}_approx_quality.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))
         writer.writeheader()

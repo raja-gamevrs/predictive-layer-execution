@@ -22,7 +22,7 @@ from pathlib import Path
 import torch
 
 from ple.data import wikitext_chunks
-from ple.model_loader import decoder_layers, load, load_config
+from ple.model_loader import decoder_layers, load, load_config, run_name
 from ple.speculation_policy import attention_input_linears
 
 
@@ -145,7 +145,7 @@ def main() -> None:
 
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
-    stem = cfg["model"]["id"].split("/")[-1]
+    stem = run_name(cfg)
     meta = {"model": cfg["model"]["id"], "revision": cfg["model"]["revision"], "dtype": cfg["model"]["dtype"],
             "boundary": l, "projections": [n for n, m in nxt.named_modules() if m in projs], "cuda_graphs": args.graphs,
             "warmup": args.warmup, "repeats": args.repeats, "gpu": torch.cuda.get_device_name(),

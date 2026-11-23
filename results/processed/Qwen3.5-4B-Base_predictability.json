@@ -1,0 +1,18 @@
+{
+  "model": "Qwen/Qwen3.5-4B-Base",
+  "revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+  "dtype": "bfloat16",
+  "dataset": "Salesforce/wikitext",
+  "dataset_revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+  "train_split": "train",
+  "eval_split": "test",
+  "seq_len": 512,
+  "train_tokens": 130816,
+  "eval_tokens": 32704,
+  "layers": 32,
+  "hidden": 2560,
+  "projection": "linear_attn.in_proj_qkv",
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "torch": "2.14.1+cu130",
+  "fit_seconds": 37.3
+}

@@ -184,3 +184,57 @@ result, the best case is: a few late layers, identity prediction, no correction,
 QKV share (~12–17%) of each speculated block, i.e. ≲ 0.5% of a full forward per layer, and that
 saving does not materialise in measurement. Next checks before closing this branch: an Nsight
 timeline to confirm (non-)concurrency, and the same benchmark on Qwen3.5 / larger models.
+
+## 2026-11-23 — Second architecture: Qwen3.5-4B-Base (hybrid linear attention), BF16
+
+Same three studies, same data splits and settings as Qwen3-4B-Base. Qwen3.5-4B-Base has 32 blocks:
+24 Gated-DeltaNet linear-attention blocks and a full-attention block every fourth position
+(3, 7, …, 31). Linear-attention blocks read the normed residual through four projections
+(`in_proj_qkv`, `in_proj_z`, `in_proj_b`, `in_proj_a`); all four are speculated. "proj" error is
+measured at the first one (`in_proj_qkv`) for linear blocks and `q_proj` for full blocks. Linear
+attention ran on the Transformers reference kernels (`flash-linear-attention` not installed), which
+changes speed only. Raw: `results/processed/Qwen3.5-4B-Base_*`, linear-block quality runs in
+`results/processed/qwen35_linear_blocks/`.
+
+**Predictability (H1)**, median over boundaries:
+
+| Predictor | Δrel | proj err, all | proj err, next block linear-attn (n = 23) | proj err, next block full-attn (n = 8) |
+|---|---|---|---|---|
+| identity | 1.000 | 0.341 | 0.351 | 0.336 |
+| extrapolation | 1.411 | 0.461 | | |
+| velocity α = 0.5 | 1.125 | 0.398 | | |
+| linear (full) | 0.706 | 0.187 | 0.253 | 0.149 |
+| linear r = 256 | 0.871 | 0.241 | 0.301 | 0.198 |
+
+**Error structure (H2)**, median proj error over boundaries 0–30, linear predictor: none 0.187;
+basis r = 512 (cost 0.26) 0.123; top 25% channels (0.25) 0.090; worst 50% tokens (0.5) 0.109.
+
+**Output quality.** Exact perplexity 11.824; exact rerun KL 0.0 (deterministic).
+
+| Boundary (speculated block, type) | identity, none | linear, none | linear, top 25% | full |
+|---|---|---|---|---|
+| 1 (2, linear) | +4.9% ppl, KL 0.059 | +1.7%, 0.026 | | KL 0.0005 |
+| 2 (3, full) | +4.1%, 0.058 | +0.9%, 0.019 | +0.0%, 0.004 | 0.0005 |
+| 5–25 (linear blocks) | +0.3–1.4%, KL 0.004–0.017 | +0.3–0.9%, 0.003–0.012 | | 0.0003–0.0005 |
+| 6–26 (full blocks) | +1.0–3.2%, KL 0.009–0.032 | +0.2–1.3%, 0.002–0.010 | +0.0–0.4%, 0.001–0.002 | 0.0003–0.0005 |
+| 29 (30, linear) | +4.5%, 0.041 | +0.6%, 0.006 | | 0.0002 |
+| 30 (31, full, last block) | **+20.9%, 0.180** | +0.6%, 0.008 | +0.1%, 0.002 | 0.0002 |
+| all 31 boundaries | 462 ppl (collapse) | +31%, 0.288 | +2.7%, 0.036 | 0.0006 |
+
+### Findings (Qwen3.5 vs Qwen3)
+
+1. **The H1/H2 picture replicates.** Extrapolation is again worse than identity (cos(Δ̂, Δ) is now
+   slightly *negative*, −0.08); a full-rank linear map again explains ~half the update energy
+   (Δrel 0.71); the error is again neither low-rank nor token-concentrated.
+2. **Qwen3.5 is less tolerant of uncorrected speculation.** Identity costs +1–4% perplexity per
+   layer (vs +0.0–1.2% on Qwen3), and speculating the last block costs +21%. All-layer identity
+   collapses harder (462 vs 54).
+3. **The linear predictor matters more here.** It cuts the single-layer cost to +0.2–1.7% and
+   rescues the last block (+0.6%). Prediction is much better for full-attention blocks (proj err
+   0.149) than for linear-attention blocks (0.253).
+4. **Linear-attention blocks are the more tolerant ones at mid depth,** despite their larger
+   projection error: identity at mid-depth boundaries 13–26 costs KL 0.004–0.007 when the
+   speculated block is linear-attention (blocks 14, 18, 22, 26) vs 0.009–0.025 when it is
+   full-attention (blocks 15, 19, 23, 27).
+   The recurrent Gated-DeltaNet state appears to absorb input error better than softmax attention.
+5. **Reformulation floor replicates** (KL 0.0002–0.0006, top-1 98.8–99.6%).

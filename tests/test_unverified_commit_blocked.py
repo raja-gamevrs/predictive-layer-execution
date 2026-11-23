@@ -4,7 +4,7 @@ import torch
 from transformers import LlamaConfig, LlamaForCausalLM
 
 from ple.model_loader import decoder_layers
-from ple.speculation_policy import attention_input_linears, speculate_attention_inputs
+from ple.speculation_policy import apply_without_bias, attention_input_linears, speculate_attention_inputs
 
 
 def _model():
@@ -14,11 +14,15 @@ def _model():
     return LlamaForCausalLM(cfg).double().eval()
 
 
-def _exact(w, y_hat, e):
-    return y_hat + torch.nn.functional.linear(e.to(w.dtype), w)
+def _exact(mod, y_hat, e):
+    return y_hat + torch.nn.functional.linear(e.to(mod.weight.dtype), mod.weight)
 
 
-def _uncorrected(_w, y_hat, _e):
+def _exact_through_module(mod, y_hat, e):
+    return y_hat + apply_without_bias(mod, e.to(y_hat.dtype))
+
+
+def _uncorrected(_mod, y_hat, _e):
     return y_hat
 
 
@@ -35,9 +39,10 @@ def test_full_correction_matches_exact_and_identity_without_correction_differs()
     exact = model(input_ids=ids).logits
     identity = {l: (lambda h: h) for l in range(3)}
 
-    with speculate_attention_inputs(layers, [0, 1, 2], identity, lambda l: _exact, 32):
-        corrected = model(input_ids=ids).logits
-    torch.testing.assert_close(corrected, exact)
+    for fix in (_exact, _exact_through_module):
+        with speculate_attention_inputs(layers, [0, 1, 2], identity, lambda l, fix=fix: fix, 32):
+            corrected = model(input_ids=ids).logits
+        torch.testing.assert_close(corrected, exact)
 
     with speculate_attention_inputs(layers, [0, 1, 2], identity, lambda l: _uncorrected, 32):
         approx = model(input_ids=ids).logits

@@ -199,6 +199,27 @@ Interpretation (not yet profiled): at small T both paths are weight-bandwidth-bo
 the same DRAM bandwidth; at large T block l's GEMMs already occupy the SMs. TODO: Nsight timeline
 to confirm whether kernels actually run concurrently.
 
+### 4.5 Second architecture: hybrid linear attention (Qwen3.5-4B-Base)
+
+Source: `results/processed/Qwen3.5-4B-Base_*` and `results/processed/qwen35_linear_blocks/`;
+details in `docs/results_report.md`. The predictability and error-structure results replicate
+(extrapolation worse than identity, cos(Δ̂, Δ) = −0.08; linear Δrel 0.71; best cheap correction
+top-25% channels leaves 9% projection error). Uncorrected identity speculation is costlier than on
+Qwen3 (+1–4% perplexity per layer; +21% at the last block; all-layer 462 vs exact 11.82), and the
+linear predictor matters more (+0.2–1.7% per layer, +0.6% at the last block). The linear predictor
+is far more accurate for full-attention blocks (proj err 0.149) than linear-attention blocks
+(0.253), yet linear-attention blocks are the more tolerant at mid depth (KL 0.004–0.007 vs
+0.009–0.025 for identity), consistent with the recurrent state absorbing input error.
+
+### 4.6 Precision: does exact correction survive quantisation? (TODO — running)
+
+Hypothesis: weight-only quantisation (INT8 W8A16, NVFP4 W4A16) keeps the projection linear in its
+input, so `ŷ + P(e)` through the quantised kernel stays at the reformulation floor; activation
+quantisation (NVFP4 W4A4, as used by NVFP4 prefill GEMMs and NVIDIA's Qwen3.8-27B-NVFP4) quantises
+`N(ĥ)` and `e` separately, so exact correction is no longer exact. Measured with emulated NVFP4
+(`src/ple/quant`, E2M1 values, E4M3 per-16 scales, FP32 global scale) because no NVFP4 kernel
+build exists for this platform.
+
 ## 5. Discussion (outline)
 
 - Where PLE's assumptions break: unstructured errors, norm amplification, compounding across depth,

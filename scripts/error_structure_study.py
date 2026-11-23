@@ -25,7 +25,7 @@ import torch
 from ple.activation_capture import capture_residual_stream
 from ple.correction import basis_correction, channel_topk_correction, token_selective_correction
 from ple.data import WIKITEXT, WIKITEXT_REV, wikitext_chunks
-from ple.model_loader import attention_input_projection, decoder_layers, load, load_config
+from ple.model_loader import attention_input_projection, decoder_layers, load, load_config, run_name
 from ple.predictors.linear import RidgeAccumulator
 
 RANKS = (16, 64, 256, 512)
@@ -136,7 +136,7 @@ def main() -> None:
             for (l, p, m) in se]
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
-    stem = cfg["model"]["id"].split("/")[-1]
+    stem = run_name(cfg)
     with open(out_dir / f"{stem}_error_structure.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))
         writer.writeheader()
