@@ -99,3 +99,46 @@ Median `q_proj` relative error over layers 0–34 after correction:
   approximately corrected.
 - One model, one projection, one dataset. Repeat on Qwen3.5-4B-Base (hybrid linear attention),
   Ornith-1.5-9B and Qwen3.8-27B before drawing a model-general conclusion.
+
+## 2026-11-23 — Output quality of approximate PLE, Qwen3-4B-Base
+
+Script: `scripts/approx_quality_study.py`. In the real forward pass, block l+1's `q/k/v_proj`
+outputs are replaced by `W N(ĥ)` plus a correction; everything downstream runs on the result.
+Compared with the exact model on 16 held-out test sequences (8,160 scored tokens). Exact
+perplexity 11.400. Position 0 kept exact. Raw:
+[`results/processed/Qwen3-4B-Base_approx_quality.csv`](../results/processed/Qwen3-4B-Base_approx_quality.csv).
+
+| Speculated at | Predictor | Correction (cost) | KL (nats/token) | Top-1 agreement | Perplexity |
+|---|---|---|---|---|---|
+| any one layer | — | full (exactness check) | 0.0005–0.0011 | 98.1–99.2% | 11.39–11.41 |
+| one layer, 2–22 | identity | none (0) | 0.011–0.016 | 93.2–95.0% | 11.42–11.54 |
+| one layer, 2–22 | linear | none (0) | 0.005–0.009 | 95.0–96.6% | 11.38–11.46 |
+| one layer, 26 or 30 | identity | none (0) | 0.003–0.004 | 97.0–97.5% | 11.43 |
+| one layer, 34 | identity | none (0) | 0.050 | 92.9% | 11.89 |
+| one layer, any | linear | top 25% channels (0.25) | 0.0012–0.0023 | 97.5–98.3% | 11.39–11.41 |
+| **every layer** | identity | none | 1.61 | 46.9% | 54.0 |
+| every layer | linear | none | 0.217 | 77.8% | 13.25 |
+| every layer | linear | rank-256 basis (0.16) | 0.081 | 86.1% | 11.91 |
+| every layer | linear | top 25% channels (0.25) | 0.027 | 92.1% | 11.50 |
+
+### Findings
+
+1. **"Exact" correction is not bit-exact in BF16.** Computing `W N(ĥ) + W e` instead of `W N(h)`
+   changes rounding enough to flip 1–2% of argmax tokens (KL ≈ 0.001). This is the noise floor
+   for every other number here, and any exactness claim must state its precision. Accumulating
+   the correction in FP32 should lower it; not yet tested.
+2. **A single speculated layer is cheap in quality.** Even free, uncorrected speculation from
+   h_l raises perplexity by ≤ 1.2% at layers 2–30, and by only ~0.25% at layers 26–30.
+3. **Errors compound across layers.** Speculating every layer with no correction collapses the
+   model (perplexity 54). With the linear predictor plus a top-25% channel correction it stays
+   usable (+0.9% perplexity, 92% top-1), but that correction is an irregular gather.
+4. **The plausible regime is selective:** a few late layers, identity or linear prediction, little
+   or no correction. Speculating block l+1's QKV from h_l in parallel with block l's work is,
+   however, close to existing layer-parallel ideas (e.g. parallel attention/MLP blocks,
+   "Leveraging the true depth of LLMs"); novelty has to be checked against them before claiming it.
+
+### What this does not show
+
+No timing: whether launching QKV one block early actually shortens the critical path on the
+5090 is untested (Stage E). The quality numbers are prefill-style teacher forcing on WikiText-2
+only; no task benchmarks, no decode.
