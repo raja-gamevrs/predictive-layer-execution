@@ -46,9 +46,11 @@ study**, and claims only:
 4. the **BF16 reformulation floor** as the correct reference for any "exact" claim;
 5. a **single-GPU overlap** measurement (LP, CQIL and EasySpec obtain their speedups from
    multiple GPUs), currently negative;
-6. TODO: the same analysis across architectures and precisions (hybrid linear attention,
-   INT8/INT4/NVFP4), including whether weight-only quantisation keeps exact correction exact and
-   activation quantisation breaks it.
+6. the same analysis across architectures and precisions: on hybrid linear attention
+   (Qwen3.5-4B) the picture replicates, linear-attention blocks tolerate speculation better than
+   softmax blocks, and **exact reconciliation survives weight-only quantisation (INT8, NVFP4
+   W4A16) but not activation quantisation (NVFP4 W4A4)** (§4.6). TODO: Ornith-1.5-9B and
+   Qwen3.8-27B on real quantised checkpoints.
 
 **Name.** "PLE" collides with Gemma's Per-Layer Embeddings (same on-device-inference community)
 and with Progressive Layered Extraction (recommendation). Spell out "Predictive Layer Execution"
@@ -211,14 +213,28 @@ is far more accurate for full-attention blocks (proj err 0.149) than linear-atte
 (0.253), yet linear-attention blocks are the more tolerant at mid depth (KL 0.004–0.007 vs
 0.009–0.025 for identity), consistent with the recurrent state absorbing input error.
 
-### 4.6 Precision: does exact correction survive quantisation? (TODO — running)
+### 4.6 Precision: exact correction survives weight-only quantisation, not activation quantisation
 
-Hypothesis: weight-only quantisation (INT8 W8A16, NVFP4 W4A16) keeps the projection linear in its
-input, so `ŷ + P(e)` through the quantised kernel stays at the reformulation floor; activation
-quantisation (NVFP4 W4A4, as used by NVFP4 prefill GEMMs and NVIDIA's Qwen3.8-27B-NVFP4) quantises
-`N(ĥ)` and `e` separately, so exact correction is no longer exact. Measured with emulated NVFP4
-(`src/ple/quant`, E2M1 values, E4M3 per-16 scales, FP32 global scale) because no NVFP4 kernel
-build exists for this platform.
+Source: `results/processed/Qwen3.5-4B-Base_{int8_weight_only,nvfp4_w4a16_emulated,nvfp4_w4a4_emulated}_approx_quality.*`.
+The exact correction is applied through each projection's own kernel, `ỹ = P(N(ĥ)) + (P(e) − b)`,
+and compared with that variant's own exact path. NVFP4 is emulated (`src/ple/quant`: E2M1 values,
+E4M3 per-16 scales, FP32 global scale, dequantised BF16 matmul) because no NVFP4 kernel build
+exists for this platform.
+
+| Variant | Exact ppl | Corrected KL (10 boundary sets) | Top-1 agreement |
+|---|---|---|---|
+| BF16 | 11.824 | 0.0002–0.0006 | 98.8–99.6% |
+| INT8 W8A16 (torchao) | 11.820 | 0.0002–0.0006 | 98.6–99.5% |
+| NVFP4 W4A16 (emulated) | 12.383 | 0.0002–0.0006 | 98.7–99.6% |
+| NVFP4 W4A4 (emulated) | 13.055 | 0.009–0.061 | 86.6–93.4% |
+
+Weight-only quantisation keeps the projection linear in its input, so exact reconciliation stays at
+the BF16 reformulation floor at both 8 and 4 bits. Quantising activations quantises `N(ĥ)` and `e`
+separately; the "exact" correction then sits 15–100× above the floor and is no better than
+uncorrected linear speculation at late layers (boundary 26: 0.020 vs 0.022). Because NVFP4 kernels
+in Transformers are W4A16 for decode but W4A4 for prefill, exact correction would hold in decode
+and fail in prefill. Any exact-reconciliation scheme on activation-quantised hardware paths needs
+a higher-precision correction path or recomputation.
 
 ## 5. Discussion (outline)
 

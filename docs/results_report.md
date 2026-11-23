@@ -238,3 +238,48 @@ basis r = 512 (cost 0.26) 0.123; top 25% channels (0.25) 0.090; worst 50% tokens
    full-attention (blocks 15, 19, 23, 27).
    The recurrent Gated-DeltaNet state appears to absorb input error better than softmax attention.
 5. **Reformulation floor replicates** (KL 0.0002–0.0006, top-1 98.8–99.6%).
+
+## 2026-11-23 — Precision: does exact correction survive quantisation? Qwen3.5-4B-Base
+
+Script: `scripts/approx_quality_study.py --corrections none full_module`, configs
+`configs/qwen35_4b_base_{int8,nvfp4_w4a16,nvfp4_w4a4}.yaml`. Each variant is quantised at load
+from the same BF16 snapshot; predictors are fit on that variant's own activations; every metric
+compares against that variant's own exact path. `full_module` applies the exact correction through
+the projection's own kernel: `ỹ = P(N(ĥ)) + (P(e) − b)`. INT8 = torchao `Int8WeightOnlyConfig`
+(per-channel INT8 weights, BF16 activations). NVFP4 = emulation in `src/ple/quant` (E2M1 values,
+E4M3 scale per 16 elements, FP32 global scale; dequantised BF16 matmul), with activations either
+left in BF16 (W4A16) or fake-quantised the same way (W4A4); applied to every Linear inside the
+decoder blocks. No NVFP4 kernel build exists for Windows / PyTorch 2.14 / CUDA 13.0, and
+Transformers' own NVFP4 path is W4A4 at prefill and W4A16 at decode.
+Raw: `results/processed/Qwen3.5-4B-Base_{int8_weight_only,nvfp4_w4a16_emulated,nvfp4_w4a4_emulated}_approx_quality.*`.
+
+| Variant | Exact ppl (vs BF16 11.824) | `full_module` KL, range over 10 boundary sets | top-1 agreement | Exact rerun |
+|---|---|---|---|---|
+| BF16 (`full`) | 11.824 | 0.0002–0.0006 | 98.8–99.6% | deterministic |
+| INT8 W8A16 | 11.820 (−0.03%) | 0.0002–0.0006 | 98.6–99.5% | deterministic |
+| NVFP4 W4A16 | 12.383 (+4.7%) | 0.0002–0.0006 | 98.7–99.6% | deterministic |
+| NVFP4 W4A4 | 13.055 (+10.4%) | **0.009–0.061** | **86.6–93.4%** | deterministic |
+
+Uncorrected speculation (identity / linear) costs about the same in every variant as in BF16
+(e.g. boundary 26: identity KL 0.012–0.014, linear 0.0020–0.0022 for BF16, INT8 and W4A16).
+
+### Findings
+
+1. **Weight-only quantisation preserves exact correction** to the BF16 reformulation floor, at both
+   8 and 4 bits: the projection stays linear in its input, so `P(N(ĥ)) + P(e) = P(N(h))` up to
+   rounding.
+2. **Activation quantisation breaks it.** With W4A4, `N(ĥ)` and `e` are quantised separately (each
+   with its own per-16 scales), so their sum is not the quantisation of `N(h)`. The "exact"
+   correction is 15–100× above the floor and flips 7–13% of top-1 tokens. It is worst early
+   (boundary 2: KL 0.060) and smallest at the last block (0.009).
+3. **Under W4A4 the correction buys little.** At boundary 26, linear speculation without any
+   correction (KL 0.022) is about as close to the exact path as the "exact" correction (0.020).
+   Exact-reconciliation designs therefore need a correction path computed at higher activation
+   precision than the speculative path, or must recompute.
+4. **Practical consequence for NVFP4 deployments:** with a kernel that is W4A16 for decode and W4A4
+   for prefill, exact correction would hold during decode but not during prefill, the opposite of
+   where PLE's overlap has the most compute to hide.
+5. These are emulated numerics (dequantise, then BF16 matmul); a real NVFP4 kernel accumulates
+   differently, but the non-linearity comes from quantising activations, which a real W4A4 kernel
+   does too. To confirm on real NVFP4 checkpoints (Ornith-1.5-9B-NVFP4 is W4A16, nvidia
+   Qwen3.8-27B-NVFP4 is W4A4) once loaded.
