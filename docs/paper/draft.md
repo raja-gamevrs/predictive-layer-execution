@@ -197,9 +197,12 @@ Source: `results/processed/Qwen3-4B-Base_bench_overlap_l26_{eager,graphs}.json`,
 In eager mode overlap is −15% to +2% (launch overhead dominates below 2k tokens). With the linear
 predictor's extra GEMM on the side stream, overlap is 2–4% *slower*. Sequential CV with graphs is
 0.05–0.13, above the 5% baseline gate, so differences under ~5% are not significant.
-Interpretation (not yet profiled): at small T both paths are weight-bandwidth-bound and compete for
-the same DRAM bandwidth; at large T block l's GEMMs already occupy the SMs. TODO: Nsight timeline
-to confirm whether kernels actually run concurrently.
+**Kernel concurrency (CUPTI profile, eager).** Below ~512 tokens the speculative QKV kernels finish
+before block l's kernels are launched (0–3% concurrent): eager execution is launch-bound, so there
+is nothing to overlap into. From 512 to 8192 tokens, 24–47% of the QKV kernel time does run
+concurrently with block l, but contention cancels the gain: at 8192 tokens the overlapped QKV
+kernels take 2.23 ms versus 1.86 ms alone (+20%). Real concurrency exists; useful concurrency does
+not, at single-block granularity on one GPU.
 
 ### 4.5 Second architecture: hybrid linear attention (Qwen3.5-4B-Base)
 

@@ -185,6 +185,29 @@ QKV share (~12–17%) of each speculated block, i.e. ≲ 0.5% of a full forward 
 saving does not materialise in measurement. Next checks before closing this branch: an Nsight
 timeline to confirm (non-)concurrency, and the same benchmark on Qwen3.5 / larger models.
 
+### Follow-up: kernel concurrency profile (same day)
+
+`scripts/bench_overlap.py --profile`: PyTorch profiler (CUPTI) over 5 eager runs of
+`overlap_identity`; for each side-stream kernel, the time it overlaps any main-stream kernel.
+Nsight Systems is not installed; this uses the same CUPTI kernel timestamps. The GPU was also
+serving the desktop (5–26% utilisation from other processes). Raw:
+`results/processed/Qwen3-4B-Base_bench_overlap_l26_eager.json` (field `concurrency_overlap_identity`).
+
+| Tokens | Side-stream kernel time per run | Concurrent with main stream | Standalone QKV path | Eager net effect |
+|---|---|---|---|---|
+| 16 | 0.061 ms | 3% | — | −8.9% |
+| 128 | 0.049 ms | 0% | — | −5.6% |
+| 512 | 0.143 ms | 35% | — | −3.6% |
+| 2048 | 0.528 ms | 47% | 0.506 ms (event-timed) | +2.0% |
+| 8192 | 2.230 ms | 24% | 1.858 ms (event-timed) | −0.3% |
+
+**Findings.** Below ~512 tokens the side-stream kernels run almost entirely *before* block l's
+kernels start (launch-bound: the GPU is idle waiting for the CPU), so there is no concurrency to
+exploit in eager mode. From 512 tokens up, 24–47% of the speculative QKV work does run
+concurrently, but contention cancels it: at 8192 tokens the QKV kernels take 20% longer when
+overlapped than alone, and block l slows correspondingly. Real concurrency exists; useful
+concurrency does not, at this granularity on one GPU. This explains the H4 timing result.
+
 ## 2026-11-23 — Second architecture: Qwen3.5-4B-Base (hybrid linear attention), BF16
 
 Same three studies, same data splits and settings as Qwen3-4B-Base. Qwen3.5-4B-Base has 32 blocks:

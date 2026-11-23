@@ -55,6 +55,37 @@ def as_graph(fn):
     return graph.replay
 
 
+def concurrency(fn, warmup: int, runs: int = 5) -> dict:
+    """Profile fn and measure how much of the side stream's kernel time overlaps main-stream kernels."""
+    from torch.profiler import ProfilerActivity, profile
+    for _ in range(warmup):
+        fn()
+    torch.cuda.synchronize()
+    with profile(activities=[ProfilerActivity.CUDA]) as prof:
+        for _ in range(runs):
+            fn()
+        torch.cuda.synchronize()
+    kernels = [e for e in prof.events() if e.device_type == torch.autograd.DeviceType.CUDA
+               and getattr(e, "device_resource_id", None) is not None and e.time_range.elapsed_us() > 0]
+    by_stream: dict[int, list[tuple[float, float]]] = {}
+    for e in kernels:
+        by_stream.setdefault(e.device_resource_id, []).append((e.time_range.start, e.time_range.end))
+    if len(by_stream) < 2:
+        return {"streams": len(by_stream), "side_kernel_ms": 0.0, "concurrent_ms": 0.0, "concurrent_fraction": 0.0}
+    main_id = max(by_stream, key=lambda s: sum(b - a for a, b in by_stream[s]))
+    main = sorted(by_stream.pop(main_id))
+    side = sorted(iv for ivs in by_stream.values() for iv in ivs)
+    side_us = sum(b - a for a, b in side)
+    concurrent_us = 0.0
+    for a, b in side:
+        for c, d in main:
+            if c >= b:
+                break
+            concurrent_us += max(0.0, min(b, d) - max(a, c))
+    return {"streams": len(by_stream) + 1, "side_kernel_ms": side_us / 1000 / runs,
+            "concurrent_ms": concurrent_us / 1000 / runs, "concurrent_fraction": concurrent_us / side_us if side_us else 0.0}
+
+
 def summary(times: list[float]) -> dict:
     s = sorted(times)
     med = statistics.median(s)
@@ -70,6 +101,8 @@ def main() -> None:
     ap.add_argument("--warmup", type=int, default=20)
     ap.add_argument("--repeats", type=int, default=100)
     ap.add_argument("--graphs", action="store_true")
+    ap.add_argument("--profile", action="store_true",
+                    help="also profile overlap_identity (eager) and report how much side-stream kernel time overlaps the main stream")
     ap.add_argument("--out", default="results/processed")
     args = ap.parse_args()
 
@@ -130,6 +163,12 @@ def main() -> None:
             }
             reps = args.repeats if n_tok <= 2048 else max(20, args.repeats // 4)
             row = {"tokens": n_tok}
+            if args.profile:
+                row["concurrency_overlap_identity"] = concurrency(overlap(lambda x: x), args.warmup)
+                c = row["concurrency_overlap_identity"]
+                print(f"T={n_tok:>5}  side-stream kernel time {c['side_kernel_ms']:.3f} ms, of which concurrent with "
+                      f"main stream {c['concurrent_ms']:.3f} ms ({c['concurrent_fraction']:.0%}); "
+                      f"streams seen {c['streams']}", flush=True)
             for name, fn in paths.items():
                 row[name] = summary(timed(as_graph(fn) if args.graphs else fn, args.warmup, reps))
             seq = row["sequential"]["median_ms"]
