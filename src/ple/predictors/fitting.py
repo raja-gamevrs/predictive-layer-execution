@@ -9,12 +9,14 @@ from ple.predictors.linear import LinearDeltaPredictor, RidgeAccumulator
 States = list[torch.Tensor]  # [h_0, ..., h_L] for one sequence, positions on dim 0
 
 
-def fit_linear(traces: Iterable[States], layers: Iterable[int], dim: int, device) -> dict[int, LinearDeltaPredictor]:
+def fit_linear(traces: Iterable[States], layers: Iterable[int], dim: int, device,
+               lookahead: int = 1) -> dict[int, LinearDeltaPredictor]:
+    """Per source layer l, ridge map h_l → h_(l+lookahead) − h_l."""
     layers = list(layers)
     acc = {l: RidgeAccumulator(dim, device) for l in layers}
     for hs in traces:
         for l in layers:
-            acc[l].add(hs[l].float(), (hs[l + 1] - hs[l]).float())
+            acc[l].add(hs[l].float(), (hs[l + lookahead] - hs[l]).float())
     return {l: a.solve() for l, a in acc.items()}
 
 

@@ -50,3 +50,15 @@ def test_full_correction_matches_exact_and_identity_without_correction_differs()
     torch.testing.assert_close(approx[:, 0], exact[:, 0])  # position 0 is kept exact
 
     torch.testing.assert_close(model(input_ids=ids).logits, exact)  # hooks removed
+
+
+def test_lookahead_full_correction_matches_exact():
+    model = _model()
+    layers = decoder_layers(model)
+    ids = torch.randint(0, 97, (2, 7))
+    exact = model(input_ids=ids).logits
+    identity = {0: (lambda h: h)}
+    with speculate_attention_inputs(layers, [0], identity, lambda l: _exact, 32, lookahead=3):
+        torch.testing.assert_close(model(input_ids=ids).logits, exact)
+    with speculate_attention_inputs(layers, [0], identity, lambda l: _uncorrected, 32, lookahead=3):
+        assert not torch.allclose(model(input_ids=ids).logits, exact)

@@ -43,8 +43,12 @@ def apply_without_bias(mod: torch.nn.Module, x: torch.Tensor) -> torch.Tensor:
 
 @contextmanager
 def speculate_attention_inputs(layers: torch.nn.ModuleList, boundaries: list[int], predictor: dict[int, Callable],
-                               correction_for: Callable[[int], Correction], hidden_size: int):
-    """Install hooks for the duration of the context; always removes them."""
+                               correction_for: Callable[[int], Correction], hidden_size: int, lookahead: int = 1):
+    """Install hooks for the duration of the context; always removes them.
+
+    For each source layer l in `boundaries`, block l+lookahead's attention inputs are speculated from
+    predictor[l](h_l), where h_l is block l's input. lookahead = 1 is the next block.
+    """
     handles, stash = [], {}
 
     def keep_input(l):
@@ -58,7 +62,7 @@ def speculate_attention_inputs(layers: torch.nn.ModuleList, boundaries: list[int
         def hook(mod, args, out):
             x = args[0]  # exact normed input N(h_(l+1))
             h_hat = predictor[l](stash[l])
-            n_hat = layers[l + 1].input_layernorm(h_hat).to(x.dtype)
+            n_hat = layers[l + lookahead].input_layernorm(h_hat).to(x.dtype)
             y_hat = mod.forward(n_hat)  # speculative projection through the module's own kernel
             wide = torch.promote_types(x.dtype, torch.float32)  # BF16 subtraction would round the difference
             e = x.to(wide) - n_hat.to(wide)
@@ -69,8 +73,10 @@ def speculate_attention_inputs(layers: torch.nn.ModuleList, boundaries: list[int
 
     try:
         for l in boundaries:
+            if l + lookahead >= len(layers):
+                raise ValueError(f"source layer {l} + lookahead {lookahead} is past the last block")
             handles.append(layers[l].register_forward_pre_hook(keep_input(l), with_kwargs=True))
-            for lin in attention_input_linears(layers[l + 1], hidden_size):
+            for lin in attention_input_linears(layers[l + lookahead], hidden_size):
                 handles.append(lin.register_forward_hook(replace_output(l)))
         yield
     finally:
