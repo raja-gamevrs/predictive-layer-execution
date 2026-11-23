@@ -16,36 +16,15 @@ import math
 import time
 from pathlib import Path
 
-import pyarrow.parquet as pq
 import torch
-from huggingface_hub import hf_hub_download
 
 from ple.activation_capture import capture_residual_stream
+from ple.data import WIKITEXT as DATASET, WIKITEXT_REV as DATASET_REV, wikitext_chunks as chunks
 from ple.model_loader import attention_input_projection, decoder_layers, load, load_config
 from ple.predictors import identity, residual_extrapolation, velocity
 from ple.predictors.linear import RidgeAccumulator
 
-DATASET, DATASET_REV = "Salesforce/wikitext", "b08601e04326c79dfdd32d625aee71d232d685c3"
 RANKS = (64, 256)
-
-
-def chunks(tokenizer, split: str, seq_len: int, n: int) -> list[torch.Tensor]:
-    path = hf_hub_download(DATASET, f"wikitext-2-raw-v1/{split}-00000-of-00001.parquet",
-                           repo_type="dataset", revision=DATASET_REV)
-    text = "".join(pq.read_table(path).column("text").to_pylist())
-    ids = tokenizer(text, add_special_tokens=False)["input_ids"]
-    bos = [tokenizer.bos_token_id] if tokenizer.bos_token_id is not None else []
-    body = seq_len - len(bos)
-    out = [torch.tensor(bos + ids[i:i + body]) for i in range(0, len(ids) - body, body)][:n]
-    if len(out) < n:
-        raise ValueError(f"{split}: only {len(out)} chunks of {seq_len} tokens")
-    return out
-
-
-def low_rank(pred, rank: int):
-    u, s, vh = torch.linalg.svd(pred.weight)
-    w = (u[:, :rank] * s[:rank]) @ vh[:rank]
-    return lambda h: h + (h.float() @ w + pred.bias).to(h.dtype)
 
 
 def main() -> None:
@@ -89,7 +68,7 @@ def main() -> None:
         "linear": lambda l, hs: linear[l](hs[l]),
     }
     for r in RANKS:
-        lr = [low_rank(p, r) for p in linear]
+        lr = [p.truncated(r) for p in linear]
         predictors[f"linear_r{r}"] = lambda l, hs, lr=lr: lr[l](hs[l])
 
     keys = ("se", "hn", "dn", "cos", "nse", "nn", "pse", "pn")

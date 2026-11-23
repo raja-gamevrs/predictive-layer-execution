@@ -51,5 +51,51 @@ cheap and accurate. That is H2, and it is the next measurement.
 
 ### Not yet done
 
-Single model, single dataset, sequence length 512, batch 1. No timing. Gemma/Qwen3.5 contrast,
-token-position breakdown and error-structure (SVD/sparsity) analysis pending.
+Single model, single dataset, sequence length 512, batch 1. No timing. Gemma/Qwen3.5 contrast
+and token-position breakdown pending.
+
+## 2026-11-23 — H2/H3 first pass: structure of the speculation error, Qwen3-4B-Base
+
+Script: `scripts/error_structure_study.py`. Speculate the next block's `q_proj` from `N(ĥ)`; when
+the exact state arrives, `e = N(h) − N(ĥ)` is cheap, and `W e` is the exact fix. Ridge predictors
+fit on train chunks 0–255, error bases (PCA of `e`) on unseen train chunks 256–383, scored on 64
+test chunks. Cost is the correction's MACs as a fraction of one exact `q_proj` (2560 → 4096).
+Raw: [`results/processed/Qwen3-4B-Base_error_structure.csv`](../results/processed/Qwen3-4B-Base_error_structure.csv).
+
+Median `q_proj` relative error over layers 0–34 after correction:
+
+| Correction | Cost | Identity | Linear r256 | Linear full |
+|---|---|---|---|---|
+| none | 0 | 0.260 | 0.221 | 0.178 |
+| fixed basis r = 64 | 0.04 | 0.194 | 0.180 | 0.151 |
+| fixed basis r = 256 | 0.16 | 0.153 | 0.145 | 0.123 |
+| fixed basis r = 512 | 0.33 | 0.126 | 0.119 | 0.101 |
+| per-token top 5% channels | 0.05 | 0.198 | 0.168 | 0.136 |
+| per-token top 10% channels | 0.10 | 0.168 | 0.144 | 0.116 |
+| per-token top 25% channels | 0.25 | 0.108 | 0.095 | **0.077** |
+| exact fix, worst 25% tokens | 0.25 | 0.211 | 0.180 | 0.139 |
+| exact fix, worst 50% tokens | 0.50 | 0.162 | 0.137 | 0.106 |
+
+### Findings
+
+1. **The error is not low-rank.** A 256-dimensional basis holds only 38–65% of the error energy
+   (train), and a rank-512 correction at a third of the projection cost still leaves ~10% error.
+2. **Channel concentration is the strongest structure, and it is moderate.** The top 25% of
+   channels per token carry ~80% of the correction energy (0.178 → 0.077), but picking a
+   different 25% per token is an irregular gather that is unlikely to beat a dense GEMM on GPU.
+3. **No token concentration.** Errors are spread evenly over tokens; fixing the worst half removes
+   only ~65% of the error energy.
+4. **Per layer, the picture is the same everywhere:** best case (layers 27–34, full linear +
+   top 25%) still leaves 6.4–7% error.
+
+### Gate assessment (exploratory — fidelity tolerance not yet pre-registered)
+
+- **Exact PLE fails the correction-cost gate here.** Any correction that is cheap leaves 8–20%
+  projection error; reaching exactness costs a full projection. Adding the predictor (3–63% of a
+  projection) and the speculative projection itself, total work exceeds the exact path.
+- **Approximate PLE is still open, but unproven.** Whether ~8–15% error at one projection is
+  tolerable depends on its effect on the model's output, which has not been measured. That is the
+  next test: logit KL / top-1 agreement when a single layer's QKV is speculated and
+  approximately corrected.
+- One model, one projection, one dataset. Repeat on Qwen3.5-4B-Base (hybrid linear attention),
+  Ornith-1.5-9B and Qwen3.8-27B before drawing a model-general conclusion.
