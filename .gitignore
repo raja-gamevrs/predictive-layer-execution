@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+
+# Large or regenerable artifacts
+data/traces/*
+!data/traces/.gitkeep
+results/raw/*
+!results/raw/.gitkeep
+*.safetensors
+*.pt
+*.nsys-rep
+*.ncu-rep

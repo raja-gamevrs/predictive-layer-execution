@@ -1,0 +1,10 @@
+# Plumbing and test iteration only; not evidence of PLE benefit.
+model:
+  id: TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T
+  revision: main
+  dtype: bfloat16
+  attn_implementation: sdpa
+  expected:
+    num_hidden_layers: 22
+device: cuda:0
+seed: 0

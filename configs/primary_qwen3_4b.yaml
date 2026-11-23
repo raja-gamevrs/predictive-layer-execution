@@ -1,0 +1,12 @@
+# Primary model. Pin `revision` to a commit hash after verifying license/config (Stage B).
+model:
+  id: Qwen/Qwen3-4B-Base
+  revision: main
+  dtype: bfloat16
+  attn_implementation: sdpa
+  expected:
+    num_hidden_layers: 36
+    num_attention_heads: 32
+    num_key_value_heads: 8
+device: cuda:0
+seed: 0

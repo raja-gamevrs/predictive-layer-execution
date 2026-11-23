@@ -1,0 +1,16 @@
+# Proposed project gates (blueprint section 9). Do not relax after seeing results;
+# any change needs a dated rationale in docs/hypothesis_preregistration.md and a rerun.
+baseline:
+  max_cv: 0.05
+net_benefit:
+  min_latency_improvement: 0.05
+  stretch_latency_improvement: 0.10
+exact_correction:
+  # Tensor-match tolerance for the corrected path vs the exact path (BF16).
+  rtol: 1.6e-2
+  atol: 1.0e-3
+approximate:
+  # To be pre-registered before any test-set results are viewed.
+  max_logit_kl: null
+  min_top1_agreement: null
+  max_perplexity_delta: null

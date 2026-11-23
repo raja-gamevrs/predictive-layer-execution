@@ -1,0 +1,9 @@
+# Stage F prefill sweep. Start at batch 1 and 128/512/2048; extend only after peak VRAM is measured.
+sweep:
+  prompt_lengths: [128, 512, 2048, 4096, 8192]
+  batch_sizes: [1, 2, 4, 8]
+timing:
+  warmup_runs: 3
+  repeats: 5
+  report: [median, p90, p95, cv]
+metrics: [prefill_latency_ms, ttft_ms, prompt_tokens_per_s, peak_vram_bytes]
