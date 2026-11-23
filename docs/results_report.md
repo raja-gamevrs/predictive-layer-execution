@@ -166,7 +166,9 @@ from `N(ĥ)` while block 26 runs on the main stream. Raw:
 | 8192 | 21.473 | −0.7% | −4.3% | 11.7% | 0.05 |
 
 Eager mode: −15.2% to +1.8% (identity), −15.8% to −1.7% (linear); CV 0.26–0.43 below 2k
-tokens because CPU launch overhead dominates a ~1 ms block.
+tokens because CPU launch overhead dominates a ~1 ms block. *(The eager JSON was later overwritten
+by the profiling rerun below, which measured −8.9% to +2.0% (identity) and −13.9% to +0.3%
+(linear), same conclusion; the graphs JSON is unchanged.)*
 
 ### Findings
 
