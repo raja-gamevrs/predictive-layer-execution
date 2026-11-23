@@ -239,6 +239,14 @@ in Transformers are W4A16 for decode but W4A4 for prefill, exact correction woul
 and fail in prefill. Any exact-reconciliation scheme on activation-quantised hardware paths needs
 a higher-precision correction path or recomputation.
 
+**On a vendor checkpoint.** Ornith-1.5-9B (Qwen3.5 architecture, d = 4096) in BF16, INT8 W8A16,
+and NVIDIA's ModelOpt release, whose attention projections are FP8 W8A8 with static input scales
+(MLPs NVFP4 W4A16). Exact correction through the module: BF16 KL 0.0002–0.0011 per boundary
+(floor), INT8 0.0002–0.0009 (at floor), ModelOpt 0.0008–0.0091, i.e. 3–10× above the model's own
+floor, worst at early boundaries; 6–10× when all boundaries are reconciled. The emulated and
+vendor-checkpoint results agree in direction and shape; FP8 activations break exactness less than
+FP4.
+
 ### 4.7 Further down the stack and further ahead
 
 Source: `results/processed/*_{depth_start,lookahead_quality,lookahead_proj}.csv`. Uncorrected,

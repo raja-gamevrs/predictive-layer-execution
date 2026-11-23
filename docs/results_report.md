@@ -309,6 +309,46 @@ Uncorrected speculation (identity / linear) costs about the same in every varian
    does too. To confirm on real NVFP4 checkpoints (Ornith-1.5-9B-NVFP4 is W4A16, nvidia
    Qwen3.8-27B-NVFP4 is W4A4) once loaded.
 
+## 2026-11-23 — Precision on real weights: Ornith-1.5-9B in BF16, INT8 and NVIDIA ModelOpt
+
+Same script (`--corrections none full_module`, plus `full` for BF16), same splits. Three variants of
+one set of weights (Qwen3.5 architecture, d = 4096, 32 blocks):
+- **BF16**: `ornith-ai/Ornith-1.5-9B` `489cb97`.
+- **INT8 W8A16**: the same snapshot quantised at load with torchao.
+- **ModelOpt**: the vendor checkpoint `ornith-ai/Ornith-1.5-9B-NVFP4` `155f200`, which is
+  MIXED_PRECISION: every attention input/output projection (`q/k/v/o_proj`, `in_proj_qkv`,
+  `in_proj_z`, `out_proj`) is FP8 W8A8 with a static per-tensor input scale; MLPs and `lm_head` are
+  NVFP4 W4A16; `in_proj_a/b`, norms and embeddings are BF16. Loaded with `ple.quant.modelopt`, which
+  applies the checkpoint's own scales (weights dequantised; activations quantised to E4M3 with the
+  stored `input_scale`). So the projections PLE speculates are activation-quantised here.
+
+Raw: `results/processed/{Ornith-1.5-9B,Ornith-1.5-9B_int8_weight_only,Ornith-1.5-9B-NVFP4}_approx_quality.*`.
+
+| Variant | Exact ppl | Exact fix through the module: KL per single boundary (2…30) | all 31 boundaries | Top-1 (single) |
+|---|---|---|---|---|
+| BF16 | 12.105 | 0.0002–0.0011 | 0.0014–0.0015 | 98.5–99.5% |
+| INT8 W8A16 | 12.094 | 0.0002–0.0009 | 0.0011–0.0012 | 98.5–99.5% |
+| ModelOpt (FP8 W8A8 attention) | 12.764 | 0.0008–0.0091 | 0.0090–0.0156 | 96.0–98.6% |
+
+Per boundary, ModelOpt / BF16 KL ratio: 10× / 6× (identity / linear) at boundary 2, 5.9× at 6, ~4×
+at 10–14, 3.3–3.4× at 18–26, 4× at 30; 6–10× for all boundaries at once.
+
+Uncorrected speculation on the 9B model is far more damaging than on the 4B models: all-boundary
+identity reaches perplexity ~12,000 in every variant (BF16 12,277; INT8 12,143; ModelOpt 10,990),
+linear all-boundary 15.9 / 15.9 / 16.8.
+
+### Findings
+
+1. **Replicates the emulated result on a vendor checkpoint.** Weight-only INT8 keeps exact
+   reconciliation at the model's own BF16 floor; FP8 W8A8 attention projections put it 3–10× above
+   the floor (6–10× when every layer is reconciled).
+2. **Smaller break than emulated FP4 activations** (15–100× on Qwen3.5), as expected from FP8's
+   larger mantissa; same shape: worst early, smallest late.
+3. **`full` and `full_module` agree exactly in BF16** (identical KL and ppl to 4 decimals), so the
+   module-path correction introduces no error of its own.
+4. **Scale makes uncorrected speculation worse, not better**: the 9B model collapses ~25× harder
+   than Qwen3.5-4B under all-layer identity speculation.
+
 ## 2026-11-23 — Further down the stack, and further ahead (BF16, both 4B models)
 
 Script: `scripts/depth_sweep_study.py` (defaults: fit 256 train chunks per lookahead, quality on 16

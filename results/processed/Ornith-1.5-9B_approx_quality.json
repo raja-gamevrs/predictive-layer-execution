@@ -1,0 +1,20 @@
+{
+  "model": "ornith-ai/Ornith-1.5-9B",
+  "revision": "489cb97981b8654bcfcf30ce1f94ed1b62e07b53",
+  "dtype": "bfloat16",
+  "dataset": "Salesforce/wikitext",
+  "dataset_revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+  "seq_len": 512,
+  "fit_seqs": 256,
+  "basis_seqs": 128,
+  "eval_seqs": 16,
+  "eval_tokens": 8160,
+  "exact_ppl": 12.105393560688546,
+  "exact_rerun_kl": 0.0,
+  "exact_rerun_top1": 1.0,
+  "basis_rank": 256,
+  "topk_fraction": 0.25,
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "torch": "2.14.1+cu130",
+  "fit_seconds": 50.2
+}
