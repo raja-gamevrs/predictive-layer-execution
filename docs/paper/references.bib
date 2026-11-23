@@ -1,0 +1,429 @@
+% References for the PLE (Predictive Layer Execution) related-work section.
+% Metadata verified 2026-11-23 against arXiv abstract pages, proceedings pages or
+% official docs. Entries marked "note = {Venue unverified ...}" could not be confirmed
+% from a primary page.
+
+% ---------------------------------------------------------------- layer-parallel inference
+@misc{han2026snlp,
+  title         = {{SNLP}: Layer-Parallel Inference via Structured {Newton} Corrections},
+  author        = {Han, Ligong and Xu, Kai and Wang, Hao and Srivastava, Akash},
+  year          = {2026},
+  eprint        = {2605.17842},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note          = {v1 18 May 2026; v3 8 Jul 2026},
+  url           = {https://arxiv.org/abs/2605.17842}
+}
+
+@misc{han2026snlpfhe,
+  title         = {Layer-Parallel Inference Reduces Encrypted Nonlinear Depth in Transformers},
+  author        = {Han, Ligong and Xu, Kai and Wang, Hao and Gao, Ruijiang and Gao, Han and Srivastava, Akash},
+  year          = {2026},
+  eprint        = {2607.04819},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2607.04819}
+}
+
+@misc{calvogonzalez2025truedepth,
+  title         = {Leveraging the true depth of {LLMs}},
+  author        = {Calvo Gonz{\'a}lez, Ram{\'o}n and Paliotta, Daniele and Pagliardini, Matteo and Jaggi, Martin and Fleuret, Fran{\c{c}}ois},
+  year          = {2025},
+  eprint        = {2502.02790},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note          = {v3 6 Jan 2026; "Reviewed on OpenReview" (forum JccJ6YfWd4). Venue (reportedly TMLR) unverified},
+  url           = {https://arxiv.org/abs/2502.02790}
+}
+
+@inproceedings{zou2024cqil,
+  title     = {{CQIL}: Inference Latency Optimization with Concurrent Computation of Quasi-Independent Layers},
+  author    = {Zou, Longwei and Wang, Qingyang and Zhao, Han and Kong, Jiangang and Yang, Yi and Deng, Yangdong},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  pages     = {7293--7307},
+  year      = {2024},
+  doi       = {10.18653/v1/2024.acl-long.394},
+  eprint    = {2404.06709},
+  archivePrefix = {arXiv},
+  url       = {https://aclanthology.org/2024.acl-long.394/}
+}
+
+@inproceedings{wu2025easyspec,
+  title         = {{EasySpec}: Layer-Parallel Speculative Decoding for Efficient Multi-{GPU} Utilization},
+  author        = {Wu, Yize and Gao, Ke and Li, Ling and Wu, Yanjun},
+  year          = {2025},
+  eprint        = {2502.02493},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note          = {arXiv preprint; no venue listed},
+  url           = {https://arxiv.org/abs/2502.02493}
+}
+
+@inproceedings{sun2025painters,
+  title     = {Transformer Layers as Painters},
+  author    = {Sun, Qi and Pickett, Marc and Nain, Aakash Kumar and Jones, Llion},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {39},
+  pages     = {25219--25227},
+  year      = {2025},
+  doi       = {10.1609/aaai.v39i24.34708},
+  eprint    = {2407.09298},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/2407.09298}
+}
+
+@misc{lad2024robustness,
+  title         = {The Remarkable Robustness of {LLMs}: Stages of Inference?},
+  author        = {Lad, Vedang and Lee, Jin Hwa and Gurnee, Wes and Tegmark, Max},
+  year          = {2024},
+  eprint        = {2406.19384},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note          = {NeurIPS 2025 poster per neurips.cc; Jin Hwa Lee added in v3},
+  url           = {https://arxiv.org/abs/2406.19384}
+}
+
+@misc{freiberger2024layershuffle,
+  title         = {{LayerShuffle}: Enhancing Robustness in Vision Transformers by Randomizing Layer Execution Order},
+  author        = {Freiberger, Matthias and Kun, Peter and L{\o}vlie, Anders Sundnes and Risi, Sebastian},
+  year          = {2024},
+  eprint        = {2407.04513},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2407.04513}
+}
+
+@misc{jiang2026layerparalleltraining,
+  title         = {Layer-Parallel Training for Transformers},
+  author        = {Jiang, Shuai and Salvado, Marc and Cyr, Eric C. and Kopani{\v{c}}{\'a}kov{\'a}, Alena and Krause, Rolf and Schroder, Jacob B.},
+  year          = {2026},
+  eprint        = {2601.09026},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2601.09026}
+}
+
+@inproceedings{song2021feedforward,
+  title     = {Accelerating Feedforward Computation via Parallel Nonlinear Equation Solving},
+  author    = {Song, Yang and Meng, Chenlin and Liao, Renjie and Ermon, Stefano},
+  booktitle = {Proceedings of the 38th International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {139},
+  pages     = {9791--9800},
+  year      = {2021},
+  eprint    = {2002.03629},
+  archivePrefix = {arXiv},
+  url       = {https://proceedings.mlr.press/v139/song21a.html}
+}
+
+@inproceedings{danieli2023deeppcr,
+  title     = {{DeepPCR}: Parallelizing Sequential Operations in Neural Networks},
+  author    = {Danieli, Federico and Sarabia, Miguel and Suau, Xavier and Rodr{\'i}guez, Pau and Zappella, Luca},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2023},
+  eprint    = {2309.16318},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/2309.16318}
+}
+
+% ---------------------------------------------------------------- parallel / restructured architectures
+@misc{wang2021gptj,
+  title        = {{GPT-J-6B}: A 6 Billion Parameter Autoregressive Language Model},
+  author       = {Wang, Ben and Komatsuzaki, Aran},
+  year         = {2021},
+  howpublished = {\url{https://github.com/kingoflolz/mesh-transformer-jax}},
+  note         = {Model release; no paper}
+}
+
+@article{chowdhery2023palm,
+  title   = {{PaLM}: Scaling Language Modeling with Pathways},
+  author  = {Chowdhery, Aakanksha and Narang, Sharan and Devlin, Jacob and Bosma, Maarten and others},
+  journal = {Journal of Machine Learning Research},
+  volume  = {24},
+  number  = {240},
+  pages   = {1--113},
+  year    = {2023},
+  eprint  = {2204.02311},
+  archivePrefix = {arXiv},
+  url     = {https://www.jmlr.org/papers/v24/22-1144.html}
+}
+
+@misc{cutler2025stagformer,
+  title         = {{StagFormer}: Time Staggering Transformer Decoding for Running Layers In Parallel},
+  author        = {Cutler, Dylan and Kandoor, Arun and Dikkala, Nishanth and Saunshi, Nikunj and Wang, Xin and Panigrahy, Rina},
+  year          = {2025},
+  eprint        = {2501.15665},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2501.15665}
+}
+
+@inproceedings{zhang2025ladder,
+  title     = {Ladder-Residual: Parallelism-Aware Architecture for Accelerating Large Model Inference with Communication Overlapping},
+  author    = {Zhang, Muru and Mishra, Mayank and others},
+  booktitle = {Proceedings of the 42nd International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {267},
+  year      = {2025},
+  eprint    = {2501.06589},
+  archivePrefix = {arXiv},
+  note      = {Full author list not transcribed (11 authors)},
+  url       = {https://arxiv.org/abs/2501.06589}
+}
+
+@inproceedings{prabhakar2024kraken,
+  title     = {Kraken: Inherently Parallel Transformers For Efficient Multi-Device Inference},
+  author    = {Prabhakar, Rohan Baskar and Zhang, Hengrui and Wentzlaff, David},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2024},
+  eprint    = {2408.07802},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/2408.07802}
+}
+
+@misc{wang2026paralleltrack,
+  title         = {Parallel Track Transformers: Enabling Fast {GPU} Inference with Reduced Synchronization},
+  author        = {Wang, Chong and Du, Nan and Gunter, Tom and Lei, Tao and Seth, Kulin and Tong, Senyu and Wang, Jianyu and Yin, Guoli and Zhou, Xiyou and Zou, Kelvin and Pang, Ruoming},
+  year          = {2026},
+  eprint        = {2602.07306},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.DC},
+  url           = {https://arxiv.org/abs/2602.07306}
+}
+
+@misc{wang2025teamformer,
+  title         = {{TeamFormer}: Shallow Parallel Transformers with Progressive Approximation},
+  author        = {Wang, Wei and Wei, Xiao-Yong and Li, Qing},
+  year          = {2025},
+  eprint        = {2510.15425},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note          = {v1 (17 Oct 2025) titled "ParaFormer: Shallow Parallel Transformers with Progressive Approximation"; renamed TeamFormer in v2 (24 Feb 2026)},
+  url           = {https://arxiv.org/abs/2510.15425}
+}
+
+% ---------------------------------------------------------------- cross-layer prediction inside one forward pass
+@inproceedings{lee2024infinigen,
+  title     = {{InfiniGen}: Efficient Generative Inference of Large Language Models with Dynamic {KV} Cache Management},
+  author    = {Lee, Wonbeom and Lee, Jungi and Seo, Junghwan and Sim, Jaewoong},
+  booktitle = {18th USENIX Symposium on Operating Systems Design and Implementation (OSDI 24)},
+  pages     = {155--172},
+  year      = {2024},
+  eprint    = {2406.19707},
+  archivePrefix = {arXiv},
+  url       = {https://www.usenix.org/conference/osdi24/presentation/lee}
+}
+
+@inproceedings{liu2023dejavu,
+  title     = {Deja Vu: Contextual Sparsity for Efficient {LLMs} at Inference Time},
+  author    = {Liu, Zichang and Wang, Jue and Dao, Tri and Zhou, Tianyi and Yuan, Binhang and Song, Zhao and Shrivastava, Anshumali and Zhang, Ce and Tian, Yuandong and Re, Christopher and Chen, Beidi},
+  booktitle = {Proceedings of the 40th International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {202},
+  pages     = {22137--22176},
+  year      = {2023},
+  eprint    = {2310.17157},
+  archivePrefix = {arXiv},
+  url       = {https://proceedings.mlr.press/v202/liu23am.html}
+}
+
+@inproceedings{hwang2024pregated,
+  title     = {Pre-gated {MoE}: An Algorithm-System Co-Design for Fast and Scalable Mixture-of-Expert Inference},
+  author    = {Hwang, Ranggi and others},
+  booktitle = {Proceedings of the 51st ACM/IEEE Annual International Symposium on Computer Architecture (ISCA)},
+  year      = {2024},
+  eprint    = {2308.12066},
+  archivePrefix = {arXiv},
+  note      = {Full author list not transcribed},
+  url       = {https://arxiv.org/abs/2308.12066}
+}
+
+@misc{madan2026speculatingexperts,
+  title         = {Speculating Experts Accelerates Inference for Mixture-of-Experts},
+  author        = {Madan, Vivan and Singhania, Prajwal and Bhatele, Abhinav and Goldstein, Tom and Panda, Ashwinee},
+  year          = {2026},
+  eprint        = {2603.19289},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2603.19289}
+}
+
+@misc{johnston2026ridgefill,
+  title         = {{RidgeFill}: Training-Free Late-Layer Cache Fill for Faster Prefill},
+  author        = {Johnston, Dylan and Smith, Robert P.},
+  year          = {2026},
+  eprint        = {2611.09709},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2611.09709}
+}
+
+@misc{he2026pop,
+  title         = {{POP}: Prefill-Only Pruning for Efficient Large Model Inference},
+  author        = {He, Junhui and Fu, Zhihui and Wang, Jun and Li, Qingan},
+  year          = {2026},
+  eprint        = {2602.03295},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2602.03295}
+}
+
+@misc{qiao2024swiftkv,
+  title         = {{SwiftKV}: Fast Prefill-Optimized Inference with Knowledge-Preserving Model Transformation},
+  author        = {Qiao, Aurick and Yao, Zhewei and Rajbhandari, Samyam and He, Yuxiong},
+  year          = {2024},
+  eprint        = {2410.03960},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2410.03960}
+}
+
+@misc{horton2024kvprediction,
+  title         = {{KV} Prediction for Improved Time to First Token},
+  author        = {Horton, Maxwell and Cao, Qingqing and Sun, Chenfan and Jin, Yanzi and Mehta, Sachin and Rastegari, Mohammad and Nabi, Moin},
+  year          = {2024},
+  eprint        = {2410.08391},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2410.08391}
+}
+
+@misc{wang2026riskkv,
+  title         = {{RISK-KV}: Quality-Aware Selective {KV} Cache Reconstruction for Distributed {LLM} Inference},
+  author        = {Wang, Yuekai},
+  year          = {2026},
+  eprint        = {2610.29544},
+  archivePrefix = {arXiv},
+  url           = {https://arxiv.org/abs/2610.29544}
+}
+
+% ---------------------------------------------------------------- residual-stream linearity / lenses
+@inproceedings{yomdin2024jump,
+  title     = {Jump to Conclusions: Short-Cutting Transformers with Linear Transformations},
+  author    = {Yom Din, Alexander and Karidi, Taelin and Choshen, Leshem and Geva, Mor},
+  booktitle = {Proceedings of the 2024 Joint International Conference on Computational Linguistics, Language Resources and Evaluation (LREC-COLING 2024)},
+  pages     = {9615--9625},
+  year      = {2024},
+  eprint    = {2303.09435},
+  archivePrefix = {arXiv},
+  url       = {https://aclanthology.org/2024.lrec-main.840}
+}
+
+@misc{belrose2023tunedlens,
+  title         = {Eliciting Latent Predictions from Transformers with the Tuned Lens},
+  author        = {Belrose, Nora and Ostrovsky, Igor and McKinney, Lev and Furman, Zach and Smith, Logan and Halawi, Danny and Biderman, Stella and Steinhardt, Jacob},
+  year          = {2023},
+  eprint        = {2303.08112},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2303.08112}
+}
+
+@inproceedings{razzhigaev2024secretlylinear,
+  title     = {Your Transformer is Secretly Linear},
+  author    = {Razzhigaev, Anton and others},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  pages     = {5376--5384},
+  year      = {2024},
+  eprint    = {2405.12250},
+  archivePrefix = {arXiv},
+  note      = {Seven authors; full list not transcribed},
+  url       = {https://aclanthology.org/2024.acl-long.293}
+}
+
+% ---------------------------------------------------------------- delta / reuse computation
+@inproceedings{dutson2023eventful,
+  title     = {Eventful Transformers: Leveraging Temporal Redundancy in Vision Transformers},
+  author    = {Dutson, Matthew and Li, Yin and Gupta, Mohit},
+  booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+  pages     = {16911--16923},
+  year      = {2023},
+  eprint    = {2308.13494},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/2308.13494}
+}
+
+% ---------------------------------------------------------------- speculative decoding (token level)
+@inproceedings{leviathan2023speculative,
+  title     = {Fast Inference from Transformers via Speculative Decoding},
+  author    = {Leviathan, Yaniv and Kalman, Matan and Matias, Yossi},
+  booktitle = {Proceedings of the 40th International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {202},
+  pages     = {19274--19286},
+  year      = {2023},
+  url       = {https://proceedings.mlr.press/v202/leviathan23a.html}
+}
+
+@misc{hu2025specsurvey,
+  title         = {Speculative Decoding and Beyond: An In-Depth Survey of Techniques},
+  author        = {Hu, Yunhai and Liu, Zining and Dong, Zhenyuan and Peng, Tianfan and McDanel, Bradley and Zhang, Sai Qian},
+  year          = {2025},
+  eprint        = {2502.19732},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2502.19732}
+}
+
+@inproceedings{li2024eagle,
+  title     = {{EAGLE}: Speculative Sampling Requires Rethinking Feature Uncertainty},
+  author    = {Li, Yuhui and Wei, Fangyun and Zhang, Chao and Zhang, Hongyang},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {235},
+  pages     = {28935--28948},
+  year      = {2024},
+  eprint    = {2401.15077},
+  archivePrefix = {arXiv},
+  url       = {https://proceedings.mlr.press/v235/li24bt.html}
+}
+
+@inproceedings{elhoushi2024layerskip,
+  title     = {{LayerSkip}: Enabling Early Exit Inference and Self-Speculative Decoding},
+  author    = {Elhoushi, Mostafa and Shrivastava, Akshat and Liskovich, Diana and Hosmer, Basil and Wasti, Bram and Lai, Liangzhen and Mahmoud, Anas and Acun, Bilge and Agarwal, Saurabh and Roman, Ahmed and Aly, Ahmed and Chen, Beidi and Wu, Carole-Jean},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  pages     = {12622--12642},
+  year      = {2024},
+  doi       = {10.18653/v1/2024.acl-long.681},
+  eprint    = {2404.16710},
+  archivePrefix = {arXiv},
+  url       = {https://aclanthology.org/2024.acl-long.681/}
+}
+
+@inproceedings{chen2025clasp,
+  title     = {{CLaSp}: In-Context Layer Skip for Self-Speculative Decoding},
+  author    = {Chen, Longze and Shan, Renke and Wang, Huiming and Wang, Lu and Liu, Ziqiang and Luo, Run and Wang, Jiawei and Alinejad-Rokny, Hamid and Yang, Min},
+  booktitle = {Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics},
+  year      = {2025},
+  eprint    = {2505.24196},
+  archivePrefix = {arXiv},
+  note      = {"Accepted to ACL 2025" per arXiv comments},
+  url       = {https://arxiv.org/abs/2505.24196}
+}
+
+% ---------------------------------------------------------------- name collisions ("PLE")
+@misc{google2025gemma3n,
+  title        = {Gemma 3n model overview},
+  author       = {{Google}},
+  year         = {2025},
+  howpublished = {\url{https://ai.google.dev/gemma/docs/gemma-3n}},
+  note         = {Defines Per-Layer Embeddings (PLE) and PLE caching. Accessed 2026-11-23}
+}
+
+@inproceedings{tang2020ple,
+  title     = {Progressive Layered Extraction ({PLE}): A Novel Multi-Task Learning ({MTL}) Model for Personalized Recommendations},
+  author    = {Tang, Hongyan and Liu, Junning and Zhao, Ming and Gong, Xudong},
+  booktitle = {Proceedings of the 14th ACM Conference on Recommender Systems (RecSys)},
+  year      = {2020},
+  doi       = {10.1145/3383313.3412236}
+}
+
+@inproceedings{gorishniy2022embeddings,
+  title     = {On Embeddings for Numerical Features in Tabular Deep Learning},
+  author    = {Gorishniy, Yury and Rubachev, Ivan and Babenko, Artem},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2022},
+  eprint    = {2203.05556},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/2203.05556}
+}

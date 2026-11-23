@@ -26,9 +26,33 @@ Qwen3.5 (hybrid linear attention), Ornith-1.5 and Qwen3.8-27B under BF16/INT8/IN
   (drop work), layer-parallel and parallel-block architectures (change the model or approximate).
 - PLE's question: keep the exact model, speculate *within* a forward pass at operation
   granularity, and pay a reconciliation cost. When, if ever, does that pay?
-- Contributions (to be finalised after the novelty review): a measurement framework that
-  separates predictability, correction economics, output quality and real overlap; and a
-  negative-leaning empirical characterisation on current small and mid-size models.
+
+**Positioning after the prior-art review (2026-11-23, see §6).** The mechanism is not new.
+Running block l+1's attention on block l's input without retraining is Layer Parallelism (LP,
+Calvo González et al.), CQIL and EasySpec; LP evaluates the same Qwen3-4B model. Applying the next
+layer's query weights to the current normalised input is InfiniGen. A per-layer closed-form ridge
+map from an earlier state into a frozen later layer's projections is RidgeFill (Nov 2026, on
+Qwen3.5-9B and Qwen3.8-27B). Predict-then-correct across depth is SNLP and, earlier, Song et al.;
+our exact correction is one Jacobi/Newton step. The paper is therefore framed as an **empirical
+study**, and claims only:
+
+1. a measurement framework that separates predictability, error structure, output quality and
+   real overlap, with errors measured **after the next block's norm**, at the projection input;
+2. a **per-boundary sensitivity map** of single-layer speculation (consistent with LP's advice to
+   keep the final layers sequential, and finer-grained than LP's contiguous groups);
+3. **negative results on reconciliation economics**: trajectory extrapolation is worse than
+   identity, the error is not low-rank or token-concentrated, and no correction cheaper than `W e`
+   reaches exactness;
+4. the **BF16 reformulation floor** as the correct reference for any "exact" claim;
+5. a **single-GPU overlap** measurement (LP, CQIL and EasySpec obtain their speedups from
+   multiple GPUs), currently negative;
+6. TODO: the same analysis across architectures and precisions (hybrid linear attention,
+   INT8/INT4/NVFP4), including whether weight-only quantisation keeps exact correction exact and
+   activation quantisation breaks it.
+
+**Name.** "PLE" collides with Gemma's Per-Layer Embeddings (same on-device-inference community)
+and with Progressive Layered Extraction (recommendation). Spell out "Predictive Layer Execution"
+or choose a new name before submission.
 
 ## 2. Method
 
@@ -182,16 +206,34 @@ to confirm whether kernels actually run concurrently.
 - Where it might still work: memory-bound decode with weights of block l+1 prefetched; multi-GPU
   pipeline settings with idle devices; architectures with explicit parallel branches.
 - Relation to parallel-block architectures: uncorrected late-layer speculation is equivalent to
-  feeding block l+1's attention with block l's input — a post-hoc parallel attention block.
+  feeding block l+1's attention with block l's input — a post-hoc parallel attention block, i.e.
+  LP's attention branch applied at one boundary.
+- Agreement with SNLP's negative result: on off-the-shelf models, depth-parallel prediction plus
+  correction matches quality but does not beat sequential execution without training.
+- RidgeFill shows a ridge predictor *can* pay when it is used to **skip** work (late-layer KV
+  fill during long prefill) rather than to overlap it; the difference is that skipping removes
+  FLOPs, while PLE-style overlap only moves them.
 
-## 6. Limitations
+## 6. Related work (summary; full review in `docs/research_review.md`, BibTeX in `references.bib`)
+
+| Work | Mechanism | Overlap with this study |
+|---|---|---|
+| Layer Parallelism (Calvo González et al., arXiv 2502.02790) | Pairs of layers; both attentions read the shared input; no retraining; multi-GPU | Uncorrected single-boundary speculation is its attention branch; also evaluates Qwen3-4B |
+| CQIL (Zou et al., ACL 2024) | Groups of layers on the group's input, one GPU per layer, cheap "bypass" correction | Identity predictor + partial correction |
+| EasySpec (Wu et al., arXiv 2502.02493) | Draft-model attention layers in parallel on a shared input; KV recomputed exactly after each round | Same schedule; exactness by discard-and-recompute |
+| InfiniGen (Lee et al., OSDI 2024) | Next layer's query weights applied to the current normed input, for KV prefetch | Our QKV launch with the identity predictor |
+| RidgeFill (Johnston & Smith, arXiv 2611.09709) | Closed-form per-layer ridge map predicts late-layer inputs; KV filled from prediction to skip prefill | Our linear predictor; used to skip, not overlap |
+| SNLP (Han et al., arXiv 2605.17842) | All layer inputs predicted, structured Newton corrections | General predict-then-correct; no gain on untrained models |
+| Song et al. (ICML 2021) | Jacobi / Gauss-Seidel over depth, exact at convergence | Our exact correction is one Jacobi step |
+
+## 7. Limitations
 
 One model so far, one dataset, sequence length 512 for quality metrics, teacher-forced
 evaluation only, no task benchmarks, single shared GPU without locked clocks, eager/graph PyTorch
 only (no custom kernels). Thresholds were proposed but tolerances not pre-registered before the
 first results; all current results are labelled exploratory.
 
-## 7. Reproducibility
+## 8. Reproducibility
 
 Every script records model revision, dataset revision, token counts, GPU, and library versions in
 a JSON next to its CSV. Commands:
