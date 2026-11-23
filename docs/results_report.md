@@ -139,6 +139,41 @@ perplexity 11.400. Position 0 kept exact. Raw:
 
 ### What this does not show
 
-No timing: whether launching QKV one block early actually shortens the critical path on the
-5090 is untested (Stage E). The quality numbers are prefill-style teacher forcing on WikiText-2
+No timing (see next entry). The quality numbers are prefill-style teacher forcing on WikiText-2
 only; no task benchmarks, no decode.
+
+## 2026-11-23 — H4 first pass: does QKV overlap shorten the critical path? Qwen3-4B-Base, RTX 5090
+
+Script: `scripts/bench_overlap.py --boundary 26 --tokens 16 128 512 2048 8192 --repeats 200`,
+eager and `--graphs`. Block 26 run on its real input with the exact mask / rotary arguments
+captured from a model forward pass; block 27's norm + q/k/v launched on a second CUDA stream
+from `N(ĥ)` while block 26 runs on the main stream. Raw:
+`results/processed/Qwen3-4B-Base_bench_overlap_l26_{eager,graphs}.json`.
+
+| Tokens | Sequential, graphs (ms) | Overlap identity | Overlap linear | Upper bound | Seq. CV |
+|---|---|---|---|---|---|
+| 16 | 0.335 | +4.6% | +4.9% | 16.5% | 0.10 |
+| 128 | 0.324 | −0.6% | −2.8% | 17.4% | 0.13 |
+| 512 | 0.910 | +0.5% | −2.3% | 19.6% | 0.07 |
+| 2048 | 3.733 | +0.9% | −4.3% | 12.2% | 0.09 |
+| 8192 | 21.473 | −0.7% | −4.3% | 11.7% | 0.05 |
+
+Eager mode: −15.2% to +1.8% (identity), −15.8% to −1.7% (linear); CV 0.26–0.43 below 2k
+tokens because CPU launch overhead dominates a ~1 ms block.
+
+### Findings
+
+1. **No real overlap.** Of a 12–20% theoretical saving, at most ~5% appears, and only at 16 tokens,
+   within noise. The linear predictor's extra GEMM makes overlap a net loss at ≥ 128 tokens.
+2. **Baseline variance fails the 5% gate** at most sizes (shared desktop GPU, unlocked clocks), so
+   any effect below ~5% is not resolvable on this setup.
+3. Likely cause (not yet profiled): at small T both streams are bound by reading weights from DRAM
+   and compete for the same bandwidth; at large T block 26's GEMMs already fill the SMs.
+
+### Gate assessment (exploratory)
+
+The overlap gate fails for single-block QKV speculation on this GPU. Combined with the quality
+result, the best case is: a few late layers, identity prediction, no correction, saving at most the
+QKV share (~12–17%) of each speculated block, i.e. ≲ 0.5% of a full forward per layer, and that
+saving does not materialise in measurement. Next checks before closing this branch: an Nsight
+timeline to confirm (non-)concurrency, and the same benchmark on Qwen3.5 / larger models.

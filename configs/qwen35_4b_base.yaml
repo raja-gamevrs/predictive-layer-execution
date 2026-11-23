@@ -1,0 +1,15 @@
+# Small exactness/hybrid-architecture model: same Qwen3.5 design as Qwen3.8 and Ornith-1.5
+# (24 Gated-DeltaNet linear-attention + 8 full-attention layers). License: Apache-2.0 (checked 2026-11-23).
+# Weights downloaded at `revision` to `path` (sha256-checked against HF).
+model:
+  id: Qwen/Qwen3.5-4B-Base
+  revision: 1001bb4d826a52d1f399e183466143f4da7b741b
+  path: G:/models/Qwen/Qwen3.5-4B-Base
+  dtype: bfloat16
+  attn_implementation: sdpa
+  expected:
+    num_hidden_layers: 32
+    num_attention_heads: 16
+    num_key_value_heads: 4
+device: cuda:0
+seed: 0

@@ -12,7 +12,7 @@ from contextlib import contextmanager
 
 import torch
 
-Correction = Callable[[torch.Tensor, torch.Tensor, torch.Tensor], torch.Tensor]  # (W, ŷ, e) -> ỹ
+Correction = Callable[[torch.Tensor, torch.Tensor, torch.Tensor], torch.Tensor]  # (W, ŷ, e) -> ỹ; e is ≥ FP32
 
 
 def attention_input_linears(layer: torch.nn.Module, hidden_size: int) -> list[torch.nn.Linear]:
@@ -45,7 +45,9 @@ def speculate_attention_inputs(layers: torch.nn.ModuleList, boundaries: list[int
             h_hat = predictor[l](stash[l])
             n_hat = layers[l + 1].input_layernorm(h_hat).to(x.dtype)
             y_hat = torch.nn.functional.linear(n_hat, mod.weight, mod.bias)
-            y = correction(mod.weight, y_hat, x - n_hat).to(out.dtype)
+            wide = torch.promote_types(x.dtype, torch.float32)  # BF16 subtraction would round the difference
+            e = x.to(wide) - n_hat.to(wide)
+            y = correction(mod.weight, y_hat, e).to(out.dtype)
             y[:, :1] = out[:, :1]
             return y
         return hook

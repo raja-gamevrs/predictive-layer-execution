@@ -63,14 +63,16 @@ def main() -> None:
     k = round(TOPK_FRAC * d)
 
     def corrections(pred_name):
+        # e arrives in FP32. BF16 corrections round it to the weight dtype first, as a BF16 kernel would.
         def basis(l):
             u = bases[(l, pred_name)]
-            return lambda w, y_hat, e: basis_correction((w.float() @ u).to(w.dtype), u.to(w.dtype), y_hat, e)
+            return lambda w, y_hat, e: basis_correction((w.float() @ u).to(w.dtype), u.to(w.dtype), y_hat, e.to(w.dtype))
         return {
             "none": lambda l: (lambda w, y_hat, e: y_hat),
             f"basis_r{RANK}": basis,
-            "topk_25pct": lambda l: (lambda w, y_hat, e: channel_topk_correction(w, y_hat, e, k)),
-            "full": lambda l: (lambda w, y_hat, e: y_hat + torch.nn.functional.linear(e, w)),
+            "topk_25pct": lambda l: (lambda w, y_hat, e: channel_topk_correction(w, y_hat, e.to(w.dtype), k)),
+            "full": lambda l: (lambda w, y_hat, e: y_hat + torch.nn.functional.linear(e.to(w.dtype), w)),
+            "full_fp32": lambda l: (lambda w, y_hat, e: y_hat.float() + torch.nn.functional.linear(e, w.float())),
         }
 
     singles = args.single_layers if args.single_layers is not None else sorted(
@@ -80,6 +82,7 @@ def main() -> None:
 
     stats = {cfg_: {"kl": 0.0, "top1": 0, "nll": 0.0} for cfg_ in configs}
     exact_nll, count = 0.0, 0
+    rerun = {"kl": 0.0, "top1": 0}
     with torch.inference_mode():
         for ids in wikitext_chunks(tok, "test", args.seq_len, args.eval_seqs):
             ids = ids[None].to(dev)
@@ -93,6 +96,9 @@ def main() -> None:
             exact_nll += nll
             count += targets.numel()
             top_exact = lp_exact.argmax(-1)
+            lp_again, _ = score(model(input_ids=ids).logits)  # run-to-run determinism of the exact path
+            rerun["kl"] += (lp_exact.exp() * (lp_exact - lp_again)).sum().item()
+            rerun["top1"] += (lp_again.argmax(-1) == top_exact).sum().item()
             for b, p, c in configs:
                 with speculate_attention_inputs(layers, boundary_sets[b], predictors[p], corrections(p)[c], d):
                     lp, nll = score(model(input_ids=ids).logits)
@@ -114,7 +120,8 @@ def main() -> None:
     meta = {"model": cfg["model"]["id"], "revision": cfg["model"]["revision"], "dtype": cfg["model"]["dtype"],
             "dataset": WIKITEXT, "dataset_revision": WIKITEXT_REV, "seq_len": args.seq_len,
             "fit_seqs": args.fit_seqs, "basis_seqs": args.basis_seqs, "eval_seqs": args.eval_seqs,
-            "eval_tokens": count, "exact_ppl": math.exp(exact_nll / count), "basis_rank": RANK,
+            "eval_tokens": count, "exact_ppl": math.exp(exact_nll / count),
+            "exact_rerun_kl": rerun["kl"] / count, "exact_rerun_top1": rerun["top1"] / count, "basis_rank": RANK,
             "topk_fraction": TOPK_FRAC, "gpu": torch.cuda.get_device_name(), "torch": torch.__version__,
             "fit_seconds": round(t_fit, 1)}
     (out_dir / f"{stem}_approx_quality.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")

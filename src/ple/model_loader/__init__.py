@@ -11,11 +11,13 @@ def load_config(path: str) -> dict:
 
 
 def load(cfg: dict):
+    """Load from the HF cache at `revision`, or from a local snapshot `path` downloaded at that revision."""
     m = cfg["model"]
-    tokenizer = AutoTokenizer.from_pretrained(m["id"], revision=m["revision"])
+    source = {"pretrained_model_name_or_path": m["path"]} if m.get("path") else {
+        "pretrained_model_name_or_path": m["id"], "revision": m["revision"]}
+    tokenizer = AutoTokenizer.from_pretrained(**source)
     model = AutoModelForCausalLM.from_pretrained(
-        m["id"], revision=m["revision"], dtype=getattr(torch, m["dtype"]),
-        attn_implementation=m.get("attn_implementation"),
+        **source, dtype=getattr(torch, m["dtype"]), attn_implementation=m.get("attn_implementation"),
     ).to(cfg["device"]).eval()
     return model, tokenizer
 

@@ -15,7 +15,7 @@ def _model():
 
 
 def _exact(w, y_hat, e):
-    return y_hat + torch.nn.functional.linear(e, w)
+    return y_hat + torch.nn.functional.linear(e.to(w.dtype), w)
 
 
 def _uncorrected(_w, y_hat, _e):
