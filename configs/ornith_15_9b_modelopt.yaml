@@ -1,0 +1,14 @@
+# Ornith-1.5-9B official ModelOpt checkpoint (quant_algo MIXED_PRECISION): attention input/output
+# projections FP8 W8A8 with static per-tensor input scales; MLP NVFP4 W4A16; in_proj_a/b, norms,
+# embeddings BF16. Loaded with ple.quant.modelopt (emulated numerics). License: MIT (checked 2026-11-23).
+model:
+  id: ornith-ai/Ornith-1.5-9B-NVFP4
+  revision: 155f200d85ad58464571c77d5e1122ea5d419d7b
+  path: G:/models/ornith-ai/Ornith-1.5-9B-NVFP4
+  format: modelopt
+  dtype: bfloat16
+  expected:
+    num_hidden_layers: 32
+    hidden_size: 4096
+device: cuda:0
+seed: 0

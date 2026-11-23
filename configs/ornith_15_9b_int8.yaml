@@ -1,0 +1,14 @@
+# Ornith-1.5-9B, INT8 weight-only (torchao W8A16), quantized at load from the BF16 snapshot.
+# (24 Gated-DeltaNet + 8 full-attention blocks, d = 4096). License: MIT (checked 2026-11-23).
+model:
+  id: ornith-ai/Ornith-1.5-9B
+  revision: 489cb97981b8654bcfcf30ce1f94ed1b62e07b53
+  path: G:/models/ornith-ai/Ornith-1.5-9B
+  dtype: bfloat16
+  quantization: int8_weight_only
+  attn_implementation: sdpa
+  expected:
+    num_hidden_layers: 32
+    hidden_size: 4096
+device: cuda:0
+seed: 0

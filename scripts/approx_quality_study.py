@@ -58,8 +58,10 @@ def main() -> None:
     t0 = time.time()
     linear = fit_linear(traces("train", args.fit_seqs), boundaries_all, d, dev)
     predictors = {"identity": {l: (lambda h: h) for l in boundaries_all}, "linear": linear}
-    bases = fit_error_bases(traces("train", args.basis_seqs, skip=args.fit_seqs), boundaries_all, norms,
-                            predictors, d, RANK, dev)
+    bases = {}
+    if f"basis_r{RANK}" in args.corrections:
+        bases = fit_error_bases(traces("train", args.basis_seqs, skip=args.fit_seqs), boundaries_all, norms,
+                                predictors, d, RANK, dev)
     torch.cuda.empty_cache()
     t_fit = time.time() - t0
 

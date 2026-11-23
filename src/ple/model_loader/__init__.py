@@ -8,7 +8,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 def run_name(cfg: dict) -> str:
     """File stem for results: model name, plus the quantization when there is one."""
     m = cfg["model"]
-    return m["id"].split("/")[-1] + (f"_{m['quantization']}" if m.get("quantization") else "")
+    return m["id"].split("/")[-1] + (f"_{m['quantization']}" if m.get("quantization") else "")  # format is in the id
 
 
 def load_config(path: str) -> dict:
@@ -41,6 +41,10 @@ def quantization_config(name: str | None):
 def load(cfg: dict):
     """Load from the HF cache at `revision`, or from a local snapshot `path` downloaded at that revision."""
     m = cfg["model"]
+    if m.get("format") == "modelopt":
+        from ple.quant.modelopt import load_modelopt
+        model, tokenizer, _ = load_modelopt(m["path"], cfg["device"], getattr(torch, m["dtype"]))
+        return model, tokenizer
     source = {"pretrained_model_name_or_path": m["path"]} if m.get("path") else {
         "pretrained_model_name_or_path": m["id"], "revision": m["revision"]}
     tokenizer = AutoTokenizer.from_pretrained(**source)
@@ -67,9 +71,12 @@ def decoder_layers(model: torch.nn.Module) -> torch.nn.ModuleList:
 
 
 def attention_input_projection(layer: torch.nn.Module, hidden_size: int) -> tuple[str, torch.nn.Module]:
-    """First projection in the block that reads the residual width: q_proj, or the fused input projection of linear attention."""
-    from ple.speculation_policy import is_projection
-    for name, mod in layer.named_modules():
-        if is_projection(mod) and mod.in_features == hidden_size:
-            return name, mod
-    raise ValueError("no input projection found")
+    """First attention input projection of the block: q_proj, or the fused input projection of linear attention.
+
+    Output projections are excluded even when their input width happens to equal the hidden size.
+    """
+    from ple.speculation_policy import attention_input_linears
+    found = attention_input_linears(layer, hidden_size)
+    if not found:
+        raise ValueError("no input projection found")
+    return next(n for n, m in layer.named_modules() if m is found[0]), found[0]
