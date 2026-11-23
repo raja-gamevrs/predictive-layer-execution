@@ -21,6 +21,10 @@ The research problem is finding corrections that are cheaper than recomputation
 (low-rank, block, sparse), or enough real overlap on the GPU to cut critical-path latency
 at matched output quality.
 
+The five ways PLE manipulates a frozen model — residual prediction, speculative branches,
+QKV/MLP operation-level speculation, lightweight adapters and CUDA scheduling — are in
+[`docs/techniques.md`](docs/techniques.md).
+
 ## Starting stack
 
 | Component | Choice |

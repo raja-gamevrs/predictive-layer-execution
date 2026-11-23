@@ -15,6 +15,10 @@ while lowering end-to-end latency at matched output quality?
 | H5 | Prefill is more favourable than decode | Prefill sweep; decode sweep as a separate benchmark |
 | H6 | Adaptive policy beats always-on speculation | Confidence / layer / op / resource gate ablations |
 
+Predictor families (H1), in order: identity / zero-delta, residual extrapolation, velocity
+(α, β sweep), linear, low-rank, tiny MLP, then multi-state (depth/trajectory, gated, shared)
+only if justified. See [`techniques.md`](techniques.md).
+
 Gates and tolerances: see [`configs/quality_thresholds.yaml`](../configs/quality_thresholds.yaml).
 
 ## Change log
