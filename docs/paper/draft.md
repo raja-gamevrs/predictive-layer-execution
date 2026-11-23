@@ -239,6 +239,18 @@ in Transformers are W4A16 for decode but W4A4 for prefill, exact correction woul
 and fail in prefill. Any exact-reconciliation scheme on activation-quantised hardware paths needs
 a higher-precision correction path or recomputation.
 
+### 4.7 Further down the stack and further ahead
+
+Source: `results/processed/*_{depth_start,lookahead_quality,lookahead_proj}.csv`. Uncorrected,
+BF16. **Start depth (cumulative).** Keeping blocks before `s` and the last two blocks exact and
+speculating everything in between, the linear predictor stays within 1% perplexity for 9 of 36
+blocks on Qwen3-4B (s = 24, +0.9%) and 3 of 32 on Qwen3.5-4B (s = 26, +0.8%); from s = 16 the cost
+is +4.1% / +5.5%, and from s = 0 +16% / +29%. Cost accumulates roughly per speculated block and is
+far higher per block early in the stack. **Lookahead.** Speculating block l+k from h_l, the
+projection error roughly doubles from k = 1 to 8 (linear 0.18 → 0.37 on Qwen3), but the
+single-block quality cost stays small (median +1.5% / +1.6% at k = 8). Far lookahead of a few
+blocks is cheap in quality; speculating many blocks is not.
+
 ## 5. Discussion (outline)
 
 - Where PLE's assumptions break: unstructured errors, norm amplification, compounding across depth,

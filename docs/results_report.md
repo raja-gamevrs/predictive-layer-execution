@@ -308,3 +308,54 @@ Uncorrected speculation (identity / linear) costs about the same in every varian
    differently, but the non-linearity comes from quantising activations, which a real W4A4 kernel
    does too. To confirm on real NVFP4 checkpoints (Ornith-1.5-9B-NVFP4 is W4A16, nvidia
    Qwen3.8-27B-NVFP4 is W4A4) once loaded.
+
+## 2026-11-23 — Further down the stack, and further ahead (BF16, both 4B models)
+
+Script: `scripts/depth_sweep_study.py` (defaults: fit 256 train chunks per lookahead, quality on 16
+test chunks, projection error on 32 test chunks). All speculation uncorrected. Raw:
+`results/processed/{Qwen3-4B-Base,Qwen3.5-4B-Base}_{depth_start,lookahead_quality,lookahead_proj}.csv`.
+
+**Part A — start depth, cumulative.** Blocks before `s` stay exact, and every boundary from `s`
+onward is speculated (k = 1), keeping the last two blocks exact (`tail = 2`; `tail = 0` is in the
+CSV and is uniformly worse, mostly for identity).
+
+| Start s | Qwen3-4B: blocks, identity ppl, linear ppl (exact 11.400) | Qwen3.5-4B: blocks, identity, linear (exact 11.824) |
+|---|---|---|
+| 0 | 33, 44.9, 13.22 (+16%) | 29, 249.7, 15.30 (+29%) |
+| 8 | 25, 17.7, 12.68 (+11%) | 21, 16.35, 12.94 (+9.4%) |
+| 16 | 17, 12.71, 11.87 (+4.1%) | 13, 13.69, 12.47 (+5.5%) |
+| 20 | 13, 12.29, 11.71 (+2.7%) | 9, 12.91, 12.24 (+3.6%) |
+| 24 | 9, 11.74, 11.50 (+0.9%) | 5, 12.38, 12.01 (+1.6%) |
+| 28 | 5, 11.59, 11.46 (+0.5%) | 1, 11.91, 11.86 (+0.3%) |
+
+**Part B — lookahead k.** Block l+k's attention inputs speculated from h_l, one source at a time
+(sources 2, 6, 10, … with l + k < L). Projection error is the median over all valid l.
+
+| k | Qwen3: proj err identity / linear | Qwen3: median ppl identity / linear (max) | Qwen3.5: proj err identity / linear | Qwen3.5: median ppl identity / linear (max) |
+|---|---|---|---|---|
+| 1 | 0.265 / 0.178 | 11.470 / 11.413 (11.461) | 0.342 / 0.190 | 12.171 / 11.893 (11.973) |
+| 2 | 0.342 / 0.234 | 11.531 / 11.426 (11.486) | 0.425 / 0.253 | 11.992 / 11.944 (11.996) |
+| 3 | 0.396 / 0.266 | 11.535 / 11.451 (11.550) | 0.477 / 0.295 | 11.983 / 11.914 (11.958) |
+| 4 | 0.456 / 0.293 | 11.731 / 11.481 (11.564) | 0.501 / 0.328 | 12.078 / 12.009 (12.027) |
+| 6 | 0.550 / 0.334 | 11.730 / 11.529 (11.570) | 0.575 / 0.382 | 12.102 / 12.010 (12.213) |
+| 8 | 0.614 / 0.366 | 11.897 / 11.574 (11.642) | 0.607 / 0.420 | 12.187 / 12.017 (12.156) |
+
+(Qwen3.5 k = 1 sources 2, 6, … all target full-attention blocks; other k mix block types, so its
+k = 1 identity row is not directly comparable to k ≥ 2.)
+
+### Findings
+
+1. **Keeping the early layers exact helps a lot, but the cost is cumulative.** Perplexity cost
+   grows roughly with the number of speculated blocks: on Qwen3-4B with the linear predictor,
+   about +0.1% per block over the last 9, rising to about +0.25% per block over the last 17; early
+   blocks are much more expensive per block (start 0 vs start 8: 8 extra blocks cost +5 points).
+2. **The budget is small.** For ≤ 1% perplexity: 9 blocks (of 36) on Qwen3-4B (+0.9%), 3 (of 32) on
+   Qwen3.5-4B (+0.8%; 5 blocks cost +1.6%), both linear-predicted, last two exact. Identity
+   costs 3–4× more at the same depth (start 24: +3.0% vs +0.9% on Qwen3, +4.7% vs +1.6% on Qwen3.5).
+3. **Predicting further ahead degrades gracefully.** Projection error roughly doubles from k = 1 to
+   k = 8 (linear: 0.18 → 0.37), yet speculating one block 8 ahead costs only +1.5% (Qwen3) / +1.6%
+   (Qwen3.5) median perplexity with the linear predictor. Far lookahead is the regime RidgeFill
+   exploits (predicting late-layer inputs from an early split point) and is where more work could
+   in principle run in parallel.
+4. **The linear predictor's advantage grows with distance** (identity / linear proj err ratio
+   1.5 at k = 1, 1.7 at k = 8 on Qwen3).
