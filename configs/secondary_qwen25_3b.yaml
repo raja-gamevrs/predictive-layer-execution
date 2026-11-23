@@ -1,7 +1,9 @@
 # Architecture contrast (different GQA geometry). Use once Stage C/D shows signal.
+# License: Qwen's own license ("other" on HF), not Apache — review terms before publishing
+# traces or derived weights. Pinned to the HF commit (checked 2026-11-23); not downloaded yet.
 model:
   id: Qwen/Qwen2.5-3B
-  revision: main
+  revision: 3aab1f1954e9cc14eb9509a215f9e5ca08227a9b
   dtype: bfloat16
   attn_implementation: sdpa
   expected:

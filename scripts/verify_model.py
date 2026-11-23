@@ -27,7 +27,7 @@ def main() -> None:
 
     tokenizer = AutoTokenizer.from_pretrained(m["id"], revision=m["revision"])
     model = AutoModelForCausalLM.from_pretrained(
-        m["id"], revision=m["revision"], torch_dtype=getattr(torch, m["dtype"]),
+        m["id"], revision=m["revision"], dtype=getattr(torch, m["dtype"]),
         attn_implementation=m.get("attn_implementation"),
     ).to(cfg["device"]).eval()
 

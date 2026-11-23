@@ -35,8 +35,8 @@ QKV/MLP operation-level speculation, lightweight adapters and CUDA scheduling â€
 | Model execution | PyTorch + Hugging Face Transformers |
 | Initial precision | BF16 (metric accumulators in FP32) |
 | Quantization experiments | INT4/NF4 later, as an ablation only |
-| Initial GPU | RTX 3090 24 GB |
-| Comparative GPU | RTX 5090 32 GB |
+| Baseline GPU | RTX 5090 32 GB (changed from the RTX 3090 on 2026-11-23: it is the GPU available now) |
+| Comparative GPU | RTX 3090 24 GB, when available |
 | First experiment | Hidden-state prediction + projection correction economics |
 | First workload | Prefill |
 | Paper decision | After novelty review + experimental gate |
@@ -78,6 +78,9 @@ pip install -e ".[dev]"
 pytest
 python scripts/verify_model.py --config configs/debug_tinyllama.yaml
 ```
+
+Model weights are large; point the Hugging Face cache at a big drive with `HF_HOME`
+(on the reference machine: `HF_HOME=G:\hf`).
 
 ## Rules of the road
 
