@@ -146,8 +146,15 @@ channels (cost 0.25) 0.077; worst 50% tokens (cost 0.5) 0.106. A rank-256 basis 
 Source: `results/processed/Qwen3-4B-Base_approx_quality.csv`. Exact perplexity 11.40.
 Single-layer uncorrected speculation: +0.0–1.2% perplexity (layers 2–30), +0.25% at layers 26–30,
 +4% at layer 34 (identity). Every layer at once: identity 54.0, linear 13.25, linear + top-25%
-channels 11.50. BF16 "exact" correction: KL ≈ 0.001, 1–2% top-1 flips. TODO: FP32 correction and
-determinism floor (rerun in progress).
+channels 11.50.
+
+**Reformulation floor.** The exact model is bit-deterministic (rerun KL 0.0). Exact correction
+`ŷ + W e`, whether accumulated in BF16 or FP32, gives KL 0.0004–0.0012 and 98.1–99.2% top-1
+agreement at every layer, and the same when all layers are reconciled at once. The difference is
+the BF16 rounding of the projection output along two algebraically equal paths (≈ 1 ulp); a
+single-ulp perturbation of one layer's q/k/v flips ~1.7% of near-tie argmax tokens. We therefore
+report all approximate results relative to this floor, and define "exact" as "within the BF16
+reformulation floor", which any fused or re-tiled kernel would also incur.
 
 ### 4.4 Overlap does not materialise at block granularity (H4)
 

@@ -10,9 +10,11 @@
   "eval_seqs": 16,
   "eval_tokens": 8160,
   "exact_ppl": 11.400014230377348,
+  "exact_rerun_kl": 0.0,
+  "exact_rerun_top1": 1.0,
   "basis_rank": 256,
   "topk_fraction": 0.25,
   "gpu": "NVIDIA GeForce RTX 5090",
   "torch": "2.14.1+cu130",
-  "fit_seconds": 45.1
+  "fit_seconds": 46.3
 }

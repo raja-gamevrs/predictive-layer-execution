@@ -125,8 +125,15 @@ perplexity 11.400. Position 0 kept exact. Raw:
 
 1. **"Exact" correction is not bit-exact in BF16.** Computing `W N(ĥ) + W e` instead of `W N(h)`
    changes rounding enough to flip 1–2% of argmax tokens (KL ≈ 0.001). This is the noise floor
-   for every other number here, and any exactness claim must state its precision. Accumulating
-   the correction in FP32 should lower it; not yet tested.
+   for every other number here, and any exactness claim must state its precision.
+   *Follow-up (same day, rerun):* the exact model is bit-deterministic run to run (KL 0.0, top-1
+   100%), and forming `e` plus accumulating `W e` in FP32 (`full_fp32`) leaves the floor unchanged
+   (KL 0.0004–0.0012, top-1 98.1–99.2%). The floor therefore comes from rounding the projection
+   output to BF16: ŷ is rounded once, the exact `W N(h)` along a different path, so the two
+   differ by about one BF16 ulp. A one-ulp perturbation of a single layer's q/k/v already flips
+   ~1.7% of near-tie argmax tokens, and the effect does not grow when every layer is perturbed
+   (KL 0.0012). Any reformulated BF16 computation (different GEMM tiling, fused kernel) would sit
+   on the same floor, so "exact" here means "within the BF16 reformulation floor".
 2. **A single speculated layer is cheap in quality.** Even free, uncorrected speculation from
    h_l raises perplexity by ≤ 1.2% at layers 2–30, and by only ~0.25% at layers 26–30.
 3. **Errors compound across layers.** Speculating every layer with no correction collapses the
