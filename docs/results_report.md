@@ -34,11 +34,12 @@ For scale: `q_proj` is 2560 → 4096 (10.5 M MACs/token); a whole Qwen3-4B block
 3. **Cheap predictors keep little of it.** Rank 256 recovers only part of the gain (proj 0.22);
    the update is not low-rank in `h_l`.
 4. **State error is the wrong metric.** At layers 17–21 identity is within 8–10% of the next state
-   in L2, yet the projection error stays ~25%: a few huge-magnitude channels dominate ‖h‖, and
-   the RMSNorm before `q_proj` removes them. Prediction must be judged after the norm.
-5. **Outlier layers.** Layers 0, 16, 34 and 35 make large updates (identity rel_err 0.86–0.99);
-   linear prediction is best at 34–35 (Δrel 0.17–0.40), i.e. the final layers are the most
-   predictable ones.
+   in L2, yet the projection error stays ~25%. Likely cause (not yet verified): a few
+   huge-magnitude channels dominate ‖h‖ there and the RMSNorm before `q_proj` rescales them
+   away. Either way, prediction must be judged after the norm.
+5. **Outlier layers.** Layers 0, 16 and 35 rewrite most of the state (identity rel_err
+   0.86–0.99), layer 34 about half (0.49). Linear prediction is best at 34–35 (Δrel 0.40 and
+   0.17), so the last layers are the most predictable.
 
 ### Implication for H3 (correction economics)
 
