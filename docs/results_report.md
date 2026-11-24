@@ -349,6 +349,39 @@ linear all-boundary 15.9 / 15.9 / 16.8.
 4. **Scale makes uncorrected speculation worse, not better**: the 9B model collapses ~25× harder
    than Qwen3.5-4B under all-layer identity speculation.
 
+## 2026-11-23 — Scale: Qwen3.8-27B, INT4 weight-only (W4A16)
+
+Config `configs/qwen38_27b_int4.yaml`: `RedHatAI/Qwen3.8-27B-INT4` `71dface` (compressed-tensors
+pack-quantized, symmetric INT4, group 128, every Linear in the decoder except `linear_attn.in_proj_a/b`;
+BF16 embeddings, norms, lm_head). 64 blocks (48 Gated-DeltaNet, 16 full attention), d = 5120. A BF16
+copy (~54 GB) does not fit the 5090, and this Transformers / compressed-tensors version decompresses
+INT4 to BF16 on first forward, so the model is loaded with `ple.quant.packed`: weights stay packed on
+the GPU and each layer dequantises to BF16 per call (peak 19.5 GB). Script:
+`approx_quality_study.py --corrections none full_module --fit-group 8 --predictor-dtype bfloat16`
+(ridge fit 8 layers per pass; fitted maps stored in BF16). Same data splits. Exact perplexity 9.335;
+exact rerun deterministic. Raw: `results/processed/Qwen3.8-27B-INT4_approx_quality.*`. Qwen3.8-27B is a
+post-trained model (no base checkpoint is published).
+
+| Boundaries | identity, none | linear, none | exact fix through the module (full_module) |
+|---|---|---|---|
+| single, 2–58 (15 of them) | KL 0.0028–0.0247, −0.04% to +1.0% ppl | KL 0.0013–0.0080, −0.04% to +0.3% | KL 0.0002–0.0006, top-1 98.7–99.6% |
+| single, 62 (last block) | KL 0.099, +10.3% | KL 0.0070, +0.6% | KL 0.0001–0.0002 |
+| all 63 | perplexity 234,355 (collapse) | KL 0.179, +13.4%, top-1 82.2% | KL 0.0006, top-1 98.7–98.9% |
+
+### Findings
+
+1. **INT4 weight-only keeps exact reconciliation at the floor at 27B**, at every boundary and with all 63
+   reconciled at once (KL ≤ 0.0006), extending the INT8 / NVFP4-W4A16 result to a third weight-only format
+   and a 7× larger model.
+2. **Per layer, the 27B model is the most tolerant model tested**: uncorrected identity costs ≤ 1% at
+   every boundary but the last, and the linear predictor ≤ 0.3% (0.6% at the last block). Boundaries
+   10–58 are all cheap.
+3. **But all-layer identity collapses hardest** (234k vs 12k for Ornith-9B, 462 for Qwen3.5-4B): 63
+   small per-layer errors compound. With the linear predictor, all-layer speculation costs +13%, the
+   smallest relative cost of any model (Qwen3-4B +16%, Qwen3.5-4B +31%, Ornith-9B +32%).
+4. **The last block remains the sensitive one** (+10% with identity, consistent with every other model
+   and with LP's sequential tail).
+
 ## 2026-11-23 — Further down the stack, and further ahead (BF16, both 4B models)
 
 Script: `scripts/depth_sweep_study.py` (defaults: fit 256 train chunks per lookahead, quality on 16

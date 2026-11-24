@@ -16,14 +16,20 @@ E2M1 = torch.tensor([0.0, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 6.0])
 FP4_MAX, FP8_MAX, BLOCK = 6.0, 448.0, 16
 
 
-def nvfp4_fake_quantize(x: torch.Tensor, block: int = BLOCK) -> torch.Tensor:
-    """Quantise-dequantise along the last dimension (must be a multiple of `block`); returns x's dtype."""
+def nvfp4_fake_quantize(x: torch.Tensor, block: int = BLOCK, global_scale: torch.Tensor | None = None) -> torch.Tensor:
+    """Quantise-dequantise along the last dimension (must be a multiple of `block`); returns x's dtype.
+
+    `global_scale` defaults to the tensor's own amax / (6 · 448) (dynamic); pass a stored scale (e.g. a
+    ModelOpt `input_scale`) for static per-tensor activation quantisation with dynamic block scales.
+    """
     if x.shape[-1] % block:
         raise ValueError(f"last dimension {x.shape[-1]} is not a multiple of {block}")
     xf = x.float()
     blocks = xf.reshape(*xf.shape[:-1], -1, block)
     amax = blocks.abs().amax(-1, keepdim=True)
-    global_scale = (xf.abs().amax() / (FP4_MAX * FP8_MAX)).clamp_min(torch.finfo(torch.float32).tiny)
+    if global_scale is None:
+        global_scale = xf.abs().amax() / (FP4_MAX * FP8_MAX)
+    global_scale = global_scale.float().clamp_min(torch.finfo(torch.float32).tiny)
     block_scale = (amax / FP4_MAX / global_scale).to(torch.float8_e4m3fn).float()
     scale = block_scale * global_scale
     scaled = torch.where(scale > 0, blocks / scale, torch.zeros_like(blocks))

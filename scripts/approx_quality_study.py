@@ -36,6 +36,8 @@ def main() -> None:
     ap.add_argument("--basis-seqs", type=int, default=128)
     ap.add_argument("--eval-seqs", type=int, default=16)
     ap.add_argument("--single-layers", type=int, nargs="*", default=None)
+    ap.add_argument("--fit-group", type=int, default=0, help="layers fitted per pass (0 = all at once)")
+    ap.add_argument("--predictor-dtype", default="float32", choices=["float32", "bfloat16"])
     ap.add_argument("--corrections", nargs="+",
                     default=["none", f"basis_r{RANK}", "topk_25pct", "full", "full_fp32", "full_module"],
                     help="quantized models: use only none and full_module (weight-based ones need dense weights)")
@@ -56,7 +58,15 @@ def main() -> None:
             yield [s[0, 1:] for s in capture_residual_stream(model, layers, input_ids=ids[None].to(dev))]
 
     t0 = time.time()
-    linear = fit_linear(traces("train", args.fit_seqs), boundaries_all, d, dev)
+    # Large models: fit a group of layers per pass over the training text (the normal equations are
+    # (d+1)² FP64 per layer), and optionally keep the fitted maps in BF16.
+    group = args.fit_group or len(boundaries_all)
+    linear = {}
+    for i in range(0, len(boundaries_all), group):
+        fitted = fit_linear(traces("train", args.fit_seqs), boundaries_all[i:i + group], d, dev)
+        linear |= {l: p.to(getattr(torch, args.predictor_dtype)) for l, p in fitted.items()}
+        del fitted
+        torch.cuda.empty_cache()
     predictors = {"identity": {l: (lambda h: h) for l in boundaries_all}, "linear": linear}
     bases = {}
     if f"basis_r{RANK}" in args.corrections:
@@ -133,6 +143,7 @@ def main() -> None:
     meta = {"model": cfg["model"]["id"], "revision": cfg["model"]["revision"], "dtype": cfg["model"]["dtype"],
             "dataset": WIKITEXT, "dataset_revision": WIKITEXT_REV, "seq_len": args.seq_len,
             "fit_seqs": args.fit_seqs, "basis_seqs": args.basis_seqs, "eval_seqs": args.eval_seqs,
+            "fit_group": args.fit_group, "predictor_dtype": args.predictor_dtype, "format": cfg["model"].get("format"),
             "eval_tokens": count, "exact_ppl": math.exp(exact_nll / count),
             "exact_rerun_kl": rerun["kl"] / count, "exact_rerun_top1": rerun["top1"] / count, "basis_rank": RANK,
             "topk_fraction": TOPK_FRAC, "gpu": torch.cuda.get_device_name(), "torch": torch.__version__,

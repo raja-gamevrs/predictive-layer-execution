@@ -1,0 +1,16 @@
+# Main 27B model: Qwen3.8-27B, INT4 weight-only (compressed-tensors W4A16, group 128) from Red Hat.
+# Vision tower left BF16 by the publisher. Loaded with ple.quant.packed (weights stay packed on the GPU and are
+# dequantised per forward): this Transformers/compressed-tensors version decompresses INT4 to BF16 (~54 GB).
+# License: Apache-2.0 (checked 2026-11-23). Downloaded at `revision` to `path` (sha256-checked).
+model:
+  id: RedHatAI/Qwen3.8-27B-INT4
+  revision: 71dface38d4cbfa34121f1d446d4a0fa1025f13c
+  path: G:/models/RedHatAI/Qwen3.8-27B-INT4
+  format: packed
+  dtype: bfloat16
+  attn_implementation: sdpa
+  expected:
+    num_hidden_layers: 64
+    hidden_size: 5120
+device: cuda:0
+seed: 0

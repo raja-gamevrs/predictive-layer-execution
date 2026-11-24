@@ -62,6 +62,10 @@ relative to this floor.
 | Ornith-1.5-9B BF16 | 12.11 | 0.0002–0.0011 | 98.5–99.5% | floor |
 | Ornith-1.5-9B INT8 W8A16 | 12.09 | 0.0002–0.0009 | 98.5–99.5% | exact |
 | Ornith-1.5-9B ModelOpt (FP8 W8A8 attention, real checkpoint) | 12.76 | 0.0008–0.0091 | 96.0–98.6% | broken, 3–10× |
+| Qwen3.8-27B INT4 W4A16 (Red Hat, real checkpoint) | 9.33 | 0.0001–0.0006 (all 63 at once: 0.0006) | 98.7–99.8% | exact |
+
+Qwen3.8-27B per layer is the most tolerant model tested (identity ≤ +1% except the last block, +10%;
+linear ≤ +0.3%), but all-layer identity collapses hardest (ppl 234k); all-layer linear +13%.
 
 Weight-only quantisation preserves exact reconciliation; activation quantisation breaks it, worst
 at early layers. NVFP4 kernels are W4A4 for prefill, W4A16 for decode.
@@ -86,5 +90,6 @@ single-GPU-overlap negative results. "PLE" collides with Gemma's Per-Layer Embed
 
 ## Pending
 
-Qwen3.8-27B INT4 (W4A16) and NVIDIA NVFP4 (W4A4) — downloading. Real NVFP4 kernel confirmation
+NVIDIA Qwen3.8-27B-NVFP4 (FP8 W8A8 attention, NVFP4 W4A4 MLP) — download stopped at 1.4 / 20.4 GB
+(2-hour job limit); loader (`ple.quant.packed`) is ready. Real NVFP4 kernel confirmation
 (Linux). Decode-with-KV-cache test.

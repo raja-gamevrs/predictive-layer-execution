@@ -247,6 +247,12 @@ floor, worst at early boundaries; 6–10× when all boundaries are reconciled. T
 vendor-checkpoint results agree in direction and shape; FP8 activations break exactness less than
 FP4.
 
+**At 27B.** Qwen3.8-27B with Red Hat's INT4 W4A16 checkpoint (kept packed on the GPU and dequantised
+per layer, `ple.quant.packed`): exact correction through the module stays at the floor (KL
+0.0001–0.0006, also with all 63 boundaries reconciled). Per layer this is the most tolerant model
+tested (uncorrected identity ≤ +1% except the last block; linear ≤ +0.3%), yet all-layer identity
+speculation collapses hardest (perplexity 234k), and all-layer linear costs +13%.
+
 ### 4.7 Further down the stack and further ahead
 
 Source: `results/processed/*_{depth_start,lookahead_quality,lookahead_proj}.csv`. Uncorrected,

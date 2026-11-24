@@ -45,6 +45,10 @@ def load(cfg: dict):
         from ple.quant.modelopt import load_modelopt
         model, tokenizer, _ = load_modelopt(m["path"], cfg["device"], getattr(torch, m["dtype"]))
         return model, tokenizer
+    if m.get("format") == "packed":
+        from ple.quant.packed import load_packed
+        model, tokenizer, _ = load_packed(m["path"], cfg["device"], getattr(torch, m["dtype"]))
+        return model, tokenizer
     source = {"pretrained_model_name_or_path": m["path"]} if m.get("path") else {
         "pretrained_model_name_or_path": m["id"], "revision": m["revision"]}
     tokenizer = AutoTokenizer.from_pretrained(**source)

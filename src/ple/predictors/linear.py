@@ -32,8 +32,12 @@ class LinearDeltaPredictor:
         self.weight, self.bias = weight, bias  # weight: (d, d) applied as h @ weight
 
     def __call__(self, h: torch.Tensor) -> torch.Tensor:
-        """ĥ_(l+1) = h_l + Δ̂_l."""
-        return h + (h.float() @ self.weight + self.bias).to(h.dtype)
+        """ĥ_(l+1) = h_l + Δ̂_l, computed in the stored weight's dtype (FP32 unless converted with `to`)."""
+        w = self.weight
+        return h + (h.to(w.dtype) @ w + self.bias.to(w.dtype)).to(h.dtype)
+
+    def to(self, dtype: torch.dtype) -> "LinearDeltaPredictor":
+        return LinearDeltaPredictor(self.weight.to(dtype), self.bias.to(dtype))
 
     def truncated(self, rank: int) -> "LinearDeltaPredictor":
         """Best rank-`rank` approximation of the weight (SVD truncation), same bias."""
