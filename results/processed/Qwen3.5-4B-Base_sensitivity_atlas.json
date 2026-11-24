@@ -1,0 +1,67 @@
+{
+  "model": "Qwen/Qwen3.5-4B-Base",
+  "revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+  "dtype": "bfloat16",
+  "dataset": "Salesforce/wikitext",
+  "dataset_revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+  "seq_len": 512,
+  "fit_split": "train chunks 0-255",
+  "calib_split": "train chunks 400-415",
+  "eval_tokens": 8160,
+  "exact_ppl": 8.48515820930127,
+  "decoder_macs_per_token": 3623649280.0,
+  "layer_kinds": [
+    "linear_attention",
+    "linear_attention",
+    "linear_attention",
+    "full_attention",
+    "linear_attention",
+    "linear_attention",
+    "linear_attention",
+    "full_attention",
+    "linear_attention",
+    "linear_attention",
+    "linear_attention",
+    "full_attention",
+    "linear_attention",
+    "linear_attention",
+    "linear_attention",
+    "full_attention",
+    "linear_attention",
+    "linear_attention",
+    "linear_attention",
+    "full_attention",
+    "linear_attention",
+    "linear_attention",
+    "linear_attention",
+    "full_attention",
+    "linear_attention",
+    "linear_attention",
+    "linear_attention",
+    "full_attention",
+    "linear_attention",
+    "linear_attention",
+    "linear_attention",
+    "full_attention"
+  ],
+  "bands": [
+    [
+      1,
+      64
+    ],
+    [
+      64,
+      256
+    ],
+    [
+      256,
+      null
+    ]
+  ],
+  "timing_layer": null,
+  "timing": {},
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "torch": "2.14.1+cu130",
+  "fit_seconds": 89.3,
+  "total_seconds": 381.5
+}

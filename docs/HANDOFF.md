@@ -97,6 +97,16 @@ concurrency but contention cancels it.
 - Report numbers only after checking them against the CSVs; two table cells were wrong on first
   write and were corrected.
 
+## Update, 2026-11-23 evening (session that took over)
+
+- Overlap rerun on an idle GPU with batched timing: overlap saves +6.9% to +15.7% of a block at
+  1–64 tokens, ≤ 2.8% from 512 up (`results_report.md`, "H4 rerun"); fused speculative QKV
+  (`scripts/bench_fused_qkv.py`) +1.9% to +5.5%. End-to-end decode test still needed.
+- Phase II plan written (`docs/phase2_plan.md`); atlas and static allocation run on both 4B models
+  (`scripts/sensitivity_atlas.py`, `scripts/allocation_study.py`): ≤ 1.8% compute within 1% ppl, so
+  the plan's stop rule is met at 4B scale. Next direction is the user's call.
+- Results dashboard (private artifact): https://claude.ai/artifact/Hp6ECKsrz7RgeR5kA2H87e
+
 ## In flight at handoff
 
 - Download job in the *previous* session (gvpro-chat) for `RedHatAI/Qwen3.8-27B-INT4` (6.4 of

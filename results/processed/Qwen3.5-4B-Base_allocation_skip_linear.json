@@ -1,0 +1,24 @@
+{
+  "model": "Qwen/Qwen3.5-4B-Base",
+  "revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+  "atlas": "results\\processed\\Qwen3.5-4B-Base_sensitivity_atlas.csv",
+  "modes": [
+    "skip",
+    "linear"
+  ],
+  "ops": [
+    "block",
+    "attn",
+    "mlp"
+  ],
+  "dataset": "Salesforce/wikitext",
+  "dataset_revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+  "seq_len": 512,
+  "calib_split": "train chunks 400-415",
+  "holdout_split": "train chunks 600-615",
+  "exact_ppl_calib": 8.48515820930127,
+  "exact_ppl_holdout": 13.288672334602326,
+  "eval_tokens": 8160,
+  "budget_pct": 1.0,
+  "ranking": "atlas kl / saved_frac_decoder, best mode per (layer, op)"
+}

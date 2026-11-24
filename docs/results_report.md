@@ -432,3 +432,148 @@ k = 1 identity row is not directly comparable to k ≥ 2.)
    in principle run in parallel.
 4. **The linear predictor's advantage grows with distance** (identity / linear proj err ratio
    1.5 at k = 1, 1.7 at k = 8 on Qwen3).
+
+## 2026-11-23 — H4 rerun on an idle GPU: overlap does help at decode-sized inputs (Qwen3-4B-Base)
+
+The user stopped using the PC, so the GPU was idle (0% utilisation, 0.7 GB in use before each run;
+ComfyUI loaded but inactive). Same benchmark, boundary 26 → 27, CUDA graphs.
+
+**Single-replay timing (as before)**, `results/processed/quiet_gpu/Qwen3-4B-Base_bench_overlap_l26_graphs.json`
+and `quiet_gpu/small/…`: sequential CV fell to 0.7–4.8% (inside the 5% gate at every size). From 128
+tokens up the result is unchanged (identity −2.3% to +1.1%). Below 128 tokens it was not reproducible:
+at 16 tokens two runs gave +9.9% and +5.2%. Each path takes 20–70 µs, so launch gaps and event
+overhead around a single graph replay dominate.
+
+**Batched timing** (`--inner 50`: each sample times 50 back-to-back replays and divides; a real decode
+step replays one graph for the whole model, so launch overhead is amortised the same way), 100 samples,
+`results/processed/quiet_gpu/batched/Qwen3-4B-Base_bench_overlap_l26_graphs.json`:
+
+| Tokens | Sequential (ms) | Most possible | Overlap, identity | Overlap, linear | Sequential CV |
+|---|---|---|---|---|---|
+| 1 | 0.245 | 15.0% | +6.9% | +5.4% | 0.009 |
+| 4 | 0.267 | 15.1% | +10.5% | +7.4% | 0.009 |
+| 16 | 0.330 | 18.3% | +15.7% | +13.7% | 0.007 |
+| 32 | 0.274 | 15.9% | +9.7% | +4.9% | 0.009 |
+| 64 | 0.294 | 16.3% | +6.6% | +2.4% | 0.008 |
+| 128 | 0.342 | 15.5% | +4.2% | −1.3% | 0.008 |
+| 512 | 1.011 | 14.1% | +2.8% | −2.4% | 0.004 |
+| 2048 | 4.046 | 12.3% | +0.7% | −4.3% | 0.002 |
+
+### Fused speculative projections (new: `scripts/bench_fused_qkv.py`)
+
+With the identity predictor, block l+1's normed input is h_l / rms(h_l) times its own gain, so its
+q/k/v can be computed as extra output columns of block l's own q/k/v GEMM after folding each block's
+gain into its weights: one GEMM, no second stream. Compared with the production layout (one packed
+QKV GEMM and a single-kernel RMSNorm per block), batched timing, two independent runs
+(`quiet_gpu/batched_run{1,2}/Qwen3-4B-Base_bench_fused_qkv_l26.json`), saving per speculated block
+as a share of block l's full forward time, k = blocks speculated:
+
+| Tokens | k = 1 (run 1 / run 2) | k = 2 | k = 4 |
+|---|---|---|---|
+| 1 | +2.0% / +1.9% | +2.9% / +2.6% | +2.2% / +2.3% |
+| 4 | +4.7% / +4.7% | +5.5% / +5.4% | +3.0% / +2.9% |
+| 16 | +3.9% / +4.3% | +3.1% / +3.1% | +2.3% / +2.1% |
+| 64 | +1.9% / +2.4% | +4.8% / +4.6% | +2.9% / +2.8% |
+| 128 | +1.2% / +1.3% | +4.8% / +4.5% | +3.4% / +3.1% |
+| 512 | +2.9% / +2.7% | +1.8% / +1.7% | +1.8% / +1.8% |
+| 2048 | −0.4% / −0.3% | +2.6% / +2.6% | +2.1% / +2.1% |
+| 8192 | +0.9% / +0.8% | +0.8% / +0.8% | +0.6% / +0.6% |
+
+Fused outputs match the separate path to 2.7–3.3 × 10⁻³ relative error (rounding of the folded
+weights in BF16), far below the speculation error itself. Unit test: `tests/test_fused_qkv.py`.
+
+### Findings
+
+1. **The earlier H4 verdict was partly a measurement artefact.** At decode-sized inputs (1–64 tokens)
+   a second stream recovers 40–86% of the possible saving for one speculated block (+6.9% to +15.7%
+   with identity). The single-replay benchmark could not see this. From 512 tokens up the earlier
+   conclusion holds: block l's GEMMs fill the GPU and overlap gives ≤ 2.8%.
+2. **The linear predictor's extra GEMM costs 1–5 points at small T and makes overlap a loss from 128
+   tokens up**, as before.
+3. **Fusion is reproducible but smaller than overlap at small T** (+1.9% to +5.5% per block); it is the
+   only variant that does not lose at any size, and it needs the identity predictor.
+4. **Per block is not end to end.** A rough estimate, not a measurement: at 16 tokens, linear overlap on
+   the 9 blocks that fit the 1% perplexity budget (start 24, last two exact) would save about
+   9 × 0.045 ms ≈ 0.4 ms of a ≈ 10 ms forward, about 4%; at 1 token about 1.6%. Identity overlap fits
+   only 1–2 blocks in the budget. Two caveats cut against this: the baseline here is Hugging Face's
+   block (three q/k/v GEMMs, multi-kernel norms), which is slower than a production block, and the
+   1% budget was measured in teacher-forced prefill, not decode. A measured decode test is needed (H5).
+
+## 2026-11-23 — Phase II, D1/D3: sensitivity atlas and static allocation (Qwen3-4B, Qwen3.5-4B, BF16)
+
+Plan: `docs/phase2_plan.md`. Scripts: `scripts/sensitivity_atlas.py`, `scripts/allocation_study.py`.
+Linear stand-ins fitted on WikiText-2 train chunks 0–255; atlas and allocation measured on train
+chunks 400–415 (8,160 scored tokens); greedy sets re-measured on train chunks 600–615 (holdout). The
+test split was not used. Position 0 kept exact. Perplexity differences under about ±0.7% are within
+the noise of 8,160 tokens (one attention stand-in measured −0.67%). Exploratory: the Phase II gate is
+proposed, not yet fixed.
+
+**Atlas.** Every block, its attention and its MLP, each removed (`skip`) or replaced by a ridge map
+(`linear`, a d × d GEMM). Raw: `results/processed/{Qwen3-4B-Base,Qwen3.5-4B-Base}_sensitivity_atlas.{csv,json}`.
+
+| Model | Operation | Compute removed per op | Best single op (ppl) | Median, blocks 1 to L−2 | Ops ≤ 1% ppl | Ops with KL ≤ 0.01 |
+|---|---|---|---|---|---|---|
+| Qwen3-4B | block skip / linear | 2.8% / 2.6% | +3.4% (L16) / +1.5% (L2) | +11.0% / +7.9% | 0 / 0 | 0 / 0 |
+| Qwen3-4B | attention skip / linear | 0.76% / 0.59% | +0.8% (L10) / −0.7% (L2, noise) | +2.6% / +0.6% | 1 / 25 | 0 / 0 |
+| Qwen3-4B | MLP skip / linear | 2.0% / 1.8% | +2.2% (L16) / +1.3% (L19) | +8.1% / +6.5% | 0 / 0 | 0 / 0 |
+| Qwen3.5-4B | block skip / linear | 3.2% / 3.0% | +2.4% (L12) / +1.5% (L12) | +11.6% / +7.8% | 0 / 0 | 0 / 0 |
+| Qwen3.5-4B | attention skip / linear | 1.2% / 1.0% | +1.0% (L12) / +0.6% (L12) | +3.2% / +1.2% | 0 / 13 | 0 / 1 |
+| Qwen3.5-4B | MLP skip / linear | 2.0% / 1.8% | +1.6% (L14) / +0.9% (L14) | +6.5% / +6.3% | 0 / 2 | 0 / 0 |
+
+Block 0 is catastrophic for every skip (Qwen3-4B block skip: ppl × 4,800); the last block costs
++18% to +296%. The most tolerant region for blocks and MLPs is the middle (Qwen3-4B 14–21, Qwen3.5-4B
+11–18), not the late-middle region that suited attention-input speculation in Phase I. Qwen3-4B
+layer 16 is an outlier: its MLP's linear stand-in leaves 101% state error (+21.8% ppl), against
+~20% for its neighbours. Qwen3.5-4B: replacing a linear-attention block's attention costs a median
++1.2% against +1.7% for full-attention blocks, repeating Phase I's pattern.
+
+Measured op times (Qwen3-4B, block 26, CUDA graphs, 50 replays per sample): at 1 token, block
+0.209 ms, attention 0.086 ms, MLP 0.106 ms, linear stand-in 0.014 ms (FP32 weights); at 512 tokens
+0.878 / 0.292 / 0.537 / 0.188 ms. At decode size attention is 41% of a block's time but only 22% of
+its MACs, so compute share understates what attention removal saves in time at small T.
+
+**Error measures (D2, first look).** Spearman rank correlation with KL over all atlas rows except the
+first and last block: local state error (relative L2 at block l's output) 0.82 (Qwen3-4B) / 0.69
+(Qwen3.5-4B); within linear block replacements only 0.59 / 0.44. Error at the last block's output 0.98
+/ 0.98, logits 0.98 / 0.98. The size of the local error is a weak predictor of damage; what predicts
+it well is only available after running the rest of the network. Early positions are slightly more
+sensitive: mean KL in positions 1–63 is 15–20% above positions 256+.
+
+**Additivity and static greedy allocation (D3).** Single ops ranked by KL per unit of compute removed
+(best mode per op); every pair among the top 8 measured together; greedy cumulative sets measured
+after each addition. Raw: `results/processed/*_allocation_skip_linear.{csv,json}` (all ops) and
+`*_allocation_linear.{csv,json}` (attention stand-ins only).
+
+- Pairs: KL is close to additive (pair KL within −6% to +15% of the sum of singles; 27 and 25 pairs
+  over all ops, 15 and 15 over attention stand-ins). Perplexity change is mildly super-additive
+  (−0.2 to +1.4 points against the sum of singles).
+- Larger sets are super-additive in KL too: measured / summed KL 1.15 at 5 ops and 1.47 at 24 ops
+  (Qwen3-4B, all ops); 1.33 at 5 and 2.39 at 24 (Qwen3.5-4B).
+- Holdout chunks track calibration closely (e.g. Qwen3-4B 5 ops +17.0% vs +15.4%), so the ranking
+  generalises within WikiText.
+
+| Model, candidate ops | Largest greedy set ≤ 1% ppl (calibration / holdout) | Compute removed | KL |
+|---|---|---|---|
+| Qwen3-4B, all | none (first op already +1.52% / +1.34%) | 0% | — |
+| Qwen3-4B, attention stand-ins | 2 ops: +0.49% / +0.82% | 1.2% | 0.020 |
+| Qwen3.5-4B, all | 1 op (L14 MLP): +0.93% / +0.72% | 1.8% | 0.013 |
+| Qwen3.5-4B, attention stand-ins | 1 op (L13): +0.94% / +0.65% | 1.0% | 0.0097 |
+
+The first greedy set to remove ≥ 10% of compute has 5 ops on both models: 12.2% at +17.0% ppl
+(Qwen3-4B) and 12.5% at +12.6% (Qwen3.5-4B).
+
+### Findings
+
+1. **Static removal or linear replacement misses the Phase II gate by an order of magnitude** at 4B
+   scale without retraining: at most 1.8% of decoder compute fits a 1% perplexity budget, against a
+   10% target. Under the KL ≤ 0.01 bound only one op on one model qualifies. In time at decode size
+   the best case is about 2% (two attention stand-ins at 0.072 ms each in a ≈ 7.5 ms step; an
+   estimate from measured op times, not an end-to-end run).
+2. **This meets the plan's stop rule for the selective-compute route at this scale.** Not covered:
+   larger models (deeper models are reported to be more redundant; Qwen3.8-27B untested), healing by
+   fine-tuning after removal (as layer-pruning papers do), per-token decisions (D6), precision as a
+   strategy, and a second text domain.
+3. **Greedy allocation is adequate for small sets** (pairs nearly additive in KL) but its estimate
+   from singles becomes optimistic beyond a handful of ops.
+4. **Local error size is a weak damage signal** (rank correlation 0.44–0.82), which supports the D2
+   premise; a useful sensitivity estimator would need to be both cheap and much better than this.

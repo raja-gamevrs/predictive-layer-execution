@@ -16,7 +16,8 @@ Qwen3-4B-Base we find that (i) simple trajectory extrapolation of the residual s
 error at the next projection, (iii) that error is neither low-rank nor token-concentrated, so no
 cheap correction recovers exactness, (iv) uncorrected speculation of a single late layer costs
 only ~0.25% perplexity, while speculating every layer collapses the model, and (v) on an RTX 5090
-the overlap itself yields no measurable latency gain at the single-block level. TODO: extend to
+overlap saves up to 16% of a block at decode-sized inputs (1–64 tokens) but nothing from ~512 tokens
+up, and the quality budget limits how many blocks it can be applied to. TODO: extend to
 Qwen3.5 (hybrid linear attention), Ornith-1.5 and Qwen3.8-27B under BF16/INT8/INT4/NVFP4.
 
 ## 1. Introduction (outline)
@@ -182,7 +183,7 @@ single-ulp perturbation of one layer's q/k/v flips ~1.7% of near-tie argmax toke
 report all approximate results relative to this floor, and define "exact" as "within the BF16
 reformulation floor", which any fused or re-tiled kernel would also incur.
 
-### 4.4 Overlap does not materialise at block granularity (H4)
+### 4.4 Overlap: a per-block gain at decode-sized inputs only (H4)
 
 Source: `results/processed/Qwen3-4B-Base_bench_overlap_l26_{eager,graphs}.json`, boundary 26.
 
@@ -203,6 +204,17 @@ is nothing to overlap into. From 512 to 8192 tokens, 24–47% of the QKV kernel 
 concurrently with block l, but contention cancels the gain: at 8192 tokens the overlapped QKV
 kernels take 2.23 ms versus 1.86 ms alone (+20%). Real concurrency exists; useful concurrency does
 not, at single-block granularity on one GPU.
+
+**Idle-GPU rerun with amortised timing (supersedes the table above below 512 tokens).** With the
+GPU otherwise idle and each sample timing 50 back-to-back graph replays (sequential CV < 1%;
+`results/processed/quiet_gpu/batched/`), overlap with the identity predictor saves +6.9% (1 token),
++10.5% (4), +15.7% (16), +9.7% (32), +6.6% (64), +4.2% (128), +2.8% (512) and +0.7% (2048) of the
+sequential time, against upper bounds of 12–18%. The single-replay figures above were dominated by
+launch overhead around 20–70 µs paths. So overlap is useful per block at decode-sized inputs and not
+beyond ~512 tokens. Fusing the speculative projections into block l's own QKV GEMM (gains folded
+into the weights; identity predictor only) saves a reproducible +1.9% to +5.5% of a block per
+speculated block below 128 tokens. End to end the gain is limited by the quality budget (≈ 9 blocks
+with the linear predictor); a measured decode test is pending.
 
 ### 4.5 Second architecture: hybrid linear attention (Qwen3.5-4B-Base)
 

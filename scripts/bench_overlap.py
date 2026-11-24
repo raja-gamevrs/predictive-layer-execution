@@ -26,7 +26,9 @@ from ple.model_loader import decoder_layers, load, load_config, run_name
 from ple.speculation_policy import attention_input_linears
 
 
-def timed(fn, warmup: int, repeats: int) -> list[float]:
+def timed(fn, warmup: int, repeats: int, inner: int = 1) -> list[float]:
+    """Per-call times in ms. With inner > 1, each sample times `inner` back-to-back calls and divides,
+    so launch gaps and event overhead do not dominate kernels of a few tens of microseconds."""
     for _ in range(warmup):
         fn()
     torch.cuda.synchronize()
@@ -34,10 +36,11 @@ def timed(fn, warmup: int, repeats: int) -> list[float]:
     for _ in range(repeats):
         start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
         start.record()
-        fn()
+        for _ in range(inner):
+            fn()
         end.record()
         torch.cuda.synchronize()
-        times.append(start.elapsed_time(end))
+        times.append(start.elapsed_time(end) / inner)
     return times
 
 
@@ -101,6 +104,7 @@ def main() -> None:
     ap.add_argument("--warmup", type=int, default=20)
     ap.add_argument("--repeats", type=int, default=100)
     ap.add_argument("--graphs", action="store_true")
+    ap.add_argument("--inner", type=int, default=1, help="calls per timed sample (use >1 for small inputs)")
     ap.add_argument("--profile", action="store_true",
                     help="also profile overlap_identity (eager) and report how much side-stream kernel time overlaps the main stream")
     ap.add_argument("--out", default="results/processed")
@@ -170,7 +174,7 @@ def main() -> None:
                       f"main stream {c['concurrent_ms']:.3f} ms ({c['concurrent_fraction']:.0%}); "
                       f"streams seen {c['streams']}", flush=True)
             for name, fn in paths.items():
-                row[name] = summary(timed(as_graph(fn) if args.graphs else fn, args.warmup, reps))
+                row[name] = summary(timed(as_graph(fn) if args.graphs else fn, args.warmup, reps, args.inner))
             seq = row["sequential"]["median_ms"]
             row["bound_saving_pct"] = 100 * (seq - max(row["block"]["median_ms"], row["qkv"]["median_ms"])) / seq
             for name in ("overlap_identity", "overlap_linear"):
@@ -187,7 +191,7 @@ def main() -> None:
     stem = run_name(cfg)
     meta = {"model": cfg["model"]["id"], "revision": cfg["model"]["revision"], "dtype": cfg["model"]["dtype"],
             "boundary": l, "projections": [n for n, m in nxt.named_modules() if m in projs], "cuda_graphs": args.graphs,
-            "warmup": args.warmup, "repeats": args.repeats, "gpu": torch.cuda.get_device_name(),
+            "warmup": args.warmup, "repeats": args.repeats, "inner": args.inner, "gpu": torch.cuda.get_device_name(),
             "torch": torch.__version__, "gpu_state_before": gpu_state, "attn_implementation": cfg["model"].get("attn_implementation"),
             "results": results}
     mode = "graphs" if args.graphs else "eager"

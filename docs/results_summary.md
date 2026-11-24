@@ -72,14 +72,23 @@ at early layers. NVFP4 kernels are W4A4 for prefill, W4A16 for decode.
 
 ## 7. Overlap timing (Qwen3-4B, block 26 → 27, CUDA graphs)
 
-| Tokens | Max possible | Measured | Kernels concurrent (eager profile) |
-|---|---|---|---|
-| 16–128 | 16–17% | −0.6% to +4.6% | 0–3% |
-| 512 | 20% | +0.5% | 35% |
-| 2048 | 12% | +0.9% | 47% |
-| 8192 | 12% | −0.7% | 24% (QKV kernels +20% slower) |
+Idle-GPU rerun, 2026-11-23, each sample = 50 back-to-back graph replays (CV < 1%). Saving per
+speculated block, share of sequential time:
 
-**Gate failed.** Timing CV exceeds the 5% gate (GPU shared with the desktop).
+| Tokens | Max possible | Overlap, identity | Overlap, linear | Fused single GEMM, identity |
+|---|---|---|---|---|
+| 1 | 15% | +6.9% | +5.4% | +2.0% |
+| 4–16 | 15–18% | +10.5% to +15.7% | +7.4% to +13.7% | +3.9% to +4.7% |
+| 32–64 | 16% | +6.6% to +9.7% | +2.4% to +4.9% | +1.9% to +2.4% |
+| 128 | 16% | +4.2% | −1.3% | +1.2% |
+| 512 | 14% | +2.8% | −2.4% | +2.8% |
+| 2048 | 12% | +0.7% | −4.3% | −0.4% |
+
+(Fused column: share of block l's forward time, k = 1, mean of two runs.) Earlier single-replay runs
+on a shared GPU missed the small-T gain. **Per block, overlap works at decode-sized inputs; above
+512 tokens it does not.** End to end it is bounded by the quality budget (≈ 9 blocks with the linear
+predictor, 1–2 with identity): estimated ≈ 2–4% at 1–16 tokens, not yet measured. Eager-mode
+profile (shared GPU): 0–47% of side-stream kernel time concurrent, contention cancels it at ≥ 512.
 
 ## 8. Prior art
 
@@ -88,8 +97,27 @@ into later layers published (RidgeFill, Qwen3.5/3.8); predict-then-correct publi
 al.). New: the precision result (§6), post-norm measurement, the correction-economics and
 single-GPU-overlap negative results. "PLE" collides with Gemma's Per-Layer Embeddings.
 
+## 9. Phase II — sensitivity atlas and static allocation (Qwen3-4B, Qwen3.5-4B)
+
+Plan: `docs/phase2_plan.md`. Calibration on WikiText-2 train chunks disjoint from the fitting chunks;
+test split untouched. Each block, attention and MLP removed or replaced by a ridge map:
+
+| | Qwen3-4B | Qwen3.5-4B |
+|---|---|---|
+| Best single block (linear stand-in) | +1.5% ppl, 2.6% compute | +1.5%, 3.0% |
+| Single ops ≤ 1% ppl | 25 attention stand-ins (0.6% each) | 13 attention (1.0% each), 2 MLP (1.8%) |
+| Greedy set ≤ 1% ppl, calibration and holdout | 2 attention ops, 1.2% compute | 1 MLP op, 1.8% |
+| First set removing ≥ 10% compute | 5 ops, +17.0% ppl | 5 ops, +12.6% |
+| Rank corr. with KL: local state error / last-block error | 0.82 / 0.98 | 0.69 / 0.98 |
+
+KL is near-additive for pairs (−6% to +15%), super-additive for larger sets (×1.15–1.47 at 5–24 ops,
+Qwen3-4B). Middle layers are the most tolerant for blocks and MLPs; block 0 and the last block are
+catastrophic. **Static allocation misses the proposed 10%-compute gate by an order of magnitude**;
+the plan's stop rule for this route is met at 4B scale (larger models, healing, per-token policies
+untested).
+
 ## Pending
 
 NVIDIA Qwen3.8-27B-NVFP4 (FP8 W8A8 attention, NVFP4 W4A4 MLP) — download stopped at 1.4 / 20.4 GB
 (2-hour job limit); loader (`ple.quant.packed`) is ready. Real NVFP4 kernel confirmation
-(Linux). Decode-with-KV-cache test.
+(Linux). Decode-with-KV-cache test, now also the end-to-end test of small-T overlap.
