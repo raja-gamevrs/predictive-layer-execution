@@ -1,0 +1,49 @@
+{
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "revision": "71dface38d4cbfa34121f1d446d4a0fa1025f13c",
+  "args": {
+    "config": "configs/qwen38_27b_int4.yaml",
+    "contexts": [
+      131072
+    ],
+    "settings": [
+      "l12c"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 0,
+    "target": "native",
+    "check": 0,
+    "save_draft_codes": null,
+    "tag": "_mtp_128k",
+    "mtp_ks": [
+      2,
+      3,
+      4
+    ],
+    "mtp_head": "bf16",
+    "prefill_chunk": 512,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 131072,
+      "prompt_len": 130752,
+      "yarn": null,
+      "l12c_ms": 28.856218405330882,
+      "l12c_tps": 34.654575521762084,
+      "mtp2_ms": 17.78841781616211,
+      "mtp2_tps": 56.21635439051949,
+      "mtp2_accept": 0.6531531531531531,
+      "mtp3_ms": 17.205394071691178,
+      "mtp3_tps": 58.1213075290932,
+      "mtp3_accept": 0.5709219858156028,
+      "mtp4_ms": 19.817073822021484,
+      "mtp4_tps": 50.461536803115806,
+      "mtp4_accept": 0.4236842105263158
+    }
+  ],
+  "check": []
+}

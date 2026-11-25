@@ -1,0 +1,107 @@
+{
+  "model": "google/gemma-4-12B",
+  "revision": "1a2c7729392586f5ecddae8807ee2ef741eabb9a",
+  "args": {
+    "config": "configs/gemma4_12b.yaml",
+    "contexts": [
+      2048,
+      4096,
+      8192,
+      16384,
+      32768,
+      65536,
+      131072
+    ],
+    "settings": [
+      "l12",
+      "l7b"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 0,
+    "target": "q8",
+    "check": 2,
+    "save_draft_codes": "G:/ple_cache/draft_gemma4_12b_rtn_clip_g32.pt",
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 2048,
+      "prompt_len": 1728,
+      "yarn": null,
+      "l12_ms": 12.233812040441176,
+      "l12_tps": 81.74067058528537,
+      "l7b_ms": 10.957091097701849,
+      "l7b_tps": 91.26509865467314,
+      "l7b_accept": 0.9041666666666667
+    },
+    {
+      "context": 4096,
+      "prompt_len": 3776,
+      "yarn": null,
+      "l12_ms": 12.260066253063727,
+      "l12_tps": 81.56562773468742,
+      "l7b_ms": 23.267279411764704,
+      "l7b_tps": 42.97881081422725,
+      "l7b_accept": 0.3392857142857143
+    },
+    {
+      "context": 8192,
+      "prompt_len": 7872,
+      "yarn": null,
+      "l12_ms": 12.327484011182598,
+      "l12_tps": 81.11955360014035,
+      "l7b_ms": 11.347111920902236,
+      "l7b_tps": 88.1281516363582,
+      "l7b_accept": 0.8780487804878049
+    },
+    {
+      "context": 16384,
+      "prompt_len": 16064,
+      "yarn": null,
+      "l12_ms": 12.47089652267157,
+      "l12_tps": 80.18669693730854,
+      "l7b_ms": 11.146634252835424,
+      "l7b_tps": 89.71317954077708,
+      "l7b_accept": 0.9125
+    },
+    {
+      "context": 32768,
+      "prompt_len": 32448,
+      "yarn": null,
+      "l12_ms": 12.941094611672794,
+      "l12_tps": 77.27321606149187,
+      "l7b_ms": 19.285324688105618,
+      "l7b_tps": 51.85289935080835,
+      "l7b_accept": 0.47512437810945274
+    }
+  ],
+  "check": [
+    {
+      "prompt": 0,
+      "setting": "l12",
+      "violations": 0,
+      "near_ties": 3
+    },
+    {
+      "prompt": 0,
+      "setting": "l7b",
+      "violations": 3,
+      "near_ties": 4
+    },
+    {
+      "prompt": 1,
+      "setting": "l12",
+      "violations": 0,
+      "near_ties": 2
+    },
+    {
+      "prompt": 1,
+      "setting": "l7b",
+      "violations": 1,
+      "near_ties": 1
+    }
+  ]
+}

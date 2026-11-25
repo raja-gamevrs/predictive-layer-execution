@@ -1,0 +1,12 @@
+# Gemma 4 12B base, BF16 (docs/decode_levers.md, follow-up E). Dense; 40 sliding-window (1,024) and
+# 8 full-attention layers. License: Apache-2.0 (checked 2026-11-24). Downloaded at this revision.
+model:
+  id: google/gemma-4-12B
+  revision: 1a2c7729392586f5ecddae8807ee2ef741eabb9a
+  path: G:/models/google/gemma-4-12B
+  dtype: bfloat16
+  attn_implementation: sdpa
+  expected:
+    num_hidden_layers: 48
+device: cuda:0
+seed: 0

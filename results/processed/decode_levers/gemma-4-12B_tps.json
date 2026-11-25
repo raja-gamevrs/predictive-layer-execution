@@ -1,0 +1,76 @@
+{
+  "model": "google/gemma-4-12B",
+  "revision": "1a2c7729392586f5ecddae8807ee2ef741eabb9a",
+  "args": {
+    "config": "configs/gemma4_12b.yaml",
+    "contexts": [
+      2048,
+      4096,
+      8192,
+      16384,
+      32768,
+      65536,
+      131072
+    ],
+    "settings": [
+      "l12"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 0,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 2048,
+      "prompt_len": 1728,
+      "yarn": null,
+      "l12_ms": 19.67072993259804,
+      "l12_tps": 50.83695436958925
+    },
+    {
+      "context": 4096,
+      "prompt_len": 3776,
+      "yarn": null,
+      "l12_ms": 19.707604741115198,
+      "l12_tps": 50.741833578270395
+    },
+    {
+      "context": 8192,
+      "prompt_len": 7872,
+      "yarn": null,
+      "l12_ms": 19.782485064338236,
+      "l12_tps": 50.549766459962804
+    },
+    {
+      "context": 16384,
+      "prompt_len": 16064,
+      "yarn": null,
+      "l12_ms": 19.90686274509804,
+      "l12_tps": 50.233932528933764
+    },
+    {
+      "context": 32768,
+      "prompt_len": 32448,
+      "yarn": null,
+      "l12_ms": 20.20403741574755,
+      "l12_tps": 49.49505781555196
+    },
+    {
+      "context": 65536,
+      "prompt_len": 65216,
+      "yarn": null,
+      "l12_ms": 20.83563974417892,
+      "l12_tps": 47.99468661764422
+    },
+    {
+      "context": 131072,
+      "prompt_len": 130752,
+      "yarn": null,
+      "l12_ms": 21.695424517463238,
+      "l12_tps": 46.09266802754068
+    }
+  ]
+}

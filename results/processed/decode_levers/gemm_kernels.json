@@ -1,0 +1,502 @@
+[
+  {
+    "shape": "qkv",
+    "out": 6144,
+    "in": 2560,
+    "M": 1,
+    "variant": "bf16 x@W.t() (current)",
+    "us": 22.246400515238445,
+    "rel_err": 0.001680289045907557,
+    "bf16_weight_gbs": 1414.0390926816337
+  },
+  {
+    "shape": "qkv",
+    "out": 6144,
+    "in": 2560,
+    "M": 1,
+    "variant": "bf16 x@Wt (pre-transposed)",
+    "us": 26.15777651468913,
+    "rel_err": 0.001680289045907557,
+    "bf16_weight_gbs": 1202.5976283700907
+  },
+  {
+    "shape": "qkv",
+    "out": 6144,
+    "in": 2560,
+    "M": 1,
+    "variant": "int8 weight-only",
+    "us": 91.97208616468642,
+    "rel_err": 0.008564960211515427,
+    "bf16_weight_gbs": 342.03073249498965
+  },
+  {
+    "shape": "qkv",
+    "out": 6144,
+    "in": 2560,
+    "M": 1,
+    "variant": "int4 weight-only g128",
+    "us": 7.42644468943278,
+    "rel_err": 0.09944383800029755,
+    "bf16_weight_gbs": 4235.846534312862
+  },
+  {
+    "shape": "qkv",
+    "out": 6144,
+    "in": 2560,
+    "M": 1,
+    "variant": "fp8 per-tensor (act quantised)",
+    "us": 12.324755721622044,
+    "rel_err": 0.038092486560344696,
+    "bf16_weight_gbs": 2552.3653945378114
+  },
+  {
+    "shape": "qkv",
+    "out": 6144,
+    "in": 2560,
+    "M": 512,
+    "variant": "bf16 x@W.t() (current)",
+    "us": 110.62968571980794,
+    "rel_err": 0.0016614067135378718,
+    "tflops": 145.5859451756197
+  },
+  {
+    "shape": "qkv",
+    "out": 6144,
+    "in": 2560,
+    "M": 512,
+    "variant": "bf16 x@Wt (pre-transposed)",
+    "us": 110.8684433831109,
+    "rel_err": 0.0016614067135378718,
+    "tflops": 145.27242259859779
+  },
+  {
+    "shape": "qkv",
+    "out": 6144,
+    "in": 2560,
+    "M": 512,
+    "variant": "int8 weight-only",
+    "us": 9623.432074652777,
+    "rel_err": 0.008647321723401546,
+    "tflops": 1.6736365191813467
+  },
+  {
+    "shape": "qkv",
+    "out": 6144,
+    "in": 2560,
+    "M": 512,
+    "variant": "int4 weight-only g128",
+    "us": 713.9653523763021,
+    "rel_err": 0.09986312687397003,
+    "tflops": 22.558696029707495
+  },
+  {
+    "shape": "qkv",
+    "out": 6144,
+    "in": 2560,
+    "M": 512,
+    "variant": "fp8 per-tensor (act quantised)",
+    "us": 73.02875518798828,
+    "rel_err": 0.037514470517635345,
+    "tflops": 220.545007491092
+  },
+  {
+    "shape": "o",
+    "out": 2560,
+    "in": 4096,
+    "M": 1,
+    "variant": "bf16 x@W.t() (current)",
+    "us": 14.625199635823568,
+    "rel_err": 0.0016378267901018262,
+    "bf16_weight_gbs": 1433.930511870176
+  },
+  {
+    "shape": "o",
+    "out": 2560,
+    "in": 4096,
+    "M": 1,
+    "variant": "bf16 x@Wt (pre-transposed)",
+    "us": 17.629822095235188,
+    "rel_err": 0.0016378267901018262,
+    "bf16_weight_gbs": 1189.5480219093063
+  },
+  {
+    "shape": "o",
+    "out": 2560,
+    "in": 4096,
+    "M": 1,
+    "variant": "int8 weight-only",
+    "us": 123.18431006537543,
+    "rel_err": 0.008689379319548607,
+    "bf16_weight_gbs": 170.24505790445355
+  },
+  {
+    "shape": "o",
+    "out": 2560,
+    "in": 4096,
+    "M": 1,
+    "variant": "int4 weight-only g128",
+    "us": 5.491066641277737,
+    "rel_err": 0.0989304780960083,
+    "bf16_weight_gbs": 3819.2069719846018
+  },
+  {
+    "shape": "o",
+    "out": 2560,
+    "in": 4096,
+    "M": 1,
+    "variant": "fp8 per-tensor (act quantised)",
+    "us": 17.379066679212784,
+    "rel_err": 0.036368660628795624,
+    "bf16_weight_gbs": 1206.7115218036522
+  },
+  {
+    "shape": "o",
+    "out": 2560,
+    "in": 4096,
+    "M": 512,
+    "variant": "bf16 x@W.t() (current)",
+    "us": 59.507645501030815,
+    "rel_err": 0.001658900873735547,
+    "tflops": 180.43762527646976
+  },
+  {
+    "shape": "o",
+    "out": 2560,
+    "in": 4096,
+    "M": 512,
+    "variant": "bf16 x@Wt (pre-transposed)",
+    "us": 67.38582187228732,
+    "rel_err": 0.001658900873735547,
+    "tflops": 159.3423949083836
+  },
+  {
+    "shape": "o",
+    "out": 2560,
+    "in": 4096,
+    "M": 512,
+    "variant": "int8 weight-only",
+    "us": 6530.482313368056,
+    "rel_err": 0.008932294324040413,
+    "tflops": 1.644199880615287
+  },
+  {
+    "shape": "o",
+    "out": 2560,
+    "in": 4096,
+    "M": 512,
+    "variant": "int4 weight-only g128",
+    "us": 450.47747294108075,
+    "rel_err": 0.09976141899824142,
+    "tflops": 23.835638594528294
+  },
+  {
+    "shape": "o",
+    "out": 2560,
+    "in": 4096,
+    "M": 512,
+    "variant": "fp8 per-tensor (act quantised)",
+    "us": 47.21351199679904,
+    "rel_err": 0.03751654922962189,
+    "tflops": 227.42257006273906
+  },
+  {
+    "shape": "gate/up",
+    "out": 19456,
+    "in": 2560,
+    "M": 1,
+    "variant": "bf16 x@W.t() (current)",
+    "us": 64.63578012254503,
+    "rel_err": 0.0016556973569095135,
+    "bf16_weight_gbs": 1541.169918753008
+  },
+  {
+    "shape": "gate/up",
+    "out": 19456,
+    "in": 2560,
+    "M": 1,
+    "variant": "bf16 x@Wt (pre-transposed)",
+    "us": 67.09444257948134,
+    "rel_err": 0.0016556973569095135,
+    "bf16_weight_gbs": 1484.6940546826145
+  },
+  {
+    "shape": "gate/up",
+    "out": 19456,
+    "in": 2560,
+    "M": 1,
+    "variant": "int8 weight-only",
+    "us": 345.6013361612956,
+    "rel_err": 0.008660062216222286,
+    "bf16_weight_gbs": 288.2359226571648
+  },
+  {
+    "shape": "gate/up",
+    "out": 19456,
+    "in": 2560,
+    "M": 1,
+    "variant": "int4 weight-only g128",
+    "us": 18.707199891408283,
+    "rel_err": 0.09930974245071411,
+    "bf16_weight_gbs": 5324.940160913679
+  },
+  {
+    "shape": "gate/up",
+    "out": 19456,
+    "in": 2560,
+    "M": 1,
+    "variant": "fp8 per-tensor (act quantised)",
+    "us": 32.67995516459147,
+    "rel_err": 0.03758556768298149,
+    "bf16_weight_gbs": 3048.19022848391
+  },
+  {
+    "shape": "gate/up",
+    "out": 19456,
+    "in": 2560,
+    "M": 512,
+    "variant": "bf16 x@W.t() (current)",
+    "us": 338.302124871148,
+    "rel_err": 0.0016627139411866665,
+    "tflops": 150.76091129911126
+  },
+  {
+    "shape": "gate/up",
+    "out": 19456,
+    "in": 2560,
+    "M": 512,
+    "variant": "bf16 x@Wt (pre-transposed)",
+    "us": 338.1588829888238,
+    "rel_err": 0.0016627139411866665,
+    "tflops": 150.8247726311707
+  },
+  {
+    "shape": "gate/up",
+    "out": 19456,
+    "in": 2560,
+    "M": 512,
+    "variant": "int8 weight-only",
+    "us": 30470.488823784723,
+    "rel_err": 0.008657185360789299,
+    "tflops": 1.6738404472260442
+  },
+  {
+    "shape": "gate/up",
+    "out": 19456,
+    "in": 2560,
+    "M": 512,
+    "variant": "int4 weight-only g128",
+    "us": 2218.2176378038193,
+    "rel_err": 0.09977726638317108,
+    "tflops": 22.992665719895747
+  },
+  {
+    "shape": "gate/up",
+    "out": 19456,
+    "in": 2560,
+    "M": 512,
+    "variant": "fp8 per-tensor (act quantised)",
+    "us": 205.8291541205512,
+    "rel_err": 0.03744978457689285,
+    "tflops": 247.79160589723077
+  },
+  {
+    "shape": "down",
+    "out": 2560,
+    "in": 9728,
+    "M": 1,
+    "variant": "bf16 x@W.t() (current)",
+    "us": 33.1733783086141,
+    "rel_err": 0.001654406194575131,
+    "bf16_weight_gbs": 1501.4256171511652
+  },
+  {
+    "shape": "down",
+    "out": 2560,
+    "in": 9728,
+    "M": 1,
+    "variant": "bf16 x@Wt (pre-transposed)",
+    "us": 41.920132107204864,
+    "rel_err": 0.001654406194575131,
+    "bf16_weight_gbs": 1188.1489274085457
+  },
+  {
+    "shape": "down",
+    "out": 2560,
+    "in": 9728,
+    "M": 1,
+    "variant": "int8 weight-only",
+    "us": 287.3583475748698,
+    "rel_err": 0.009361443109810352,
+    "bf16_weight_gbs": 173.32839091101377
+  },
+  {
+    "shape": "down",
+    "out": 2560,
+    "in": 9728,
+    "M": 1,
+    "variant": "int4 weight-only g128",
+    "us": 10.8115553855896,
+    "rel_err": 0.09940629452466965,
+    "bf16_weight_gbs": 4606.863510719904
+  },
+  {
+    "shape": "down",
+    "out": 2560,
+    "in": 9728,
+    "M": 1,
+    "variant": "fp8 per-tensor (act quantised)",
+    "us": 22.91568915049235,
+    "rel_err": 0.03728567063808441,
+    "bf16_weight_gbs": 2173.504784119917
+  },
+  {
+    "shape": "down",
+    "out": 2560,
+    "in": 9728,
+    "M": 512,
+    "variant": "bf16 x@W.t() (current)",
+    "us": 169.9698660108778,
+    "rel_err": 0.0016618709778413177,
+    "tflops": 150.03464389604184
+  },
+  {
+    "shape": "down",
+    "out": 2560,
+    "in": 9728,
+    "M": 512,
+    "variant": "bf16 x@Wt (pre-transposed)",
+    "us": 166.538937886556,
+    "rel_err": 0.0016618709778413177,
+    "tflops": 153.12556116678957
+  },
+  {
+    "shape": "down",
+    "out": 2560,
+    "in": 9728,
+    "M": 512,
+    "variant": "int8 weight-only",
+    "us": 15490.190972222223,
+    "rel_err": 0.00945114903151989,
+    "tflops": 1.646291408913571
+  },
+  {
+    "shape": "down",
+    "out": 2560,
+    "in": 9728,
+    "M": 512,
+    "variant": "int4 weight-only g128",
+    "us": 1158.3079020182292,
+    "rel_err": 0.09976721554994583,
+    "tflops": 22.016053137137853
+  },
+  {
+    "shape": "down",
+    "out": 2560,
+    "in": 9728,
+    "M": 512,
+    "variant": "fp8 per-tensor (act quantised)",
+    "us": 97.28452894422743,
+    "rel_err": 0.03757911175489426,
+    "tflops": 262.1317962552891
+  },
+  {
+    "shape": "lm head",
+    "out": 151936,
+    "in": 2560,
+    "M": 1,
+    "variant": "bf16 x@W.t() (current)",
+    "us": 494.48161125183105,
+    "rel_err": 0.00166076619643718,
+    "bf16_weight_gbs": 1573.1875610715533
+  },
+  {
+    "shape": "lm head",
+    "out": 151936,
+    "in": 2560,
+    "M": 1,
+    "variant": "bf16 x@Wt (pre-transposed)",
+    "us": 482.0752143859863,
+    "rel_err": 0.0016607679426670074,
+    "bf16_weight_gbs": 1613.6741669882738
+  },
+  {
+    "shape": "lm head",
+    "out": 151936,
+    "in": 2560,
+    "M": 1,
+    "variant": "int8 weight-only",
+    "us": 974.5887756347656,
+    "rel_err": 0.008638720028102398,
+    "bf16_weight_gbs": 798.1954435021407
+  },
+  {
+    "shape": "lm head",
+    "out": 151936,
+    "in": 2560,
+    "M": 1,
+    "variant": "int4 weight-only g128",
+    "us": 139.36959505081177,
+    "rel_err": 0.09988842904567719,
+    "bf16_weight_gbs": 5581.6501419580545
+  },
+  {
+    "shape": "lm head",
+    "out": 151936,
+    "in": 2560,
+    "M": 1,
+    "variant": "fp8 per-tensor (act quantised)",
+    "us": 241.02239608764648,
+    "rel_err": 0.03749958798289299,
+    "bf16_weight_gbs": 3227.552014365986
+  },
+  {
+    "shape": "lm head",
+    "out": 151936,
+    "in": 2560,
+    "M": 512,
+    "variant": "bf16 x@W.t() (current)",
+    "us": 2265.350341796875,
+    "rel_err": 0.0016615968197584152,
+    "tflops": 175.81876873140763
+  },
+  {
+    "shape": "lm head",
+    "out": 151936,
+    "in": 2560,
+    "M": 512,
+    "variant": "bf16 x@Wt (pre-transposed)",
+    "us": 2241.7312622070312,
+    "rel_err": 0.0016615968197584152,
+    "tflops": 177.67121088719352
+  },
+  {
+    "shape": "lm head",
+    "out": 151936,
+    "in": 2560,
+    "M": 512,
+    "variant": "int8 weight-only",
+    "us": 239910.0830078125,
+    "rel_err": 0.008652010932564735,
+    "tflops": 1.6601682715729373
+  },
+  {
+    "shape": "lm head",
+    "out": 151936,
+    "in": 2560,
+    "M": 512,
+    "variant": "int4 weight-only g128",
+    "us": 18068.68896484375,
+    "rel_err": 0.09977227449417114,
+    "tflops": 22.04316586637553
+  },
+  {
+    "shape": "lm head",
+    "out": 151936,
+    "in": 2560,
+    "M": 512,
+    "variant": "fp8 per-tensor (act quantised)",
+    "us": 1378.8288116455078,
+    "rel_err": 0.03758649155497551,
+    "tflops": 288.86189821104443
+  }
+]

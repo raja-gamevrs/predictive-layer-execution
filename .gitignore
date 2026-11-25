@@ -13,3 +13,6 @@ results/raw/*
 *.pt
 *.nsys-rep
 *.ncu-rep
+
+# Local secrets
+.env

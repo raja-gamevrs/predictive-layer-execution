@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<rect width="1200" height="675" fill="#fcfcfb"/>
+<text x="96" y="52" font-size="30" font-weight="600" fill="#0b0b0b">Qwen3.8-27B, 4-bit weights (Red Hat INT4 = Q4_0)</text>
+<text x="96" y="86" font-size="19" fill="#52514e">Stable decode speed, tokens per second (higher is better), same weights in both engines, one RTX 5090</text>
+<line x1="96" x2="870" y1="589.0" y2="589.0" stroke="#e4e3df" stroke-width="1"/>
+<text x="84" y="595.0" font-size="17" fill="#52514e" text-anchor="end">0</text>
+<line x1="96" x2="870" y1="471.2" y2="471.2" stroke="#e4e3df" stroke-width="1"/>
+<text x="84" y="477.2" font-size="17" fill="#52514e" text-anchor="end">50</text>
+<line x1="96" x2="870" y1="353.5" y2="353.5" stroke="#e4e3df" stroke-width="1"/>
+<text x="84" y="359.5" font-size="17" fill="#52514e" text-anchor="end">100</text>
+<line x1="96" x2="870" y1="235.8" y2="235.8" stroke="#e4e3df" stroke-width="1"/>
+<text x="84" y="241.8" font-size="17" fill="#52514e" text-anchor="end">150</text>
+<line x1="96" x2="870" y1="118.0" y2="118.0" stroke="#e4e3df" stroke-width="1"/>
+<text x="84" y="124.0" font-size="17" fill="#52514e" text-anchor="end">200</text>
+<text x="96.0" y="621" font-size="17" fill="#52514e" text-anchor="middle">2k</text>
+<text x="225.0" y="621" font-size="17" fill="#52514e" text-anchor="middle">4k</text>
+<text x="354.0" y="621" font-size="17" fill="#52514e" text-anchor="middle">8k</text>
+<text x="483.0" y="621" font-size="17" fill="#52514e" text-anchor="middle">16k</text>
+<text x="612.0" y="621" font-size="17" fill="#52514e" text-anchor="middle">32k</text>
+<text x="741.0" y="621" font-size="17" fill="#52514e" text-anchor="middle">64k</text>
+<text x="870.0" y="621" font-size="17" fill="#52514e" text-anchor="middle">128k</text>
+<text x="483.0" y="653" font-size="18" fill="#52514e" text-anchor="middle">Context length (tokens already in the conversation)</text>
+<polyline points="96.0,453.9 225.0,456.0 354.0,459.8 483.0,466.5 612.0,477.9 741.0,495.4 870.0,517.9" fill="none" stroke="#8a8984" stroke-width="3" stroke-linejoin="round" stroke-dasharray="8 6"/>
+<circle cx="96.0" cy="453.9" r="5.5" fill="#8a8984" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="225.0" cy="456.0" r="5.5" fill="#8a8984" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="354.0" cy="459.8" r="5.5" fill="#8a8984" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="483.0" cy="466.5" r="5.5" fill="#8a8984" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="612.0" cy="477.9" r="5.5" fill="#8a8984" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="741.0" cy="495.4" r="5.5" fill="#8a8984" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="870.0" cy="517.9" r="5.5" fill="#8a8984" stroke="#fcfcfb" stroke-width="2"/>
+<polyline points="96.0,417.2 225.0,420.6 354.0,426.3 483.0,436.2 612.0,453.0 741.0,477.7 870.0,507.5" fill="none" stroke="#2a78d6" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="96.0" cy="417.2" r="5.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="225.0" cy="420.6" r="5.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="354.0" cy="426.3" r="5.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="483.0" cy="436.2" r="5.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="612.0" cy="453.0" r="5.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="741.0" cy="477.7" r="5.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="870.0" cy="507.5" r="5.5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<polyline points="96.0,175.5 225.0,269.7 354.0,330.0 483.0,276.1 612.0,361.0 741.0,394.6 870.0,457.7" fill="none" stroke="#1baf7a" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="96.0" cy="175.5" r="5.5" fill="#1baf7a" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="225.0" cy="269.7" r="5.5" fill="#1baf7a" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="354.0" cy="330.0" r="5.5" fill="#1baf7a" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="483.0" cy="276.1" r="5.5" fill="#1baf7a" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="612.0" cy="361.0" r="5.5" fill="#1baf7a" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="741.0" cy="394.6" r="5.5" fill="#1baf7a" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="870.0" cy="457.7" r="5.5" fill="#1baf7a" stroke="#fcfcfb" stroke-width="2"/>
+<polyline points="96.0,218.0 225.0,290.6 354.0,312.8 483.0,290.7 612.0,377.2 741.0,383.7 870.0,447.8" fill="none" stroke="#eb6834" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="96.0" cy="218.0" r="5.5" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="225.0" cy="290.6" r="5.5" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="354.0" cy="312.8" r="5.5" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="483.0" cy="290.7" r="5.5" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="612.0" cy="377.2" r="5.5" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="741.0" cy="383.7" r="5.5" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="870.0" cy="447.8" r="5.5" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<line x1="882" x2="904" y1="447.8" y2="447.8" stroke="#eb6834" stroke-width="3"/>
+<circle cx="893" cy="447.8" r="4.5" fill="#eb6834"/>
+<text x="912" y="453.8" font-size="17" fill="#0b0b0b">llama.cpp (its best)  60</text>
+<line x1="882" x2="904" y1="473.8" y2="473.8" stroke="#1baf7a" stroke-width="3"/>
+<circle cx="893" cy="473.8" r="4.5" fill="#1baf7a"/>
+<text x="912" y="479.8" font-size="17" fill="#0b0b0b">Ours + MTP draft (k = 4)  56</text>
+<line x1="882" x2="904" y1="507.5" y2="507.5" stroke="#2a78d6" stroke-width="3"/>
+<circle cx="893" cy="507.5" r="4.5" fill="#2a78d6"/>
+<text x="912" y="513.5" font-size="17" fill="#0b0b0b">Ours, after (fused)  35</text>
+<line x1="882" x2="904" y1="533.5" y2="533.5" stroke="#8a8984" stroke-width="3" stroke-dasharray="6 4"/>
+<circle cx="893" cy="533.5" r="4.5" fill="#8a8984"/>
+<text x="912" y="539.5" font-size="17" fill="#0b0b0b">Ours, before  30</text>
+</svg>

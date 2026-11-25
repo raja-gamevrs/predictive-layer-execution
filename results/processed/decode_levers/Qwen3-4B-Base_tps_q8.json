@@ -1,0 +1,135 @@
+{
+  "model": "Qwen/Qwen3-4B-Base",
+  "revision": "906bfd4b4dc7f14ee4320094d8b41684abff8539",
+  "args": {
+    "config": "configs/primary_qwen3_4b.yaml",
+    "contexts": [
+      2048,
+      4096,
+      8192,
+      16384,
+      32768,
+      65536,
+      131072
+    ],
+    "settings": [
+      "l12",
+      "l7b"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 32768,
+    "target": "q8",
+    "check": 2,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 2048,
+      "prompt_len": 1728,
+      "yarn": null,
+      "l12_ms": 3.9646921195235905,
+      "l12_tps": 252.2263948505951,
+      "l7b_ms": 3.907136074332304,
+      "l7b_tps": 255.94194340182827,
+      "l7b_accept": 0.8333333333333334
+    },
+    {
+      "context": 4096,
+      "prompt_len": 3776,
+      "yarn": null,
+      "l12_ms": 4.157451554840686,
+      "l12_tps": 240.53196695356803,
+      "l7b_ms": 3.8032907339242787,
+      "l7b_tps": 262.93020175404484,
+      "l7b_accept": 0.9444444444444444
+    },
+    {
+      "context": 8192,
+      "prompt_len": 7872,
+      "yarn": null,
+      "l12_ms": 4.529754758348652,
+      "l12_tps": 220.76250334677187,
+      "l7b_ms": 4.251471886268029,
+      "l7b_tps": 235.21265734578495,
+      "l7b_accept": 0.9736842105263158
+    },
+    {
+      "context": 16384,
+      "prompt_len": 16064,
+      "yarn": null,
+      "l12_ms": 5.230984556908701,
+      "l12_tps": 191.1686010770713,
+      "l7b_ms": 5.647570800781249,
+      "l7b_tps": 177.0672799465686,
+      "l7b_accept": 0.9034552845528455
+    },
+    {
+      "context": 32768,
+      "prompt_len": 32448,
+      "yarn": [
+        4.0,
+        32768
+      ],
+      "l12_ms": 6.669820389093138,
+      "l12_tps": 149.92907479716482,
+      "l7b_ms": 7.856216907501221,
+      "l7b_tps": 127.28772789422179,
+      "l7b_accept": 0.9136752136752138
+    },
+    {
+      "context": 65536,
+      "prompt_len": 65216,
+      "yarn": [
+        4.0,
+        32768
+      ],
+      "l12_ms": 9.612578507965686,
+      "l12_tps": 104.0303597178766,
+      "l7b_ms": 13.058646947957198,
+      "l7b_tps": 76.57761205929783,
+      "l7b_accept": 0.8780487804878049
+    },
+    {
+      "context": 131072,
+      "prompt_len": 130752,
+      "yarn": [
+        4.0,
+        32768
+      ],
+      "l12_ms": 15.483092543658088,
+      "l12_tps": 64.5865803088287,
+      "l7b_ms": 21.858712064302885,
+      "l7b_tps": 45.74834953945361,
+      "l7b_accept": 0.9736842105263158
+    }
+  ],
+  "check": [
+    {
+      "prompt": 0,
+      "setting": "l12",
+      "violations": 0,
+      "near_ties": 2
+    },
+    {
+      "prompt": 0,
+      "setting": "l7b",
+      "violations": 0,
+      "near_ties": 2
+    },
+    {
+      "prompt": 1,
+      "setting": "l12",
+      "violations": 0,
+      "near_ties": 6
+    },
+    {
+      "prompt": 1,
+      "setting": "l7b",
+      "violations": 0,
+      "near_ties": 7
+    }
+  ]
+}

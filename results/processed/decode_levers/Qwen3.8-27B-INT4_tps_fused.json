@@ -1,0 +1,108 @@
+{
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "revision": "71dface38d4cbfa34121f1d446d4a0fa1025f13c",
+  "args": {
+    "config": "configs/qwen38_27b_int4.yaml",
+    "contexts": [
+      2048,
+      4096,
+      8192,
+      16384,
+      32768,
+      65536,
+      131072
+    ],
+    "settings": [
+      "l12c"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 0,
+    "target": "native",
+    "check": 2,
+    "save_draft_codes": null,
+    "tag": "_fused",
+    "mtp_ks": [],
+    "prefill_chunk": 2048,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 2048,
+      "prompt_len": 1728,
+      "yarn": null,
+      "l12c_ms": 13.710534428615196,
+      "l12c_tps": 72.9366171104829
+    },
+    {
+      "context": 4096,
+      "prompt_len": 3776,
+      "yarn": null,
+      "l12c_ms": 13.987262561274509,
+      "l12c_tps": 71.4936175409065
+    },
+    {
+      "context": 8192,
+      "prompt_len": 7872,
+      "yarn": null,
+      "l12c_ms": 14.47103199678309,
+      "l12c_tps": 69.10357189606795
+    },
+    {
+      "context": 16384,
+      "prompt_len": 16064,
+      "yarn": null,
+      "l12c_ms": 15.413553634344364,
+      "l12c_tps": 64.87796544022189
+    },
+    {
+      "context": 32768,
+      "prompt_len": 32448,
+      "yarn": null,
+      "l12c_ms": 17.317638442095586,
+      "l12c_tps": 57.744593949323225
+    },
+    {
+      "context": 65536,
+      "prompt_len": 65216,
+      "yarn": null,
+      "l12c_ms": 21.165159696691177,
+      "l12c_tps": 47.24745829138882
+    },
+    {
+      "context": 131072,
+      "prompt_len": 130752,
+      "yarn": null,
+      "l12c_ms": 28.890052466299018,
+      "l12c_tps": 34.61399044416847
+    }
+  ],
+  "check": [
+    {
+      "prompt": 0,
+      "setting": "l12",
+      "violations": 0,
+      "near_ties": 3
+    },
+    {
+      "prompt": 0,
+      "setting": "l12c",
+      "violations": 0,
+      "near_ties": 3
+    },
+    {
+      "prompt": 1,
+      "setting": "l12",
+      "violations": 0,
+      "near_ties": 7
+    },
+    {
+      "prompt": 1,
+      "setting": "l12c",
+      "violations": 0,
+      "near_ties": 7
+    }
+  ]
+}

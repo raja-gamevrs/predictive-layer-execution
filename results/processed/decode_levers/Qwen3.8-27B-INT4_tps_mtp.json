@@ -1,0 +1,80 @@
+{
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "revision": "71dface38d4cbfa34121f1d446d4a0fa1025f13c",
+  "args": {
+    "config": "configs/qwen38_27b_int4.yaml",
+    "contexts": [
+      2048
+    ],
+    "settings": [
+      "l12c"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 0,
+    "target": "native",
+    "check": 1,
+    "save_draft_codes": null,
+    "tag": "_mtp",
+    "mtp_ks": [
+      2,
+      3,
+      4
+    ],
+    "mtp_head": "bf16",
+    "prefill_chunk": 2048,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 2048,
+      "prompt_len": 1728,
+      "yarn": null,
+      "l12c_ms": 13.684946097579658,
+      "l12c_tps": 73.07299516341256,
+      "mtp2_ms": 7.897894859313965,
+      "mtp2_tps": 126.61601829514137,
+      "mtp2_accept": 0.9222222222222223,
+      "mtp3_ms": 7.093214566099878,
+      "mtp3_tps": 140.9798041045075,
+      "mtp3_accept": 0.8809523809523809,
+      "mtp4_ms": 6.659099799785835,
+      "mtp4_tps": 150.17044796838172,
+      "mtp4_accept": 0.8663793103448276
+    }
+  ],
+  "check": [
+    {
+      "prompt": 0,
+      "setting": "l12",
+      "violations": 0,
+      "near_ties": 3
+    },
+    {
+      "prompt": 0,
+      "setting": "l12c",
+      "violations": 0,
+      "near_ties": 3
+    },
+    {
+      "prompt": 0,
+      "setting": "mtp2",
+      "violations": 0,
+      "near_ties": 1
+    },
+    {
+      "prompt": 0,
+      "setting": "mtp3",
+      "violations": 0,
+      "near_ties": 2
+    },
+    {
+      "prompt": 0,
+      "setting": "mtp4",
+      "violations": 0,
+      "near_ties": 2
+    }
+  ]
+}

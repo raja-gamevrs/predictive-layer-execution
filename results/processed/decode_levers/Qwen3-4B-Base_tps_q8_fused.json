@@ -1,0 +1,150 @@
+{
+  "model": "Qwen/Qwen3-4B-Base",
+  "revision": "906bfd4b4dc7f14ee4320094d8b41684abff8539",
+  "args": {
+    "config": "configs/primary_qwen3_4b.yaml",
+    "contexts": [
+      2048,
+      4096,
+      8192,
+      16384,
+      32768,
+      65536,
+      131072
+    ],
+    "settings": [
+      "l12c",
+      "l7bc"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 32768,
+    "target": "q8",
+    "check": 2,
+    "save_draft_codes": null,
+    "tag": "_fused",
+    "prefill_chunk": 2048,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 2048,
+      "prompt_len": 1728,
+      "yarn": null,
+      "l12c_ms": 3.575115847120098,
+      "l12c_tps": 279.711215737398,
+      "l7bc_ms": 3.2121190330534604,
+      "l7bc_tps": 311.3209659137052,
+      "l7bc_accept": 0.9208333333333333
+    },
+    {
+      "context": 4096,
+      "prompt_len": 3776,
+      "yarn": null,
+      "l12c_ms": 3.7778211406632964,
+      "l12c_tps": 264.7028439849388,
+      "l7bc_ms": 3.42218192966505,
+      "l7bc_tps": 292.21123264416167,
+      "l7bc_accept": 0.9487179487179487
+    },
+    {
+      "context": 8192,
+      "prompt_len": 7872,
+      "yarn": null,
+      "l12c_ms": 4.149507410386029,
+      "l12c_tps": 240.99246033325434,
+      "l7bc_ms": 4.11161599579442,
+      "l7bc_tps": 243.21337426035245,
+      "l7bc_accept": 0.907571138211382
+    },
+    {
+      "context": 16384,
+      "prompt_len": 16064,
+      "yarn": null,
+      "l12c_ms": 4.842124071308211,
+      "l12c_tps": 206.5209369428295,
+      "l7bc_ms": 5.593185601547418,
+      "l7bc_tps": 178.78898918057334,
+      "l7bc_accept": 0.8372093023255814
+    },
+    {
+      "context": 32768,
+      "prompt_len": 32448,
+      "yarn": [
+        4.0,
+        32768
+      ],
+      "l12c_ms": 6.280007276348039,
+      "l12c_tps": 159.2354842909548,
+      "l7bc_ms": 7.320257186889648,
+      "l7bc_tps": 136.60722218762595,
+      "l7bc_accept": 0.9273504273504274
+    },
+    {
+      "context": 65536,
+      "prompt_len": 65216,
+      "yarn": [
+        4.0,
+        32768
+      ],
+      "l12c_ms": 9.204905790441176,
+      "l12c_tps": 108.63772240216178,
+      "l7bc_ms": 12.173617933615125,
+      "l7bc_tps": 82.14484842987315,
+      "l7bc_accept": 0.9157051282051283
+    },
+    {
+      "context": 131072,
+      "prompt_len": 130752,
+      "yarn": [
+        4.0,
+        32768
+      ],
+      "l12c_ms": 15.04244025735294,
+      "l12c_tps": 66.47857547655454,
+      "l7bc_ms": 21.511854905348557,
+      "l7bc_tps": 46.48599594967364,
+      "l7bc_accept": 0.9736842105263158
+    }
+  ],
+  "check": [
+    {
+      "prompt": 0,
+      "setting": "l12",
+      "violations": 0,
+      "near_ties": 2
+    },
+    {
+      "prompt": 0,
+      "setting": "l12c",
+      "violations": 0,
+      "near_ties": 2
+    },
+    {
+      "prompt": 0,
+      "setting": "l7b",
+      "violations": 0,
+      "near_ties": 2
+    },
+    {
+      "prompt": 1,
+      "setting": "l12",
+      "violations": 0,
+      "near_ties": 4
+    },
+    {
+      "prompt": 1,
+      "setting": "l12c",
+      "violations": 0,
+      "near_ties": 6
+    },
+    {
+      "prompt": 1,
+      "setting": "l7b",
+      "violations": 0,
+      "near_ties": 7
+    }
+  ]
+}

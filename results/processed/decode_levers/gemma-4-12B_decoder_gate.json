@@ -1,0 +1,164 @@
+{
+  "model": "google/gemma-4-12B",
+  "revision": "1a2c7729392586f5ecddae8807ee2ef741eabb9a",
+  "args": {
+    "config": "configs/gemma4_12b.yaml",
+    "prompts": 4,
+    "n": 128,
+    "code_rev": "a118bda",
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "domain": "cal",
+      "prompt": 0,
+      "kl": 0.0005295699229463935,
+      "kl_max": 0.0035439282655715942,
+      "top1": 0.984375,
+      "ours_violations": 0,
+      "ours_near_ties": 8,
+      "hf_violations": 0,
+      "hf_near_ties": 5,
+      "same_as_transformers_until": 61
+    },
+    {
+      "domain": "cal",
+      "prompt": 1,
+      "kl": 0.001484252279624343,
+      "kl_max": 0.0175551176071167,
+      "top1": 0.9921875,
+      "ours_violations": 0,
+      "ours_near_ties": 3,
+      "hf_violations": 3,
+      "hf_near_ties": 10,
+      "same_as_transformers_until": 32
+    },
+    {
+      "domain": "cal",
+      "prompt": 2,
+      "kl": 0.0006199980853125453,
+      "kl_max": 0.005454912781715393,
+      "top1": 1.0,
+      "ours_violations": 1,
+      "ours_near_ties": 0,
+      "hf_violations": 0,
+      "hf_near_ties": 4,
+      "same_as_transformers_until": 10
+    },
+    {
+      "domain": "cal",
+      "prompt": 3,
+      "kl": 0.024487465620040894,
+      "kl_max": 1.8041340112686157,
+      "top1": 0.9921875,
+      "ours_violations": 3,
+      "ours_near_ties": 3,
+      "hf_violations": 6,
+      "hf_near_ties": 3,
+      "same_as_transformers_until": 13
+    },
+    {
+      "domain": "hold",
+      "prompt": 0,
+      "kl": 0.0012500141747295856,
+      "kl_max": 0.025190267711877823,
+      "top1": 0.984375,
+      "ours_violations": 0,
+      "ours_near_ties": 3,
+      "hf_violations": 5,
+      "hf_near_ties": 3,
+      "same_as_transformers_until": 47
+    },
+    {
+      "domain": "hold",
+      "prompt": 1,
+      "kl": 0.000954117625951767,
+      "kl_max": 0.0045763710513710976,
+      "top1": 0.984375,
+      "ours_violations": 0,
+      "ours_near_ties": 3,
+      "hf_violations": 4,
+      "hf_near_ties": 4,
+      "same_as_transformers_until": 7
+    },
+    {
+      "domain": "hold",
+      "prompt": 2,
+      "kl": 0.0117516303434968,
+      "kl_max": 1.3568167686462402,
+      "top1": 1.0,
+      "ours_violations": 0,
+      "ours_near_ties": 1,
+      "hf_violations": 0,
+      "hf_near_ties": 1,
+      "same_as_transformers_until": 128
+    },
+    {
+      "domain": "hold",
+      "prompt": 3,
+      "kl": 0.0009265544358640909,
+      "kl_max": 0.009028075262904167,
+      "top1": 0.9921875,
+      "ours_violations": 2,
+      "ours_near_ties": 2,
+      "hf_violations": 8,
+      "hf_near_ties": 6,
+      "same_as_transformers_until": 22
+    },
+    {
+      "domain": "code",
+      "prompt": 0,
+      "kl": 0.0010450249537825584,
+      "kl_max": 0.019377972930669785,
+      "top1": 1.0,
+      "ours_violations": 0,
+      "ours_near_ties": 1,
+      "hf_violations": 0,
+      "hf_near_ties": 0,
+      "same_as_transformers_until": 128
+    },
+    {
+      "domain": "code",
+      "prompt": 1,
+      "kl": 0.001006545266136527,
+      "kl_max": 0.018315907567739487,
+      "top1": 0.9921875,
+      "ours_violations": 0,
+      "ours_near_ties": 3,
+      "hf_violations": 0,
+      "hf_near_ties": 0,
+      "same_as_transformers_until": 30
+    },
+    {
+      "domain": "code",
+      "prompt": 2,
+      "kl": 0.00042830329039134085,
+      "kl_max": 0.006074689328670502,
+      "top1": 1.0,
+      "ours_violations": 0,
+      "ours_near_ties": 1,
+      "hf_violations": 1,
+      "hf_near_ties": 2,
+      "same_as_transformers_until": 38
+    },
+    {
+      "domain": "code",
+      "prompt": 3,
+      "kl": 0.0018910421058535576,
+      "kl_max": 0.08830241113901138,
+      "top1": 0.9921875,
+      "ours_violations": 2,
+      "ours_near_ties": 3,
+      "hf_violations": 6,
+      "hf_near_ties": 2,
+      "same_as_transformers_until": 29
+    }
+  ],
+  "summary": {
+    "kl": 0.0038645431753442003,
+    "top1": 0.9928385416666666,
+    "ours_violations": 8,
+    "hf_violations": 33,
+    "passed": false
+  }
+}

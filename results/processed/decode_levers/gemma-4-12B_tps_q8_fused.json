@@ -1,0 +1,131 @@
+{
+  "model": "google/gemma-4-12B",
+  "revision": "1a2c7729392586f5ecddae8807ee2ef741eabb9a",
+  "args": {
+    "config": "configs/gemma4_12b.yaml",
+    "contexts": [
+      2048,
+      4096,
+      8192,
+      16384,
+      32768,
+      65536,
+      131072
+    ],
+    "settings": [
+      "l12c",
+      "l7bc"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 0,
+    "target": "q8",
+    "check": 2,
+    "save_draft_codes": null,
+    "tag": "_fused",
+    "prefill_chunk": 256,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 2048,
+      "prompt_len": 1728,
+      "yarn": null,
+      "l12c_ms": 10.411038507199756,
+      "l12c_tps": 96.05189715785316,
+      "l7bc_ms": 10.221097506009617,
+      "l7bc_tps": 97.83685161129105,
+      "l7bc_accept": 0.7753623188405797
+    },
+    {
+      "context": 4096,
+      "prompt_len": 3776,
+      "yarn": null,
+      "l12c_ms": 10.442869178921569,
+      "l12c_tps": 95.75912355758052,
+      "l7bc_ms": 19.28294563293457,
+      "l7bc_tps": 51.859296760762334,
+      "l7bc_accept": 0.3352941176470588
+    },
+    {
+      "context": 8192,
+      "prompt_len": 7872,
+      "yarn": null,
+      "l12c_ms": 10.520784505208333,
+      "l12c_tps": 95.04994608576463,
+      "l7bc_ms": 9.066681617914245,
+      "l7bc_tps": 110.29393576853602,
+      "l7bc_accept": 0.9083333333333333
+    },
+    {
+      "context": 16384,
+      "prompt_len": 16064,
+      "yarn": null,
+      "l12c_ms": 10.642726045496325,
+      "l12c_tps": 93.96088894190501,
+      "l7bc_ms": 9.844620924729568,
+      "l7bc_tps": 101.5783144567824,
+      "l7bc_accept": 0.8410852713178295
+    },
+    {
+      "context": 32768,
+      "prompt_len": 32448,
+      "yarn": null,
+      "l12c_ms": 10.935104070925245,
+      "l12c_tps": 91.44860382800066,
+      "l7bc_ms": 14.875641700358706,
+      "l7bc_tps": 67.22399074561511,
+      "l7bc_accept": 0.5241935483870968
+    },
+    {
+      "context": 65536,
+      "prompt_len": 65216,
+      "yarn": null,
+      "l12c_ms": 11.686174460018382,
+      "l12c_tps": 85.57120240000482,
+      "l7bc_ms": 10.370280415619014,
+      "l7bc_tps": 96.42940787732873,
+      "l7bc_accept": 0.8943089430894309
+    }
+  ],
+  "check": [
+    {
+      "prompt": 0,
+      "setting": "l12",
+      "violations": 0,
+      "near_ties": 1
+    },
+    {
+      "prompt": 0,
+      "setting": "l12c",
+      "violations": 0,
+      "near_ties": 3
+    },
+    {
+      "prompt": 0,
+      "setting": "l7b",
+      "violations": 1,
+      "near_ties": 3
+    },
+    {
+      "prompt": 1,
+      "setting": "l12",
+      "violations": 0,
+      "near_ties": 8
+    },
+    {
+      "prompt": 1,
+      "setting": "l12c",
+      "violations": 0,
+      "near_ties": 6
+    },
+    {
+      "prompt": 1,
+      "setting": "l7b",
+      "violations": 1,
+      "near_ties": 3
+    }
+  ]
+}

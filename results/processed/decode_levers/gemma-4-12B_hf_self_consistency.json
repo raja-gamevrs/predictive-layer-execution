@@ -1,0 +1,87 @@
+{
+  "model": "google/gemma-4-12B",
+  "revision": "1a2c7729392586f5ecddae8807ee2ef741eabb9a",
+  "args": {
+    "config": "configs/gemma4_12b.yaml",
+    "prompts": 4,
+    "n": 128,
+    "code_rev": "a118bda",
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "domain": "cal",
+      "prompt": 0,
+      "violations": 0,
+      "near_ties": 4
+    },
+    {
+      "domain": "cal",
+      "prompt": 1,
+      "violations": 3,
+      "near_ties": 8
+    },
+    {
+      "domain": "cal",
+      "prompt": 2,
+      "violations": 0,
+      "near_ties": 4
+    },
+    {
+      "domain": "cal",
+      "prompt": 3,
+      "violations": 5,
+      "near_ties": 2
+    },
+    {
+      "domain": "hold",
+      "prompt": 0,
+      "violations": 4,
+      "near_ties": 4
+    },
+    {
+      "domain": "hold",
+      "prompt": 1,
+      "violations": 4,
+      "near_ties": 5
+    },
+    {
+      "domain": "hold",
+      "prompt": 2,
+      "violations": 0,
+      "near_ties": 1
+    },
+    {
+      "domain": "hold",
+      "prompt": 3,
+      "violations": 8,
+      "near_ties": 7
+    },
+    {
+      "domain": "code",
+      "prompt": 0,
+      "violations": 0,
+      "near_ties": 1
+    },
+    {
+      "domain": "code",
+      "prompt": 1,
+      "violations": 0,
+      "near_ties": 1
+    },
+    {
+      "domain": "code",
+      "prompt": 2,
+      "violations": 1,
+      "near_ties": 2
+    },
+    {
+      "domain": "code",
+      "prompt": 3,
+      "violations": 6,
+      "near_ties": 2
+    }
+  ],
+  "violations": 31,
+  "near_ties": 41
+}

@@ -1,0 +1,35 @@
+{
+  "model": "google/gemma-4-12B",
+  "revision": "1a2c7729392586f5ecddae8807ee2ef741eabb9a",
+  "args": {
+    "config": "configs/gemma4_12b.yaml",
+    "contexts": [
+      131072
+    ],
+    "settings": [
+      "l12c"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 0,
+    "target": "q8",
+    "check": 0,
+    "save_draft_codes": null,
+    "tag": "_fused_128k",
+    "mtp_ks": [],
+    "prefill_chunk": 256,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 131072,
+      "prompt_len": 130752,
+      "yarn": null,
+      "l12c_ms": 12.501740579044117,
+      "l12c_tps": 79.98886184506478
+    }
+  ],
+  "check": []
+}

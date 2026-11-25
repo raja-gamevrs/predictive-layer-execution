@@ -1,0 +1,45 @@
+{
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "revision": "71dface38d4cbfa34121f1d446d4a0fa1025f13c",
+  "args": {
+    "config": "configs/qwen38_27b_int4.yaml",
+    "contexts": [
+      131072
+    ],
+    "settings": [
+      "l12c"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 0,
+    "target": "native",
+    "check": 0,
+    "save_draft_codes": null,
+    "tag": "_mtp_h2_128k",
+    "mtp_ks": [
+      3,
+      4
+    ],
+    "mtp_head": "int4",
+    "prefill_chunk": 512,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 131072,
+      "prompt_len": 130752,
+      "yarn": null,
+      "l12c_ms": 28.83362055759804,
+      "l12c_tps": 34.681735441527366,
+      "mtp3_ms": 16.107832126991422,
+      "mtp3_tps": 62.08160056028454,
+      "mtp3_accept": 0.5614035087719298,
+      "mtp4_ms": 17.9332857131958,
+      "mtp4_tps": 55.762229855300454,
+      "mtp4_accept": 0.4308510638297872
+    }
+  ],
+  "check": []
+}

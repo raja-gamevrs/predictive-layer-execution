@@ -401,6 +401,208 @@
   url       = {https://arxiv.org/abs/2505.24196}
 }
 
+% ---------------------------------------------------------------- decode levers (docs/decode_levers.md, "Prior work")
+% Metadata verified 2026-11-24 against arXiv, proceedings, ACL Anthology, PMLR or the official blog/docs page.
+@inproceedings{dao2022flashattention,
+  title     = {{FlashAttention}: Fast and Memory-Efficient Exact Attention with {IO}-Awareness},
+  author    = {Dao, Tri and Fu, Daniel Y. and Ermon, Stefano and Rudra, Atri and R{\'e}, Christopher},
+  booktitle = {Advances in Neural Information Processing Systems 35 (NeurIPS 2022)},
+  year      = {2022},
+  eprint    = {2205.14135},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/2205.14135}
+}
+
+@inproceedings{dao2024flashattention2,
+  title     = {{FlashAttention-2}: Faster Attention with Better Parallelism and Work Partitioning},
+  author    = {Dao, Tri},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024},
+  eprint    = {2307.08691},
+  archivePrefix = {arXiv},
+  url       = {https://openreview.net/forum?id=mZn2Xyh9Ec}
+}
+
+@misc{dao2023flashdecoding,
+  title        = {Flash-Decoding for long-context inference},
+  author       = {Dao, Tri and Haziza, Daniel and Massa, Francisco and Sizov, Grigory},
+  year         = {2023},
+  howpublished = {Stanford CRFM blog, \url{https://crfm.stanford.edu/2023/10/12/flashdecoding.html}},
+  note         = {Also on the PyTorch blog, \url{https://pytorch.org/blog/flash-decoding/}}
+}
+
+@inproceedings{kwon2023vllm,
+  title     = {Efficient Memory Management for Large Language Model Serving with {PagedAttention}},
+  author    = {Kwon, Woosuk and Li, Zhuohan and Zhuang, Siyuan and Sheng, Ying and Zheng, Lianmin and Yu, Cody Hao and Gonzalez, Joseph E. and Zhang, Hao and Stoica, Ion},
+  booktitle = {Proceedings of the 29th Symposium on Operating Systems Principles (SOSP)},
+  year      = {2023},
+  eprint    = {2309.06180},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/2309.06180}
+}
+
+@inproceedings{ye2025flashinfer,
+  title     = {{FlashInfer}: Efficient and Customizable Attention Engine for {LLM} Inference Serving},
+  author    = {Ye, Zihao and Chen, Lequn and Lai, Ruihang and Lin, Wuwei and Zhang, Yineng and Wang, Stephanie and Chen, Tianqi and Kasikci, Baris and Grover, Vinod and Krishnamurthy, Arvind and Ceze, Luis},
+  booktitle = {Proceedings of Machine Learning and Systems (MLSys)},
+  year      = {2025},
+  eprint    = {2501.01005},
+  archivePrefix = {arXiv},
+  note      = {Fused RoPE: Sec. 3.2.3 and 4.3},
+  url       = {https://arxiv.org/abs/2501.01005}
+}
+
+@misc{he2025nondeterminism,
+  title        = {Defeating Nondeterminism in {LLM} Inference},
+  author       = {He, Horace and {Thinking Machines Lab}},
+  year         = {2025},
+  howpublished = {Thinking Machines Lab blog, 10 Sep 2025, \url{https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/}}
+}
+
+@misc{pytorch_reproducibility,
+  title        = {Reproducibility},
+  author       = {{PyTorch}},
+  howpublished = {\url{https://docs.pytorch.org/docs/stable/notes/randomness.html}},
+  note         = {Accessed 2026-11-24}
+}
+
+@misc{gray2019cudagraphs,
+  title        = {Getting Started with {CUDA} Graphs},
+  author       = {Gray, Alan},
+  year         = {2019},
+  howpublished = {NVIDIA Technical Blog, 5 Sep 2019, \url{https://developer.nvidia.com/blog/cuda-graphs/}}
+}
+
+@inproceedings{frantar2025marlin,
+  title     = {{MARLIN}: Mixed-Precision Auto-Regressive Parallel Inference on Large Language Models},
+  author    = {Frantar, Elias and Castro, Roberto L. and Chen, Jiale and Hoefler, Torsten and Alistarh, Dan},
+  booktitle = {Proceedings of the 30th ACM SIGPLAN Annual Symposium on Principles and Practice of Parallel Programming (PPoPP)},
+  year      = {2025},
+  eprint    = {2408.11743},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/2408.11743}
+}
+
+@inproceedings{dettmers2023kbit,
+  title     = {The case for 4-bit precision: k-bit Inference Scaling Laws},
+  author    = {Dettmers, Tim and Zettlemoyer, Luke},
+  booktitle = {Proceedings of the 40th International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {202},
+  year      = {2023},
+  eprint    = {2212.09720},
+  archivePrefix = {arXiv},
+  url       = {https://proceedings.mlr.press/v202/dettmers23a.html}
+}
+
+@inproceedings{frantar2023gptq,
+  title     = {{GPTQ}: Accurate Post-Training Quantization for Generative Pre-trained Transformers},
+  author    = {Frantar, Elias and Ashkboos, Saleh and Hoefler, Torsten and Alistarh, Dan},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2023},
+  eprint    = {2210.17323},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/2210.17323}
+}
+
+@inproceedings{lin2024awq,
+  title     = {{AWQ}: Activation-aware Weight Quantization for On-Device {LLM} Compression and Acceleration},
+  author    = {Lin, Ji and Tang, Jiaming and Tang, Haotian and Yang, Shang and Chen, Wei-Ming and Wang, Wei-Chen and Xiao, Guangxuan and Dang, Xingyu and Gan, Chuang and Han, Song},
+  booktitle = {Proceedings of Machine Learning and Systems (MLSys)},
+  volume    = {6},
+  year      = {2024},
+  eprint    = {2306.00978},
+  archivePrefix = {arXiv},
+  note      = {Weight clipping to minimise MSE: Sec. 3.2},
+  url       = {https://proceedings.mlsys.org/paper_files/paper/2024/hash/42a452cbafa9dd64e9ba4aa95cc1ef21-Abstract-Conference.html}
+}
+
+@inproceedings{shao2024omniquant,
+  title     = {{OmniQuant}: Omnidirectionally Calibrated Quantization for Large Language Models},
+  author    = {Shao, Wenqi and Chen, Mengzhao and Zhang, Zhaoyang and Xu, Peng and Zhao, Lirui and Li, Zhiqian and Zhang, Kaipeng and Gao, Peng and Qiao, Yu and Luo, Ping},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024},
+  eprint    = {2308.13137},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/2308.13137}
+}
+
+@inproceedings{stern2018blockwise,
+  title     = {Blockwise Parallel Decoding for Deep Autoregressive Models},
+  author    = {Stern, Mitchell and Shazeer, Noam and Uszkoreit, Jakob},
+  booktitle = {Advances in Neural Information Processing Systems 31 (NeurIPS 2018)},
+  year      = {2018},
+  eprint    = {1811.03115},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/1811.03115}
+}
+
+@misc{chen2023specsampling,
+  title         = {Accelerating Large Language Model Decoding with Speculative Sampling},
+  author        = {Chen, Charlie and Borgeaud, Sebastian and Irving, Geoffrey and Lespiau, Jean-Baptiste and Sifre, Laurent and Jumper, John},
+  year          = {2023},
+  eprint        = {2302.01318},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2302.01318}
+}
+
+@inproceedings{zhang2024draftverify,
+  title     = {Draft \& Verify: Lossless Large Language Model Acceleration via Self-Speculative Decoding},
+  author    = {Zhang, Jun and Wang, Jue and Li, Huan and Shou, Lidan and Chen, Ke and Chen, Gang and Mehrotra, Sharad},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  pages     = {11263--11282},
+  year      = {2024},
+  doi       = {10.18653/v1/2024.acl-long.607},
+  eprint    = {2309.08168},
+  archivePrefix = {arXiv},
+  url       = {https://aclanthology.org/2024.acl-long.607/}
+}
+
+@inproceedings{xia2025swift,
+  title     = {{SWIFT}: On-the-Fly Self-Speculative Decoding for {LLM} Inference Acceleration},
+  author    = {Xia, Heming and Li, Yongqi and Zhang, Jun and Du, Cunxiao and Li, Wenjie},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2025},
+  eprint    = {2410.06916},
+  archivePrefix = {arXiv},
+  url       = {https://arxiv.org/abs/2410.06916}
+}
+
+@inproceedings{zhao2025qspec,
+  title     = {{QSpec}: Speculative Decoding with Complementary Quantization Schemes},
+  author    = {Zhao, Juntao and Lu, Wenhao and Wang, Sheng and Kong, Lingpeng and Wu, Chuan},
+  booktitle = {Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing},
+  pages     = {4779--4795},
+  year      = {2025},
+  doi       = {10.18653/v1/2025.emnlp-main.240},
+  eprint    = {2410.11305},
+  archivePrefix = {arXiv},
+  url       = {https://aclanthology.org/2025.emnlp-main.240/}
+}
+
+@inproceedings{tiwari2025quantspec,
+  title     = {{QuantSpec}: Self-Speculative Decoding with Hierarchical Quantized {KV} Cache},
+  author    = {Tiwari, Rishabh and Xi, Haocheng and Tomar, Aditya and Hooper, Coleman and Kim, Sehoon and Horton, Maxwell and Najibi, Mahyar and Mahoney, Michael W. and Keutzer, Kurt and Gholami, Amir},
+  booktitle = {Proceedings of the 42nd International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {267},
+  pages     = {59668--59686},
+  year      = {2025},
+  eprint    = {2502.10424},
+  archivePrefix = {arXiv},
+  url       = {https://proceedings.mlr.press/v267/tiwari25b.html}
+}
+
+@misc{georganas2025mlspecqd,
+  title         = {{ML-SpecQD}: Multi-Level Speculative Decoding with Quantized Drafts},
+  author        = {Georganas, Evangelos and Kalamkar, Dhiraj and Kozlov, Alexander and Heinecke, Alexander},
+  year          = {2025},
+  eprint        = {2503.13565},
+  archivePrefix = {arXiv},
+  url           = {https://arxiv.org/abs/2503.13565}
+}
+
 % ---------------------------------------------------------------- name collisions ("PLE")
 @misc{google2025gemma3n,
   title        = {Gemma 3n model overview},

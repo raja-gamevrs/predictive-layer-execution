@@ -1,0 +1,180 @@
+{
+  "model": "Qwen/Qwen3-4B-Base",
+  "prompt": 512,
+  "steps": [
+    {
+      "step": "L1 + L2 decode step",
+      "wall_ms": 6.333261966705322,
+      "kernel_busy_ms": 6.214277300000032,
+      "kernels": 660,
+      "groups": {
+        "BF16 GEMM": 5.252642099999982,
+        "norm": 0.29201795000000064,
+        "attention": 0.26613965000000783,
+        "KV write / index": 0.1422313500000088,
+        "elementwise": 0.254814300000025,
+        "argmax": 0.005377450000000227,
+        "other": 0.0010544999999995525
+      },
+      "kernels_by_name": [
+        [
+          "_ZN8internal5gemvx6kernelIii13__nv_bfloat16S2_S2_fLb0ELb1ELb1ELb0ELi7ELb0E18cublasGemvParamsExIi30cublasGemvTensorStridedBatchedIKS2_ES6_S4_IS2_EfEEENSt9enable_ifIXntT5_EvE4typeET11_",
+          3.3940138000000055
+        ],
+        [
+          "_ZN8internal5gemvx6kernelIii13__nv_bfloat16S2_S2_fLb0ELb1ELb1ELb0ELi6ELb0E18cublasGemvParamsExIi30cublasGemvTensorStridedBatchedIKS2_ES6_S4_IS2_EfEEENSt9enable_ifIXntT5_EvE4typeET11_",
+          1.858628299999977
+        ],
+        [
+          "_ZN2at6native53_GLOBAL__N__e58679f9_20_layer_norm_kernel_cu_3ff0b71f28vectorized_layer_norm_kernelIN3c108BFloat16EfLb1EEEviT0_PKT_S8_S8_PS5_S9_PS6_",
+          0.29201795000000064
+        ],
+        [
+          "cudnn_generated_fort_native_sdpa_sm80_flash_fprop_wmma_f16_knob_2_16x128x128_1x4x1_cga1x1x1_kernel0_0",
+          0.2176673999999984
+        ],
+        [
+          "_ZN2at6native24index_elementwise_kernelILi128ELi4EZNS0_22index_copy_kernel_implINS0_10OpaqueTypeILi2EEEEEvRNS_14TensorIteratorExxxEUliE_EEvxT1_",
+          0.13246325000000903
+        ],
+        [
+          "_ZN2at6native29vectorized_elementwise_kernelILi4ENS0_13BinaryFunctorIN3c108BFloat16ES4_S4_NS0_15binary_internal10MulFunctorIfEEEESt5arrayIPcLy3EELb0EEEviT0_T1_",
+          0.06779185000000972
+        ],
+        [
+          "_ZN2at6native29vectorized_elementwise_kernelILi4ENS0_15CUDAFunctor_addIN3c108BFloat16EEESt5arrayIPcLy3EELb0EEEviT0_T1_",
+          0.06458104999999671
+        ],
+        [
+          "_ZN5cudnn6fusion21lean_reduction_kernelILb0ELb0ELb0EEEvPvPfS3_S3_S3_PKfS3_S3_S3_S3_S3_jjjjjjjjjjjjjjjjjjjjb",
+          0.04847225000000946
+        ],
+        [
+          "_ZN2at6native29vectorized_elementwise_kernelILi4EZZZNS0_61_GLOBAL__N__a30504db_23_ActivationSiluKernel_cu_bb16d854_908411silu_kernelERNS_18TensorIteratorBaseEENKUlvE_clEvENKUlvE4_clEvEUlN3c108BFloat16EE_St5arrayIPcLy2EELb0EEEviT0_T1_",
+          0.04596605000000625
+        ],
+        [
+          "_ZN2at6native16roll_cuda_kernelIN3c108BFloat16EEEvPKT_PS4_xxxxxx",
+          0.03630110000000719
+        ],
+        [
+          "_ZN2at6native29vectorized_elementwise_kernelILi4EZZZNS0_19addcmul_cuda_kernelERNS_18TensorIteratorBaseERKN3c106ScalarEENKUlvE0_clEvENKUlvE7_clEvEUlNS4_8BFloat16ESA_SA_E_St5arrayIPcLy4EELb0EEEviT0_T1_",
+          0.034257550000005584
+        ],
+        [
+          "_ZN2at6native24index_elementwise_kernelILi128ELi4EZNS0_16gpu_index_kernelIZNS0_17index_kernel_implINS0_10OpaqueTypeILi2EEEEEvRNS_18TensorIteratorBaseEN3c108ArrayRefIxEESA_EUlPcPKcxE_EEvS7_SA_SA_RKT_bEUliE_EEvxT1_",
+          0.008758449999999994
+        ],
+        [
+          "_ZN2at6native13reduce_kernelILi512ELi1ENS0_8ReduceOpIN3c108BFloat16ENS0_9ArgMaxOpsIfEEjxLi4ELi4EEEEEvT1_",
+          0.005377450000000227
+        ],
+        [
+          "_ZN2at6native18elementwise_kernelILi128ELi4EZNS0_22gpu_kernel_impl_nocastINS0_13BinaryFunctorIN3c108BFloat16ES5_S5_NS0_15binary_internal10MulFunctorIfEEEEEEvRNS_18TensorIteratorBaseERKT_EUliE_EEviT1_",
+          0.00482079999999961
+        ],
+        [
+          "_ZN2at6native29vectorized_elementwise_kernelILi2ENS0_21CUDAFunctorOnSelf_addIxEESt5arrayIPcLy2EELb0EEEviT0_T1_",
+          0.001095899999999938
+        ],
+        [
+          "_ZN2at6native24index_elementwise_kernelILi128ELi4EZNS0_22index_fill_kernel_implINS0_10OpaqueTypeILi2EEEEEvRNS_14TensorIteratorExxxT_EUliE_EEvxT1_",
+          0.0010096499999997831
+        ],
+        [
+          "memcpy32_post",
+          0.0007585000000002765
+        ],
+        [
+          "Memset (Unknown)",
+          0.00029599999999927606
+        ]
+      ]
+    },
+    {
+      "step": "INT4 draft step (RTN g128)",
+      "wall_ms": 2.6291911602020264,
+      "kernel_busy_ms": 2.603997350000101,
+      "kernels": 660,
+      "groups": {
+        "int4 GEMM": 1.6567594499999827,
+        "norm": 0.28465735000005327,
+        "attention": 0.25990844999999524,
+        "KV write / index": 0.1383746000000061,
+        "elementwise": 0.2572912000000685,
+        "argmax": 0.005972749999997903,
+        "other": 0.00103355000000156
+      },
+      "kernels_by_name": [
+        [
+          "_ZN2at6native30tinygemm_m16n8k16_chunk_kernelINS0_10ALayout_RMILNS0_14KReductionTypeE0EEENS0_15BLayout_TC_int4ILi8ELi128EEES4_Li8ELi8EEEvPKvS8_S8_Pviiiiii",
+          1.6567594499999827
+        ],
+        [
+          "_ZN2at6native53_GLOBAL__N__e58679f9_20_layer_norm_kernel_cu_3ff0b71f28vectorized_layer_norm_kernelIN3c108BFloat16EfLb1EEEviT0_PKT_S8_S8_PS5_S9_PS6_",
+          0.28465735000005327
+        ],
+        [
+          "cudnn_generated_fort_native_sdpa_sm80_flash_fprop_wmma_f16_knob_2_16x128x128_1x4x1_cga1x1x1_kernel0_0",
+          0.2128401999999798
+        ],
+        [
+          "_ZN2at6native24index_elementwise_kernelILi128ELi4EZNS0_22index_copy_kernel_implINS0_10OpaqueTypeILi2EEEEEvRNS_14TensorIteratorExxxEUliE_EEvxT1_",
+          0.1286947500000071
+        ],
+        [
+          "_ZN2at6native29vectorized_elementwise_kernelILi4ENS0_13BinaryFunctorIN3c108BFloat16ES4_S4_NS0_15binary_internal10MulFunctorIfEEEESt5arrayIPcLy3EELb0EEEviT0_T1_",
+          0.06937110000001254
+        ],
+        [
+          "_ZN2at6native29vectorized_elementwise_kernelILi4ENS0_15CUDAFunctor_addIN3c108BFloat16EEESt5arrayIPcLy3EELb0EEEviT0_T1_",
+          0.06200525000002777
+        ],
+        [
+          "_ZN5cudnn6fusion21lean_reduction_kernelILb0ELb0ELb0EEEvPvPfS3_S3_S3_PKfS3_S3_S3_S3_S3_jjjjjjjjjjjjjjjjjjjjb",
+          0.04706825000001543
+        ],
+        [
+          "_ZN2at6native29vectorized_elementwise_kernelILi4EZZZNS0_61_GLOBAL__N__a30504db_23_ActivationSiluKernel_cu_bb16d854_908411silu_kernelERNS_18TensorIteratorBaseEENKUlvE_clEvENKUlvE4_clEvEUlN3c108BFloat16EE_St5arrayIPcLy2EELb0EEEviT0_T1_",
+          0.04391079999999773
+        ],
+        [
+          "_ZN2at6native29vectorized_elementwise_kernelILi4EZZZNS0_19addcmul_cuda_kernelERNS_18TensorIteratorBaseERKN3c106ScalarEENKUlvE0_clEvENKUlvE7_clEvEUlNS4_8BFloat16ESA_SA_E_St5arrayIPcLy4EELb0EEEviT0_T1_",
+          0.04018040000000461
+        ],
+        [
+          "_ZN2at6native16roll_cuda_kernelIN3c108BFloat16EEEvPKT_PS4_xxxxxx",
+          0.03574375000002746
+        ],
+        [
+          "_ZN2at6native24index_elementwise_kernelILi128ELi4EZNS0_16gpu_index_kernelIZNS0_17index_kernel_implINS0_10OpaqueTypeILi2EEEEEvRNS_18TensorIteratorBaseEN3c108ArrayRefIxEESA_EUlPcPKcxE_EEvS7_SA_SA_RKT_bEUliE_EEvxT1_",
+          0.008700599999999396
+        ],
+        [
+          "_ZN2at6native13reduce_kernelILi512ELi1ENS0_8ReduceOpIN3c108BFloat16ENS0_9ArgMaxOpsIfEEjxLi4ELi4EEEEEvT1_",
+          0.005972749999997903
+        ],
+        [
+          "_ZN2at6native18elementwise_kernelILi128ELi4EZNS0_22gpu_kernel_impl_nocastINS0_13BinaryFunctorIN3c108BFloat16ES5_S5_NS0_15binary_internal10MulFunctorIfEEEEEEvRNS_18TensorIteratorBaseERKT_EUliE_EEviT1_",
+          0.004801549999997952
+        ],
+        [
+          "_ZN2at6native29vectorized_elementwise_kernelILi2ENS0_21CUDAFunctorOnSelf_addIxEESt5arrayIPcLy2EELb0EEEviT0_T1_",
+          0.0012783500000005006
+        ],
+        [
+          "_ZN2at6native24index_elementwise_kernelILi128ELi4EZNS0_22index_fill_kernel_implINS0_10OpaqueTypeILi2EEEEEvRNS_14TensorIteratorExxxT_EUliE_EEvxT1_",
+          0.0009792499999995924
+        ],
+        [
+          "Memcpy DtoD (Device -> Device)",
+          0.0007615500000014437
+        ],
+        [
+          "Memset (Unknown)",
+          0.0002720000000001164
+        ]
+      ]
+    }
+  ]
+}

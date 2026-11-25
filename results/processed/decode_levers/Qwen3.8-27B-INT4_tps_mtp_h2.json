@@ -1,0 +1,141 @@
+{
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "revision": "71dface38d4cbfa34121f1d446d4a0fa1025f13c",
+  "args": {
+    "config": "configs/qwen38_27b_int4.yaml",
+    "contexts": [
+      2048,
+      4096,
+      8192,
+      16384,
+      32768,
+      65536,
+      131072
+    ],
+    "settings": [
+      "l12c"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 0,
+    "target": "native",
+    "check": 1,
+    "save_draft_codes": null,
+    "tag": "_mtp_h2",
+    "mtp_ks": [
+      3,
+      4
+    ],
+    "mtp_head": "int4",
+    "prefill_chunk": 2048,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 2048,
+      "prompt_len": 1728,
+      "yarn": null,
+      "l12c_ms": 13.74622491574755,
+      "l12c_tps": 72.7472455986377,
+      "mtp3_ms": 6.299324544270833,
+      "mtp3_tps": 158.74717883991056,
+      "mtp3_accept": 0.863849765258216,
+      "mtp4_ms": 5.69533818661016,
+      "mtp4_tps": 175.58219849894385,
+      "mtp4_accept": 0.8663793103448276
+    },
+    {
+      "context": 4096,
+      "prompt_len": 3776,
+      "yarn": null,
+      "l12c_ms": 14.037893975949753,
+      "l12c_tps": 71.23575671060328,
+      "mtp3_ms": 7.30766481885723,
+      "mtp3_tps": 136.84262001447127,
+      "mtp3_accept": 0.7160493827160493,
+      "mtp4_ms": 7.37509273558624,
+      "mtp4_tps": 135.59151536831635,
+      "mtp4_accept": 0.6216216216216216
+    },
+    {
+      "context": 8192,
+      "prompt_len": 7872,
+      "yarn": null,
+      "l12c_ms": 14.532744044883579,
+      "l12c_tps": 68.8101295193499,
+      "mtp3_ms": 9.280694221047794,
+      "mtp3_tps": 107.75056005315727,
+      "mtp3_accept": 0.5166666666666667,
+      "mtp4_ms": 9.090967556845818,
+      "mtp4_tps": 109.99929256671528,
+      "mtp4_accept": 0.47191011235955055
+    },
+    {
+      "context": 16384,
+      "prompt_len": 16064,
+      "yarn": null,
+      "l12c_ms": 15.439995978860296,
+      "l12c_tps": 64.7668562458923,
+      "mtp3_ms": 7.85585514766233,
+      "mtp3_tps": 127.29358945697597,
+      "mtp3_accept": 0.7242798353909465,
+      "mtp4_ms": 7.525731049766836,
+      "mtp4_tps": 132.87745647394377,
+      "mtp4_accept": 0.6714285714285714
+    },
+    {
+      "context": 32768,
+      "prompt_len": 32448,
+      "yarn": null,
+      "l12c_ms": 17.32065621170343,
+      "l12c_tps": 57.7345331364702,
+      "mtp3_ms": 10.487843791798394,
+      "mtp3_tps": 95.34848343012229,
+      "mtp3_accept": 0.5408163265306123,
+      "mtp4_ms": 10.327920921060569,
+      "mtp4_tps": 96.82490867651904,
+      "mtp4_accept": 0.4942528735632184
+    },
+    {
+      "context": 65536,
+      "prompt_len": 65216,
+      "yarn": null,
+      "l12c_ms": 21.190635531556374,
+      "l12c_tps": 47.19065638738555,
+      "mtp3_ms": 11.65937308517157,
+      "mtp3_tps": 85.76790473167064,
+      "mtp3_accept": 0.6007326007326007,
+      "mtp4_ms": 12.111217975616455,
+      "mtp4_tps": 82.56807878557734,
+      "mtp4_accept": 0.5119047619047619
+    }
+  ],
+  "check": [
+    {
+      "prompt": 0,
+      "setting": "l12",
+      "violations": 0,
+      "near_ties": 3
+    },
+    {
+      "prompt": 0,
+      "setting": "l12c",
+      "violations": 0,
+      "near_ties": 3
+    },
+    {
+      "prompt": 0,
+      "setting": "mtp3",
+      "violations": 0,
+      "near_ties": 1
+    },
+    {
+      "prompt": 0,
+      "setting": "mtp4",
+      "violations": 0,
+      "near_ties": 2
+    }
+  ]
+}

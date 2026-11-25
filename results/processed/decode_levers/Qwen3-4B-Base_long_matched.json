@@ -1,0 +1,64 @@
+{
+  "model": "Qwen/Qwen3-4B-Base",
+  "revision": "906bfd4b4dc7f14ee4320094d8b41684abff8539",
+  "args": {
+    "config": "configs/primary_qwen3_4b.yaml",
+    "contexts": [
+      512,
+      8192,
+      32256
+    ],
+    "prompts": 2,
+    "n": 128,
+    "pairs": 2,
+    "variants": [
+      "L1+L2"
+    ],
+    "selfspec": true,
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "no_orig": true,
+    "tag": "_matched",
+    "k": 6,
+    "ss_n": 256,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 512,
+      "variant": "original",
+      "domain": "cal",
+      "prompt": 0,
+      "violations": 0,
+      "near_ties": 7
+    },
+    {
+      "context": 512,
+      "variant": "L1+L2",
+      "domain": "cal",
+      "prompt": 0,
+      "violations": 0,
+      "near_ties": 5,
+      "same_as_original_until": 19,
+      "orig_ms_per_token": NaN,
+      "ms_per_token": 6.212818295936884,
+      "speedup": NaN,
+      "speedup_spread": NaN
+    }
+  ],
+  "selfspec": [
+    {
+      "context": 512,
+      "domain": "cal",
+      "prompt": 0,
+      "k": 6,
+      "accept_rate": 0.956140350877193,
+      "violations": 0,
+      "near_ties": 7,
+      "ms_per_token": 3.715463638305664,
+      "exact_fast_ms_per_token": 6.224090456495098,
+      "exact_orig_ms_per_token": null,
+      "speedup_vs_fast": 1.675185948842652,
+      "speedup_vs_original": null
+    }
+  ]
+}

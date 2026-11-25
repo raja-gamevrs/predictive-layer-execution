@@ -1,0 +1,31 @@
+{
+  "model": "Qwen/Qwen3-4B-Base",
+  "revision": "906bfd4b4dc7f14ee4320094d8b41684abff8539",
+  "args": {
+    "config": "configs/primary_qwen3_4b.yaml",
+    "contexts": [
+      131072
+    ],
+    "settings": [
+      "l12"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 32768,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 131072,
+      "prompt_len": 130752,
+      "yarn": [
+        4.0,
+        32768
+      ],
+      "l12_ms": 17.9534849877451,
+      "l12_tps": 55.6994923649972
+    }
+  ]
+}

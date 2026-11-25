@@ -1,0 +1,231 @@
+{
+  "model": "Qwen/Qwen3-4B-Base",
+  "revision": "906bfd4b4dc7f14ee4320094d8b41684abff8539",
+  "dtype": "bfloat16",
+  "prompt_tokens": 512,
+  "decode_steps": 128,
+  "runs": 5,
+  "cuda_graphs": true,
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "torch": "2.14.1+cu130",
+  "gpu_state_before": "54 %, 2865 MHz, 13801 MHz, 221.06 W, 70, 19412 MiB",
+  "order": [
+    "overlap_linear_tol9_fp8",
+    "overlap_linear_start16_fp8",
+    "overlap_linear_all_fp8",
+    "overlap_identity_all_fp8",
+    "fused_identity_alternate",
+    "overlap_linear_tol9",
+    "overlap_linear_start16",
+    "overlap_linear_all",
+    "overlap_identity_all",
+    "exact_fp8_qkv",
+    "exact"
+  ],
+  "checks": {
+    "prefill_vs_hf": {
+      "kl": 0.0012538837036117911,
+      "top1": 0.9726027250289917,
+      "rel_err": 0.013299950398504734
+    },
+    "decode_vs_hf": {
+      "kl": 0.0007920413045212626,
+      "top1": 1.0,
+      "rel_err": 0.00951179675757885
+    },
+    "spec_identity_vs_hook_sim": {
+      "kl": 0.0025561978109180927,
+      "top1": 0.9647749662399292,
+      "rel_err": 0.008584430441260338
+    }
+  },
+  "results": {
+    "overlap_linear_tol9_fp8": {
+      "ms_per_token": 8.11899185180664,
+      "runs_ms": [
+        8.119176864624023,
+        8.11899185180664,
+        8.119109153747559,
+        8.118914604187012,
+        8.118924140930176
+      ],
+      "cv": 1.2751169988347119e-05,
+      "speculated_blocks": 9,
+      "mode": "overlap",
+      "fp8": true,
+      "predictor": "linear(random, timing only)",
+      "first_16_tokens": " transferred it to the genus Astraeus . The specific epithet hygrom",
+      "saving_pct": 1.9512703556051298
+    },
+    "overlap_linear_start16_fp8": {
+      "ms_per_token": 8.003144264221191,
+      "runs_ms": [
+        7.980998516082764,
+        7.996438503265381,
+        8.003144264221191,
+        8.004754066467285,
+        8.005248069763184
+      ],
+      "cv": 0.0011404932954757867,
+      "speculated_blocks": 17,
+      "mode": "overlap",
+      "fp8": true,
+      "predictor": "linear(random, timing only)",
+      "first_16_tokens": " proposed the genus Astraeus , and in 1981 , the",
+      "saving_pct": 3.350299816706698
+    },
+    "overlap_linear_all_fp8": {
+      "ms_per_token": 7.727692604064941,
+      "runs_ms": [
+        7.723620891571045,
+        7.7271575927734375,
+        7.727692604064941,
+        7.728896141052246,
+        7.728349685668945
+      ],
+      "cv": 0.0002402859404715493,
+      "speculated_blocks": 35,
+      "mode": "overlap",
+      "fp8": true,
+      "predictor": "linear(random, timing only)",
+      "first_16_tokens": " , and the species was named in  , and the species was named in ",
+      "saving_pct": 6.676782445304253
+    },
+    "overlap_identity_all_fp8": {
+      "ms_per_token": 7.723978042602539,
+      "runs_ms": [
+        7.725116729736328,
+        7.723803520202637,
+        7.722970485687256,
+        7.723978042602539,
+        7.725225448608398
+      ],
+      "cv": 0.00010997994778994435,
+      "speculated_blocks": 35,
+      "mode": "overlap",
+      "fp8": true,
+      "predictor": "identity",
+      "first_16_tokens": " , and the species of the species is a species of the species . A.",
+      "saving_pct": 6.7216412207806115
+    },
+    "fused_identity_alternate": {
+      "ms_per_token": 8.139230728149414,
+      "runs_ms": [
+        8.127334594726562,
+        8.13649845123291,
+        8.139230728149414,
+        8.140861511230469,
+        8.141005516052246
+      ],
+      "cv": 0.0006256877541096756,
+      "speculated_blocks": 18,
+      "mode": "fused",
+      "fp8": false,
+      "predictor": "identity",
+      "first_16_tokens": " described the species as Astraeus hygrometricus . The species was",
+      "saving_pct": 1.7068562520982562
+    },
+    "overlap_linear_tol9": {
+      "ms_per_token": 8.247485160827637,
+      "runs_ms": [
+        8.236617088317871,
+        8.245640754699707,
+        8.247485160827637,
+        8.248074531555176,
+        8.248947143554688
+      ],
+      "cv": 0.0005458149658603593,
+      "speculated_blocks": 9,
+      "mode": "overlap",
+      "fp8": false,
+      "predictor": "linear(random, timing only)",
+      "first_16_tokens": " transferred it to the genus Astraeus . The species was first described from the",
+      "saving_pct": 0.3995252686199909
+    },
+    "overlap_linear_start16": {
+      "ms_per_token": 8.229761123657227,
+      "runs_ms": [
+        8.226425170898438,
+        8.229761123657227,
+        8.228952407836914,
+        8.231101036071777,
+        8.231560707092285
+      ],
+      "cv": 0.00022150351522876846,
+      "speculated_blocks": 17,
+      "mode": "overlap",
+      "fp8": false,
+      "predictor": "linear(random, timing only)",
+      "first_16_tokens": " proposed the genus Astraeus , and in 1988 , the",
+      "saving_pct": 0.6135690021830503
+    },
+    "overlap_linear_all": {
+      "ms_per_token": 8.177651405334473,
+      "runs_ms": [
+        8.175298690795898,
+        8.176935195922852,
+        8.177651405334473,
+        8.178313255310059,
+        8.17840576171875
+      ],
+      "cv": 0.0001395281849257271,
+      "speculated_blocks": 35,
+      "mode": "overlap",
+      "fp8": false,
+      "predictor": "linear(random, timing only)",
+      "first_16_tokens": " , and the species of the earthstar is a species of the earthstar .",
+      "saving_pct": 1.2428702475755242
+    },
+    "overlap_identity_all": {
+      "ms_per_token": 8.051033020019531,
+      "runs_ms": [
+        8.049375534057617,
+        8.051033020019531,
+        8.053106307983398,
+        8.050454139709473,
+        8.052347183227539
+      ],
+      "cv": 0.00016517662675802656,
+      "speculated_blocks": 35,
+      "mode": "overlap",
+      "fp8": false,
+      "predictor": "identity",
+      "first_16_tokens": " , and the species is a species of the earthstar , and the species is",
+      "saving_pct": 2.7719728820352407
+    },
+    "exact_fp8_qkv": {
+      "ms_per_token": 8.328071594238281,
+      "runs_ms": [
+        8.328137397766113,
+        8.32846450805664,
+        8.328071594238281,
+        8.327438354492188,
+        8.32755184173584
+      ],
+      "cv": 4.598974462536701e-05,
+      "speculated_blocks": 0,
+      "mode": "none",
+      "fp8": true,
+      "predictor": "identity",
+      "first_16_tokens": " transferred it to the genus Astraeus . \n = Astraeus hyg",
+      "saving_pct": -0.5736740603986845
+    },
+    "exact": {
+      "ms_per_token": 8.28056812286377,
+      "runs_ms": [
+        8.265149116516113,
+        8.269061088562012,
+        8.28056812286377,
+        8.28363037109375,
+        8.283270835876465
+      ],
+      "cv": 0.0009316670347446866,
+      "speculated_blocks": 0,
+      "mode": "none",
+      "fp8": false,
+      "predictor": "identity",
+      "first_16_tokens": " transferred it to the genus Astraeus . \n = Astraeus hyg",
+      "saving_pct": 0.0
+    }
+  }
+}

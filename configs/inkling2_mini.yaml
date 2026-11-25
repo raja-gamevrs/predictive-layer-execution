@@ -1,0 +1,12 @@
+# Inkling 2 Mini (Thinking Machines Lab, released 2026-11-20): multimodal MoE (128 experts, top 8), layers 6-18
+# looped 3 times, sliding-window attention (1024) on most layers, NVFP4 (ModelOpt) expert weights, MTP layer.
+# License: Apache-2.0. Downloaded at `revision` to `path` (approved 2026-11-25, 20.2 GB).
+# Only benchmarked in llama.cpp (b12720, its own converter: BF16 GGUF -> llama-quantize); this repo's decoders
+# do not run this architecture.
+model:
+  id: thinkingmachines/Inkling-2-Mini
+  revision: c9d028302cd0f035fdf8e7e91f089a4ce94d2195
+  path: G:/models/thinkingmachines/Inkling-2-Mini
+  dtype: bfloat16
+device: cuda:0
+seed: 0

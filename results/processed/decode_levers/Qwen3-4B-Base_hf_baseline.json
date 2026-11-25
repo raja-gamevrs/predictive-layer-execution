@@ -1,0 +1,282 @@
+{
+  "model": "Qwen/Qwen3-4B-Base",
+  "revision": "906bfd4b4dc7f14ee4320094d8b41684abff8539",
+  "args": {
+    "config": "configs/primary_qwen3_4b.yaml",
+    "prompts": 4,
+    "n": 128,
+    "reps": 3,
+    "code_rev": "a118bda",
+    "out": "results/processed/decode_levers"
+  },
+  "torch": "2.14.1+cu130",
+  "transformers": "5.24.0",
+  "rows": [
+    {
+      "domain": "cal",
+      "prompt": 0,
+      "transformers dynamic": {
+        "ms_per_token": 30.564088977535995,
+        "violations": 0,
+        "near_ties": 8
+      },
+      "transformers static": {
+        "ms_per_token": 35.069890551298386,
+        "violations": 0,
+        "near_ties": 8
+      },
+      "original decoder": {
+        "ms_per_token": 8.226992149052657
+      },
+      "L1+L2": {
+        "ms_per_token": 6.212849294106792
+      }
+    },
+    {
+      "domain": "cal",
+      "prompt": 1,
+      "transformers dynamic": {
+        "ms_per_token": 31.717166139590223,
+        "violations": 0,
+        "near_ties": 6
+      },
+      "transformers static": {
+        "ms_per_token": 45.16310000051487,
+        "violations": 0,
+        "near_ties": 6
+      },
+      "original decoder": {
+        "ms_per_token": 8.228316660002461
+      },
+      "L1+L2": {
+        "ms_per_token": 6.223870224840059
+      }
+    },
+    {
+      "domain": "cal",
+      "prompt": 2,
+      "transformers dynamic": {
+        "ms_per_token": 31.3954653555718,
+        "violations": 0,
+        "near_ties": 3
+      },
+      "transformers static": {
+        "ms_per_token": 39.74215196643582,
+        "violations": 0,
+        "near_ties": 3
+      },
+      "original decoder": {
+        "ms_per_token": 8.2418472410187
+      },
+      "L1+L2": {
+        "ms_per_token": 6.239139586921752
+      }
+    },
+    {
+      "domain": "cal",
+      "prompt": 3,
+      "transformers dynamic": {
+        "ms_per_token": 30.61924330655515,
+        "violations": 0,
+        "near_ties": 4
+      },
+      "transformers static": {
+        "ms_per_token": 35.17058976434582,
+        "violations": 0,
+        "near_ties": 4
+      },
+      "original decoder": {
+        "ms_per_token": 8.243265947957678
+      },
+      "L1+L2": {
+        "ms_per_token": 6.24528443343996
+      }
+    },
+    {
+      "domain": "hold",
+      "prompt": 0,
+      "transformers dynamic": {
+        "ms_per_token": 32.42222047374239,
+        "violations": 0,
+        "near_ties": 3
+      },
+      "transformers static": {
+        "ms_per_token": 35.521090551330815,
+        "violations": 0,
+        "near_ties": 3
+      },
+      "original decoder": {
+        "ms_per_token": 8.245892862635335
+      },
+      "L1+L2": {
+        "ms_per_token": 6.256960410771407
+      }
+    },
+    {
+      "domain": "hold",
+      "prompt": 1,
+      "transformers dynamic": {
+        "ms_per_token": 30.83864488184276,
+        "violations": 0,
+        "near_ties": 5
+      },
+      "transformers static": {
+        "ms_per_token": 35.01346614211798,
+        "violations": 0,
+        "near_ties": 5
+      },
+      "original decoder": {
+        "ms_per_token": 8.244766355499507
+      },
+      "L1+L2": {
+        "ms_per_token": 6.2689454086183565
+      }
+    },
+    {
+      "domain": "hold",
+      "prompt": 2,
+      "transformers dynamic": {
+        "ms_per_token": 30.77523937030864,
+        "violations": 0,
+        "near_ties": 3
+      },
+      "transformers static": {
+        "ms_per_token": 35.34457874007699,
+        "violations": 0,
+        "near_ties": 3
+      },
+      "original decoder": {
+        "ms_per_token": 8.252366433932087
+      },
+      "L1+L2": {
+        "ms_per_token": 6.268761822557825
+      }
+    },
+    {
+      "domain": "hold",
+      "prompt": 3,
+      "transformers dynamic": {
+        "ms_per_token": 30.254152755612346,
+        "violations": 0,
+        "near_ties": 3
+      },
+      "transformers static": {
+        "ms_per_token": 35.078676377137114,
+        "violations": 0,
+        "near_ties": 3
+      },
+      "original decoder": {
+        "ms_per_token": 8.252170352485237
+      },
+      "L1+L2": {
+        "ms_per_token": 6.277660940575787
+      }
+    },
+    {
+      "domain": "code",
+      "prompt": 0,
+      "transformers dynamic": {
+        "ms_per_token": 30.422717321840093,
+        "violations": 0,
+        "near_ties": 1
+      },
+      "transformers static": {
+        "ms_per_token": 34.885118898796286,
+        "violations": 0,
+        "near_ties": 1
+      },
+      "original decoder": {
+        "ms_per_token": 8.253722663939469
+      },
+      "L1+L2": {
+        "ms_per_token": 6.278238131305364
+      }
+    },
+    {
+      "domain": "code",
+      "prompt": 1,
+      "transformers dynamic": {
+        "ms_per_token": 30.98348267816418,
+        "violations": 0,
+        "near_ties": 4
+      },
+      "transformers static": {
+        "ms_per_token": 35.36340000115218,
+        "violations": 0,
+        "near_ties": 4
+      },
+      "original decoder": {
+        "ms_per_token": 8.253663070558563
+      },
+      "L1+L2": {
+        "ms_per_token": 6.28507599117249
+      }
+    },
+    {
+      "domain": "code",
+      "prompt": 2,
+      "transformers dynamic": {
+        "ms_per_token": 36.42367086681266,
+        "violations": 0,
+        "near_ties": 2
+      },
+      "transformers static": {
+        "ms_per_token": 40.744400786705256,
+        "violations": 0,
+        "near_ties": 2
+      },
+      "original decoder": {
+        "ms_per_token": 8.254173459030511
+      },
+      "L1+L2": {
+        "ms_per_token": 6.285258616049458
+      }
+    },
+    {
+      "domain": "code",
+      "prompt": 3,
+      "transformers dynamic": {
+        "ms_per_token": 30.68269055160716,
+        "violations": 0,
+        "near_ties": 1
+      },
+      "transformers static": {
+        "ms_per_token": 44.09325354380577,
+        "violations": 0,
+        "near_ties": 1
+      },
+      "original decoder": {
+        "ms_per_token": 8.252933532234252
+      },
+      "L1+L2": {
+        "ms_per_token": 6.282732625645916
+      }
+    }
+  ],
+  "summary": {
+    "transformers dynamic": {
+      "ms_per_token": 31.424898556598617,
+      "tokens_per_s": 31.82190065622406,
+      "n": 12,
+      "violations": 0
+    },
+    "transformers static": {
+      "ms_per_token": 37.599143110309775,
+      "tokens_per_s": 26.596350801563815,
+      "n": 12,
+      "violations": 0
+    },
+    "original decoder": {
+      "ms_per_token": 8.245842560695538,
+      "tokens_per_s": 121.27323468029566,
+      "n": 12,
+      "violations": 0
+    },
+    "L1+L2": {
+      "ms_per_token": 6.260398123833764,
+      "tokens_per_s": 159.73425015781848,
+      "n": 12,
+      "violations": 0
+    }
+  }
+}

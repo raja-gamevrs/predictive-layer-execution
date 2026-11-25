@@ -1,0 +1,207 @@
+{
+  "model": "Qwen/Qwen3-4B-Base",
+  "prompt": 512,
+  "peak_gbs": 1792.0,
+  "decode_step": {
+    "wall_ms": 8.283482551574707,
+    "kernel_busy_ms": 8.28214025000007,
+    "kernels": 1052,
+    "top_kernels": [
+      [
+        "_ZN8internal5gemvx6kernelIii13__nv_bfloat16S2_S2_fLb0ELb1ELb1ELb0ELi7ELb0E18cublasGemvParamsExIi30cublasGemvTensorStridedBatchedIKS2_ES6_S4_IS2_EfEEENSt9enable_ifIXntT5_EvE4typeET11_",
+        3.3687395999999987
+      ],
+      [
+        "_ZN8internal5gemvx6kernelIii13__nv_bfloat16S2_S2_fLb0ELb1ELb1ELb0ELi6ELb0E18cublasGemvParamsExIi30cublasGemvTensorStridedBatchedIKS2_ES6_S4_IS2_EfEEENSt9enable_ifIXntT5_EvE4typeET11_",
+        1.847988150000013
+      ],
+      [
+        "_Z41fmha_cutlassF_bf16_aligned_64x128_rf_sm80N22PyTorchMemEffAttention15AttentionKernelIN7cutlass10bfloat16_tENS1_4arch4Sm80ELb1ELi64ELi128ELi128ELb1ELb1EE6ParamsE",
+        1.8125371500000065
+      ],
+      [
+        "_ZN2at6native53_GLOBAL__N__e58679f9_20_layer_norm_kernel_cu_3ff0b71f28vectorized_layer_norm_kernelIN3c108BFloat16EfLb1EEEviT0_PKT_S8_S8_PS5_S9_PS6_",
+        0.35121165000000626
+      ],
+      [
+        "_ZN2at6native18elementwise_kernelILi128ELi4EZNS0_22gpu_kernel_impl_nocastINS0_13BinaryFunctorIN3c108BFloat16ES5_S5_NS0_15binary_internal10MulFunctorIfEEEEEEvRNS_18TensorIteratorBaseERKT_EUliE_EEviT1_",
+        0.21199585000000312
+      ],
+      [
+        "_ZN2at6native24index_elementwise_kernelILi128ELi4EZNS0_22index_copy_kernel_implINS0_10OpaqueTypeILi2EEEEEvRNS_14TensorIteratorExxxEUliE_EEvxT1_",
+        0.1256689500000117
+      ],
+      [
+        "_ZN2at6native29vectorized_elementwise_kernelILi4ENS0_15CUDAFunctor_addIN3c108BFloat16EEESt5arrayIPcLy3EELb0EEEviT0_T1_",
+        0.11562505000001172
+      ],
+      [
+        "_ZN2at6native40_GLOBAL__N__27eda9f4_8_Shape_cu_85d9f36c19CatArrayBatchedCopyINS1_10OpaqueTypeILj2EEEjLi3ELi64ELi64EEEvPT_NS1_25CatArrInputTensorMetadataIS5_T0_XT2_EXT3_EEENS1_16TensorSizeStrideIS8_Lj4EEEiS8_",
+        0.10898274999998213
+      ],
+      [
+        "_ZN2at6native18elementwise_kernelILi128ELi4EZNS0_22gpu_kernel_impl_nocastIZZZNS0_15neg_kernel_cudaERNS_18TensorIteratorBaseEENKUlvE0_clEvENKUlvE7_clEvEUlN3c108BFloat16EE_EEvS4_RKT_EUliE_EEviT1_",
+        0.10719935000000855
+      ],
+      [
+        "_ZN2at6native24index_elementwise_kernelILi128ELi4EZNS0_16gpu_index_kernelIZNS0_17index_kernel_implINS0_10OpaqueTypeILi2EEEEEvRNS_18TensorIteratorBaseEN3c108ArrayRefIxEESA_EUlPcPKcxE_EEvS7_SA_SA_RKT_bEUliE_EEvxT1_",
+        0.09952405000000511
+      ],
+      [
+        "_ZN2at6native29vectorized_elementwise_kernelILi2ENS0_11FillFunctorIxEESt5arrayIPcLy1EELb0EEEviT0_T1_",
+        0.04633335000000872
+      ],
+      [
+        "_ZN2at6native29vectorized_elementwise_kernelILi4EZZZNS0_61_GLOBAL__N__a30504db_23_ActivationSiluKernel_cu_bb16d854_908411silu_kernelERNS_18TensorIteratorBaseEENKUlvE_clEvENKUlvE4_clEvEUlN3c108BFloat16EE_St5arrayIPcLy2EELb0EEEviT0_T1_",
+        0.04368005000001365
+      ],
+      [
+        "_ZN2at6native29vectorized_elementwise_kernelILi4ENS0_13BinaryFunctorIN3c108BFloat16ES4_S4_NS0_15binary_internal10MulFunctorIfEEEESt5arrayIPcLy3EELb0EEEviT0_T1_",
+        0.03468000000000213
+      ],
+      [
+        "_ZN2at6native13reduce_kernelILi512ELi1ENS0_8ReduceOpIN3c108BFloat16ENS0_9ArgMaxOpsIfEEjxLi4ELi4EEEEEvT1_",
+        0.004990349999999944
+      ],
+      [
+        "_ZN2at6native29vectorized_elementwise_kernelILi2ENS0_21CUDAFunctorOnSelf_addIxEESt5arrayIPcLy2EELb0EEEviT0_T1_",
+        0.0010016000000004168
+      ]
+    ]
+  },
+  "prefill_ms_eager": 32.648128509521484,
+  "decode": [
+    {
+      "component": "embed",
+      "ms": 0.01186303973197937
+    },
+    {
+      "component": "norms (ln1, ln2, final)",
+      "ms": 0.15174271583557128
+    },
+    {
+      "component": "qkv GEMM",
+      "ms": 0.805770263671875,
+      "gbs": 1405.4403979111846,
+      "peak_frac": 0.7842859363343664
+    },
+    {
+      "component": "q/k norm + RoPE",
+      "ms": 0.6386316680908203
+    },
+    {
+      "component": "KV cache write",
+      "ms": 0.11732480049133301
+    },
+    {
+      "component": "attention (masked, max_len)",
+      "ms": 1.7828402709960938,
+      "gbs": 54.25675960637527,
+      "peak_frac": 0.030277209601771913
+    },
+    {
+      "component": "attention (valid length, no mask)",
+      "ms": 1.3595878601074218,
+      "gbs": 55.63813139227593,
+      "peak_frac": 0.03104806439301112
+    },
+    {
+      "component": "o GEMM",
+      "ms": 0.5278617477416992,
+      "gbs": 1430.2508625221217,
+      "peak_frac": 0.7981310616752911
+    },
+    {
+      "component": "gate/up GEMM",
+      "ms": 2.347104034423828,
+      "gbs": 1527.8955970438399,
+      "peak_frac": 0.852620310850357
+    },
+    {
+      "component": "SiLU x up",
+      "ms": 0.07243008136749268
+    },
+    {
+      "component": "down GEMM",
+      "ms": 1.2230944061279296,
+      "gbs": 1466.0069991461103,
+      "peak_frac": 0.8180842629163562
+    },
+    {
+      "component": "residual adds",
+      "ms": 0.0596127986907959
+    },
+    {
+      "component": "LM head",
+      "ms": 0.4994521713256836,
+      "gbs": 1557.5311604616845,
+      "peak_frac": 0.8691580136504936
+    },
+    {
+      "component": "argmax",
+      "ms": 0.016049280166625976
+    }
+  ],
+  "prefill": [
+    {
+      "component": "embed",
+      "ms": 0.022940799593925476
+    },
+    {
+      "component": "norms (ln1, ln2, final)",
+      "ms": 0.3046047925949097
+    },
+    {
+      "component": "qkv GEMM",
+      "ms": 3.679526519775391,
+      "tflops": 157.58021632505967
+    },
+    {
+      "component": "q/k norm + RoPE",
+      "ms": 1.826700782775879
+    },
+    {
+      "component": "KV cache write",
+      "ms": 0.15115200281143187
+    },
+    {
+      "component": "attention (masked, max_len)",
+      "ms": 3.9472801208496096
+    },
+    {
+      "component": "attention (valid length, no mask)",
+      "ms": 1.8477567672729491
+    },
+    {
+      "component": "o GEMM",
+      "ms": 2.1347904205322266,
+      "tflops": 181.0702600696651
+    },
+    {
+      "component": "gate/up GEMM",
+      "ms": 12.041673278808593,
+      "tflops": 152.47868602042524
+    },
+    {
+      "component": "SiLU x up",
+      "ms": 0.706928014755249
+    },
+    {
+      "component": "down GEMM",
+      "ms": 5.941500854492188,
+      "tflops": 154.51470630116816
+    },
+    {
+      "component": "residual adds",
+      "ms": 0.14032959938049316
+    },
+    {
+      "component": "LM head",
+      "ms": 0.49732160568237305
+    },
+    {
+      "component": "argmax",
+      "ms": 0.006844799965620041
+    }
+  ]
+}

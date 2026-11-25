@@ -1,0 +1,76 @@
+{
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "revision": "71dface38d4cbfa34121f1d446d4a0fa1025f13c",
+  "args": {
+    "config": "configs/qwen38_27b_int4.yaml",
+    "contexts": [
+      2048,
+      4096,
+      8192,
+      16384,
+      32768,
+      65536,
+      131072
+    ],
+    "settings": [
+      "l12"
+    ],
+    "draft_codes": "G:/ple_cache/draft_qwen3_4b_gptq_clip_g32.pt",
+    "k": 6,
+    "n": 256,
+    "reps": 2,
+    "yarn_native": 0,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 2048,
+      "prompt_len": 1728,
+      "yarn": null,
+      "l12_ms": 17.432881433823532,
+      "l12_tps": 57.3628636089835
+    },
+    {
+      "context": 4096,
+      "prompt_len": 3776,
+      "yarn": null,
+      "l12_ms": 17.708450137867647,
+      "l12_tps": 56.4702157565786
+    },
+    {
+      "context": 8192,
+      "prompt_len": 7872,
+      "yarn": null,
+      "l12_ms": 18.23117627910539,
+      "l12_tps": 54.85109598474412
+    },
+    {
+      "context": 16384,
+      "prompt_len": 16064,
+      "yarn": null,
+      "l12_ms": 19.224376723345586,
+      "l12_tps": 52.01729108781071
+    },
+    {
+      "context": 32768,
+      "prompt_len": 32448,
+      "yarn": null,
+      "l12_ms": 21.200973690257353,
+      "l12_tps": 47.167644968095864
+    },
+    {
+      "context": 65536,
+      "prompt_len": 65216,
+      "yarn": null,
+      "l12_ms": 25.14957107843137,
+      "l12_tps": 39.76210953584072
+    },
+    {
+      "context": 131072,
+      "prompt_len": 130752,
+      "yarn": null,
+      "l12_ms": 33.13015663296569,
+      "l12_tps": 30.183980446532644
+    }
+  ]
+}

@@ -7,6 +7,17 @@ exact computation.
 > PLE is an unproven hypothesis. The goal is reproducible evidence — including negative
 > results. A valid outcome of this project is GO, PIVOT, or STOP.
 
+## Outcome so far: the Radan engine
+
+The original PLE idea failed its pre-registered tests. Profiling the decode step instead led to exact
+speed-ups that became the **[Radan engine](radan-engine/)** (`radan_engine`), the inference engine for
+Radan, our open-source project for running agents locally. On one RTX 5090, with weights identical to
+llama.cpp's, it is 1.19–1.43× faster than llama.cpp on Qwen3-4B (8-bit), level to 1.17× on Gemma 4 12B
+(8-bit), and with Qwen3.8's own MTP draft 176 against llama.cpp's 158 tokens/s at 2k context, always with
+the model's own greedy output. The whole story, failures included, in plain language:
+[`docs/STORY.md`](docs/STORY.md). The research code imports the engine through the old `ple.*` module
+names, so install it first: `pip install -e radan-engine`.
+
 ## Idea
 
 ```
@@ -74,6 +85,7 @@ results/          raw/, processed/, plots/
 python -m venv .venv
 # Windows: .venv\Scripts\activate    Linux: source .venv/bin/activate
 pip install torch --index-url https://download.pytorch.org/whl/cu128
+pip install -e radan-engine
 pip install -e ".[dev]"
 pytest
 python scripts/verify_model.py --config configs/debug_tinyllama.yaml

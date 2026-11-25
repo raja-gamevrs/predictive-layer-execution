@@ -1,0 +1,1056 @@
+{
+  "model": "Qwen/Qwen3-4B-Base",
+  "revision": "906bfd4b4dc7f14ee4320094d8b41684abff8539",
+  "args": {
+    "config": "configs/primary_qwen3_4b.yaml",
+    "part": "quality",
+    "variants": null,
+    "out": "results/processed/decode_levers"
+  },
+  "variants": [
+    {
+      "variant": "rtn_g128",
+      "group": 128,
+      "quantize_s": 0.44203948974609375,
+      "quality": [
+        {
+          "split": "cal",
+          "kl": 0.17692653089761734,
+          "top1": 0.7958333864808083,
+          "ppl_bf16": 7.606676592151947,
+          "ppl_int4": 8.854412035865417,
+          "ppl_change_pct": 16.40316146739824
+        },
+        {
+          "split": "hold",
+          "kl": 0.18625404685735703,
+          "top1": 0.7958333902060986,
+          "ppl_bf16": 10.526663334154238,
+          "ppl_int4": 12.53180673206332,
+          "ppl_change_pct": 19.04823336947903
+        }
+      ],
+      "decode": [
+        {
+          "domain": "cal",
+          "prompt": 0,
+          "violations": 4,
+          "near_ties": 3,
+          "orig_ms": 8.680016224778543,
+          "ms": 2.573562742218258,
+          "speedup": 3.372762622953146,
+          "spread": 0.010869549642834946
+        },
+        {
+          "domain": "cal",
+          "prompt": 1,
+          "violations": 17,
+          "near_ties": 11
+        },
+        {
+          "domain": "cal",
+          "prompt": 2,
+          "violations": 15,
+          "near_ties": 9
+        },
+        {
+          "domain": "cal",
+          "prompt": 3,
+          "violations": 9,
+          "near_ties": 6
+        },
+        {
+          "domain": "hold",
+          "prompt": 0,
+          "violations": 9,
+          "near_ties": 8,
+          "orig_ms": 8.680775559793307,
+          "ms": 2.5801593450110727,
+          "speedup": 3.359955385817623,
+          "spread": 0.009541880202868145
+        },
+        {
+          "domain": "hold",
+          "prompt": 1,
+          "violations": 15,
+          "near_ties": 11
+        },
+        {
+          "domain": "hold",
+          "prompt": 2,
+          "violations": 8,
+          "near_ties": 8
+        },
+        {
+          "domain": "hold",
+          "prompt": 3,
+          "violations": 8,
+          "near_ties": 4
+        },
+        {
+          "domain": "code",
+          "prompt": 0,
+          "violations": 5,
+          "near_ties": 3,
+          "orig_ms": 8.682695043368602,
+          "ms": 2.586925596702756,
+          "speedup": 3.3558175977711207,
+          "spread": 0.007171416264732881
+        },
+        {
+          "domain": "code",
+          "prompt": 1,
+          "violations": 4,
+          "near_ties": 4
+        },
+        {
+          "domain": "code",
+          "prompt": 2,
+          "violations": 8,
+          "near_ties": 3
+        },
+        {
+          "domain": "code",
+          "prompt": 3,
+          "violations": 4,
+          "near_ties": 4
+        }
+      ],
+      "violations": 106,
+      "near_ties": 74,
+      "ms_per_token": 2.580215894644029,
+      "orig_ms_per_token": 8.681162275980151,
+      "speedup": 3.36284520218063,
+      "spread": 0.010869549642834946
+    },
+    {
+      "variant": "rtn_g64",
+      "group": 64,
+      "quantize_s": 0.11429882049560547,
+      "quality": [
+        {
+          "split": "cal",
+          "kl": 0.12961713084951043,
+          "top1": 0.8178922161459923,
+          "ppl_bf16": 7.606676592151947,
+          "ppl_int4": 8.634971062195305,
+          "ppl_change_pct": 13.51831456991719
+        },
+        {
+          "split": "hold",
+          "kl": 0.13380918372422457,
+          "top1": 0.8125000558793545,
+          "ppl_bf16": 10.526663334154238,
+          "ppl_int4": 11.977610769884233,
+          "ppl_change_pct": 13.783545551631061
+        }
+      ],
+      "decode": [
+        {
+          "domain": "cal",
+          "prompt": 0,
+          "violations": 3,
+          "near_ties": 4,
+          "orig_ms": 8.809445358636811,
+          "ms": 2.687212846410556,
+          "speedup": 3.23504783072333,
+          "spread": 0.022640681107808695
+        },
+        {
+          "domain": "cal",
+          "prompt": 1,
+          "violations": 17,
+          "near_ties": 11
+        },
+        {
+          "domain": "cal",
+          "prompt": 2,
+          "violations": 13,
+          "near_ties": 11
+        },
+        {
+          "domain": "cal",
+          "prompt": 3,
+          "violations": 8,
+          "near_ties": 4
+        },
+        {
+          "domain": "hold",
+          "prompt": 0,
+          "violations": 4,
+          "near_ties": 10,
+          "orig_ms": 8.752362589197835,
+          "ms": 2.7080972025713583,
+          "speedup": 3.2177902664457028,
+          "spread": 0.01915129456008871
+        },
+        {
+          "domain": "hold",
+          "prompt": 1,
+          "violations": 2,
+          "near_ties": 2
+        },
+        {
+          "domain": "hold",
+          "prompt": 2,
+          "violations": 9,
+          "near_ties": 9
+        },
+        {
+          "domain": "hold",
+          "prompt": 3,
+          "violations": 15,
+          "near_ties": 10
+        },
+        {
+          "domain": "code",
+          "prompt": 0,
+          "violations": 4,
+          "near_ties": 0,
+          "orig_ms": 8.871276374876969,
+          "ms": 2.7671196404404528,
+          "speedup": 3.222992586218968,
+          "spread": 0.015259224804670377
+        },
+        {
+          "domain": "code",
+          "prompt": 1,
+          "violations": 6,
+          "near_ties": 2
+        },
+        {
+          "domain": "code",
+          "prompt": 2,
+          "violations": 7,
+          "near_ties": 5
+        },
+        {
+          "domain": "code",
+          "prompt": 3,
+          "violations": 4,
+          "near_ties": 2
+        }
+      ],
+      "violations": 92,
+      "near_ties": 70,
+      "ms_per_token": 2.7208098964741225,
+      "orig_ms_per_token": 8.811028107570538,
+      "speedup": 3.225276894462667,
+      "spread": 0.022640681107808695
+    },
+    {
+      "variant": "rtn_g32",
+      "group": 32,
+      "quantize_s": 0.1305248737335205,
+      "quality": [
+        {
+          "split": "cal",
+          "kl": 0.10140033811330795,
+          "top1": 0.8306373059749603,
+          "ppl_bf16": 7.606676592151947,
+          "ppl_int4": 8.278879770581101,
+          "ppl_change_pct": 8.837015354677845
+        },
+        {
+          "split": "hold",
+          "kl": 0.10374599881470203,
+          "top1": 0.8299020156264305,
+          "ppl_bf16": 10.526663334154238,
+          "ppl_int4": 11.51199110550751,
+          "ppl_change_pct": 9.360304781063267
+        }
+      ],
+      "decode": [
+        {
+          "domain": "cal",
+          "prompt": 0,
+          "violations": 4,
+          "near_ties": 7,
+          "orig_ms": 8.909272922305611,
+          "ms": 2.9143871397484005,
+          "speedup": 3.041382346791947,
+          "spread": 0.010189279424596754
+        },
+        {
+          "domain": "cal",
+          "prompt": 1,
+          "violations": 17,
+          "near_ties": 11
+        },
+        {
+          "domain": "cal",
+          "prompt": 2,
+          "violations": 8,
+          "near_ties": 7
+        },
+        {
+          "domain": "cal",
+          "prompt": 3,
+          "violations": 3,
+          "near_ties": 1
+        },
+        {
+          "domain": "hold",
+          "prompt": 0,
+          "violations": 5,
+          "near_ties": 1,
+          "orig_ms": 8.809411717212106,
+          "ms": 2.92331413208969,
+          "speedup": 3.015583194970489,
+          "spread": 0.011840092725769415
+        },
+        {
+          "domain": "hold",
+          "prompt": 1,
+          "violations": 6,
+          "near_ties": 12
+        },
+        {
+          "domain": "hold",
+          "prompt": 2,
+          "violations": 7,
+          "near_ties": 9
+        },
+        {
+          "domain": "hold",
+          "prompt": 3,
+          "violations": 4,
+          "near_ties": 9
+        },
+        {
+          "domain": "code",
+          "prompt": 0,
+          "violations": 3,
+          "near_ties": 0,
+          "orig_ms": 8.904025821235237,
+          "ms": 2.9217836875615157,
+          "speedup": 3.046597253017261,
+          "spread": 0.01920332345986705
+        },
+        {
+          "domain": "code",
+          "prompt": 1,
+          "violations": 4,
+          "near_ties": 8
+        },
+        {
+          "domain": "code",
+          "prompt": 2,
+          "violations": 0,
+          "near_ties": 2
+        },
+        {
+          "domain": "code",
+          "prompt": 3,
+          "violations": 5,
+          "near_ties": 1
+        }
+      ],
+      "violations": 66,
+      "near_ties": 68,
+      "ms_per_token": 2.9198283197998687,
+      "orig_ms_per_token": 8.874236820250985,
+      "speedup": 3.0345209315932324,
+      "spread": 0.01920332345986705
+    },
+    {
+      "variant": "clip_g128",
+      "group": 128,
+      "clip": true,
+      "quantize_s": 2.174009084701538,
+      "quality": [
+        {
+          "split": "cal",
+          "kl": 0.16407980024814606,
+          "top1": 0.8037990815937519,
+          "ppl_bf16": 7.606676592151947,
+          "ppl_int4": 8.791995658269357,
+          "ppl_change_pct": 15.582614191069233
+        },
+        {
+          "split": "hold",
+          "kl": 0.17088343854993582,
+          "top1": 0.7888480983674526,
+          "ppl_bf16": 10.526663334154238,
+          "ppl_int4": 12.19959006607188,
+          "ppl_change_pct": 15.892279241891917
+        }
+      ],
+      "decode": [
+        {
+          "domain": "cal",
+          "prompt": 0,
+          "violations": 13,
+          "near_ties": 8,
+          "orig_ms": 8.682932455708661,
+          "ms": 2.620900792399729,
+          "speedup": 3.314570125935255,
+          "spread": 0.011467878981398866
+        },
+        {
+          "domain": "cal",
+          "prompt": 1,
+          "violations": 4,
+          "near_ties": 1
+        },
+        {
+          "domain": "cal",
+          "prompt": 2,
+          "violations": 11,
+          "near_ties": 11
+        },
+        {
+          "domain": "cal",
+          "prompt": 3,
+          "violations": 8,
+          "near_ties": 7
+        },
+        {
+          "domain": "hold",
+          "prompt": 0,
+          "violations": 13,
+          "near_ties": 5,
+          "orig_ms": 8.699892539677657,
+          "ms": 2.6364883062407727,
+          "speedup": 3.295187275338193,
+          "spread": 0.04100010228466472
+        },
+        {
+          "domain": "hold",
+          "prompt": 1,
+          "violations": 11,
+          "near_ties": 13
+        },
+        {
+          "domain": "hold",
+          "prompt": 2,
+          "violations": 6,
+          "near_ties": 6
+        },
+        {
+          "domain": "hold",
+          "prompt": 3,
+          "violations": 8,
+          "near_ties": 7
+        },
+        {
+          "domain": "code",
+          "prompt": 0,
+          "violations": 3,
+          "near_ties": 4,
+          "orig_ms": 8.914330670214074,
+          "ms": 2.6808997927688236,
+          "speedup": 3.3278441190477777,
+          "spread": 0.021077626543401
+        },
+        {
+          "domain": "code",
+          "prompt": 1,
+          "violations": 4,
+          "near_ties": 4
+        },
+        {
+          "domain": "code",
+          "prompt": 2,
+          "violations": 1,
+          "near_ties": 1
+        },
+        {
+          "domain": "code",
+          "prompt": 3,
+          "violations": 5,
+          "near_ties": 4
+        }
+      ],
+      "violations": 87,
+      "near_ties": 71,
+      "ms_per_token": 2.6460962971364417,
+      "orig_ms_per_token": 8.76571855520013,
+      "speedup": 3.312533840107075,
+      "spread": 0.04100010228466472
+    },
+    {
+      "variant": "clip_g32",
+      "group": 32,
+      "clip": true,
+      "quantize_s": 2.410811185836792,
+      "quality": [
+        {
+          "split": "cal",
+          "kl": 0.10354706505313516,
+          "top1": 0.8334559351205826,
+          "ppl_bf16": 7.606676592151947,
+          "ppl_int4": 8.36382197382505,
+          "ppl_change_pct": 9.95369492183058
+        },
+        {
+          "split": "hold",
+          "kl": 0.11664686491712928,
+          "top1": 0.8098039776086807,
+          "ppl_bf16": 10.526663334154238,
+          "ppl_int4": 11.768121854421203,
+          "ppl_change_pct": 11.793466560662157
+        }
+      ],
+      "decode": [
+        {
+          "domain": "cal",
+          "prompt": 0,
+          "violations": 7,
+          "near_ties": 6,
+          "orig_ms": 8.70734267347441,
+          "ms": 2.878705843227116,
+          "speedup": 3.0242290454836134,
+          "spread": 0.01227330506555875
+        },
+        {
+          "domain": "cal",
+          "prompt": 1,
+          "violations": 12,
+          "near_ties": 5
+        },
+        {
+          "domain": "cal",
+          "prompt": 2,
+          "violations": 7,
+          "near_ties": 11
+        },
+        {
+          "domain": "cal",
+          "prompt": 3,
+          "violations": 6,
+          "near_ties": 13
+        },
+        {
+          "domain": "hold",
+          "prompt": 0,
+          "violations": 5,
+          "near_ties": 3,
+          "orig_ms": 8.779540054441437,
+          "ms": 2.8810811681071606,
+          "speedup": 3.0286911759576696,
+          "spread": 0.019516708966160496
+        },
+        {
+          "domain": "hold",
+          "prompt": 1,
+          "violations": 8,
+          "near_ties": 6
+        },
+        {
+          "domain": "hold",
+          "prompt": 2,
+          "violations": 10,
+          "near_ties": 5
+        },
+        {
+          "domain": "hold",
+          "prompt": 3,
+          "violations": 8,
+          "near_ties": 5
+        },
+        {
+          "domain": "code",
+          "prompt": 0,
+          "violations": 0,
+          "near_ties": 3,
+          "orig_ms": 8.697245440145178,
+          "ms": 2.889101043460876,
+          "speedup": 3.0099313837415282,
+          "spread": 0.04202520142822951
+        },
+        {
+          "domain": "code",
+          "prompt": 1,
+          "violations": 3,
+          "near_ties": 5
+        },
+        {
+          "domain": "code",
+          "prompt": 2,
+          "violations": 3,
+          "near_ties": 2
+        },
+        {
+          "domain": "code",
+          "prompt": 3,
+          "violations": 5,
+          "near_ties": 4
+        }
+      ],
+      "violations": 74,
+      "near_ties": 68,
+      "ms_per_token": 2.8829626849317176,
+      "orig_ms_per_token": 8.728042722687007,
+      "speedup": 3.020950535060937,
+      "spread": 0.04202520142822951
+    },
+    {
+      "variant": "gptq_g128",
+      "group": 128,
+      "method": "gptq",
+      "quantize_s": 143.0779857635498,
+      "quality": [
+        {
+          "split": "cal",
+          "kl": 0.0774294687435031,
+          "top1": 0.8746324069797993,
+          "ppl_bf16": 7.606676592151947,
+          "ppl_int4": 8.107249346397968,
+          "ppl_change_pct": 6.580702468177457
+        },
+        {
+          "split": "hold",
+          "kl": 0.06470773206092417,
+          "top1": 0.8872549571096897,
+          "ppl_bf16": 10.526663334154238,
+          "ppl_int4": 10.983874707166096,
+          "ppl_change_pct": 4.34336463985141
+        }
+      ],
+      "decode": [
+        {
+          "domain": "cal",
+          "prompt": 0,
+          "violations": 5,
+          "near_ties": 12,
+          "orig_ms": 8.671341543122539,
+          "ms": 2.606756015086737,
+          "speedup": 3.3284134912068803,
+          "spread": 0.055973866490454376
+        },
+        {
+          "domain": "cal",
+          "prompt": 1,
+          "violations": 23,
+          "near_ties": 10
+        },
+        {
+          "domain": "cal",
+          "prompt": 2,
+          "violations": 10,
+          "near_ties": 5
+        },
+        {
+          "domain": "cal",
+          "prompt": 3,
+          "violations": 10,
+          "near_ties": 9
+        },
+        {
+          "domain": "hold",
+          "prompt": 0,
+          "violations": 2,
+          "near_ties": 11,
+          "orig_ms": 8.675226647084154,
+          "ms": 2.609383650652067,
+          "speedup": 3.324412435504925,
+          "spread": 0.006819627586641537
+        },
+        {
+          "domain": "hold",
+          "prompt": 1,
+          "violations": 5,
+          "near_ties": 8
+        },
+        {
+          "domain": "hold",
+          "prompt": 2,
+          "violations": 4,
+          "near_ties": 9
+        },
+        {
+          "domain": "hold",
+          "prompt": 3,
+          "violations": 3,
+          "near_ties": 5
+        },
+        {
+          "domain": "code",
+          "prompt": 0,
+          "violations": 1,
+          "near_ties": 1,
+          "orig_ms": 8.79271499753937,
+          "ms": 2.6188472237173968,
+          "speedup": 3.3284784494003086,
+          "spread": 0.022292063997229907
+        },
+        {
+          "domain": "code",
+          "prompt": 1,
+          "violations": 1,
+          "near_ties": 5
+        },
+        {
+          "domain": "code",
+          "prompt": 2,
+          "violations": 1,
+          "near_ties": 4
+        },
+        {
+          "domain": "code",
+          "prompt": 3,
+          "violations": 5,
+          "near_ties": 1
+        }
+      ],
+      "violations": 70,
+      "near_ties": 80,
+      "ms_per_token": 2.6116622964854,
+      "orig_ms_per_token": 8.713094395915354,
+      "speedup": 3.327101458704038,
+      "spread": 0.055973866490454376
+    },
+    {
+      "variant": "gptq_g32",
+      "group": 32,
+      "method": "gptq",
+      "quantize_s": 147.3510925769806,
+      "quality": [
+        {
+          "split": "cal",
+          "kl": 0.04615303489845246,
+          "top1": 0.9006127938628197,
+          "ppl_bf16": 7.606676592151947,
+          "ppl_int4": 7.928992104954724,
+          "ppl_change_pct": 4.237271151179489
+        },
+        {
+          "split": "hold",
+          "kl": 0.034410649444907904,
+          "top1": 0.9079657383263111,
+          "ppl_bf16": 10.526663334154238,
+          "ppl_int4": 10.845159480715905,
+          "ppl_change_pct": 3.025613496427604
+        }
+      ],
+      "decode": [
+        {
+          "domain": "cal",
+          "prompt": 0,
+          "violations": 0,
+          "near_ties": 8,
+          "orig_ms": 8.753138264333169,
+          "ms": 2.8633838563453495,
+          "speedup": 3.0636468087701187,
+          "spread": 0.01898587569119866
+        },
+        {
+          "domain": "cal",
+          "prompt": 1,
+          "violations": 15,
+          "near_ties": 6
+        },
+        {
+          "domain": "cal",
+          "prompt": 2,
+          "violations": 10,
+          "near_ties": 9
+        },
+        {
+          "domain": "cal",
+          "prompt": 3,
+          "violations": 6,
+          "near_ties": 10
+        },
+        {
+          "domain": "hold",
+          "prompt": 0,
+          "violations": 2,
+          "near_ties": 1,
+          "orig_ms": 8.754636749507874,
+          "ms": 2.8702570397084153,
+          "speedup": 3.0501229082943886,
+          "spread": 0.019570757633227954
+        },
+        {
+          "domain": "hold",
+          "prompt": 1,
+          "violations": 3,
+          "near_ties": 6
+        },
+        {
+          "domain": "hold",
+          "prompt": 2,
+          "violations": 1,
+          "near_ties": 10
+        },
+        {
+          "domain": "hold",
+          "prompt": 3,
+          "violations": 2,
+          "near_ties": 1
+        },
+        {
+          "domain": "code",
+          "prompt": 0,
+          "violations": 0,
+          "near_ties": 1,
+          "orig_ms": 8.7745620847687,
+          "ms": 2.9002166507750986,
+          "speedup": 3.0251909148931415,
+          "spread": 0.030745992069748776
+        },
+        {
+          "domain": "code",
+          "prompt": 1,
+          "violations": 3,
+          "near_ties": 3
+        },
+        {
+          "domain": "code",
+          "prompt": 2,
+          "violations": 1,
+          "near_ties": 1
+        },
+        {
+          "domain": "code",
+          "prompt": 3,
+          "violations": 3,
+          "near_ties": 6
+        }
+      ],
+      "violations": 46,
+      "near_ties": 62,
+      "ms_per_token": 2.8779525156096213,
+      "orig_ms_per_token": 8.760779032869914,
+      "speedup": 3.0463202106525498,
+      "spread": 0.030745992069748776
+    },
+    {
+      "variant": "gptq_clip_g32",
+      "group": 32,
+      "method": "gptq",
+      "clip": true,
+      "quantize_s": 202.68034148216248,
+      "quality": [
+        {
+          "split": "cal",
+          "kl": 0.04196432256139815,
+          "top1": 0.9022059366106987,
+          "ppl_bf16": 7.606676592151947,
+          "ppl_int4": 7.866671990499146,
+          "ppl_change_pct": 3.417989383372033
+        },
+        {
+          "split": "hold",
+          "kl": 0.034012810327112675,
+          "top1": 0.9112745597958565,
+          "ppl_bf16": 10.526663334154238,
+          "ppl_int4": 10.817157997363172,
+          "ppl_change_pct": 2.7596081872060196
+        }
+      ],
+      "decode": [
+        {
+          "domain": "cal",
+          "prompt": 0,
+          "violations": 2,
+          "near_ties": 6,
+          "orig_ms": 8.82155242679626,
+          "ms": 2.9324785367710384,
+          "speedup": 3.0082240385328443,
+          "spread": 0.04187378939209157
+        },
+        {
+          "domain": "cal",
+          "prompt": 1,
+          "violations": 27,
+          "near_ties": 5
+        },
+        {
+          "domain": "cal",
+          "prompt": 2,
+          "violations": 3,
+          "near_ties": 22
+        },
+        {
+          "domain": "cal",
+          "prompt": 3,
+          "violations": 2,
+          "near_ties": 12
+        },
+        {
+          "domain": "hold",
+          "prompt": 0,
+          "violations": 3,
+          "near_ties": 6,
+          "orig_ms": 8.954311100516732,
+          "ms": 2.9300188680333417,
+          "speedup": 3.0560591940921378,
+          "spread": 0.07503133548632787
+        },
+        {
+          "domain": "hold",
+          "prompt": 1,
+          "violations": 2,
+          "near_ties": 7
+        },
+        {
+          "domain": "hold",
+          "prompt": 2,
+          "violations": 0,
+          "near_ties": 5
+        },
+        {
+          "domain": "hold",
+          "prompt": 3,
+          "violations": 0,
+          "near_ties": 4
+        },
+        {
+          "domain": "code",
+          "prompt": 0,
+          "violations": 1,
+          "near_ties": 2,
+          "orig_ms": 8.71986785648376,
+          "ms": 2.874452365664985,
+          "speedup": 3.0432667059103107,
+          "spread": 0.00891488727357599
+        },
+        {
+          "domain": "code",
+          "prompt": 1,
+          "violations": 4,
+          "near_ties": 4
+        },
+        {
+          "domain": "code",
+          "prompt": 2,
+          "violations": 0,
+          "near_ties": 1
+        },
+        {
+          "domain": "code",
+          "prompt": 3,
+          "violations": 2,
+          "near_ties": 3
+        }
+      ],
+      "violations": 46,
+      "near_ties": 77,
+      "ms_per_token": 2.912316590156455,
+      "orig_ms_per_token": 8.831910461265583,
+      "speedup": 3.0358499795117644,
+      "spread": 0.07503133548632787
+    },
+    {
+      "variant": "gptq_clip_g32_headbf16",
+      "group": 32,
+      "method": "gptq",
+      "clip": true,
+      "head": false,
+      "quantize_s": 194.24063634872437,
+      "quality": [
+        {
+          "split": "cal",
+          "kl": 0.03801737632602453,
+          "top1": 0.9110294580459595,
+          "ppl_bf16": 7.606676592151947,
+          "ppl_int4": 7.8418604767441655,
+          "ppl_change_pct": 3.091808646562755
+        },
+        {
+          "split": "hold",
+          "kl": 0.030755544546991587,
+          "top1": 0.9169118069112301,
+          "ppl_bf16": 10.526663334154238,
+          "ppl_int4": 10.764498294492507,
+          "ppl_change_pct": 2.259357526583017
+        }
+      ],
+      "decode": [
+        {
+          "domain": "cal",
+          "prompt": 0,
+          "violations": 1,
+          "near_ties": 7,
+          "orig_ms": 8.792822650098426,
+          "ms": 3.2288393035648375,
+          "speedup": 2.739193921254604,
+          "spread": 0.059529772975217846
+        },
+        {
+          "domain": "cal",
+          "prompt": 1,
+          "violations": 19,
+          "near_ties": 9
+        },
+        {
+          "domain": "cal",
+          "prompt": 2,
+          "violations": 6,
+          "near_ties": 9
+        },
+        {
+          "domain": "cal",
+          "prompt": 3,
+          "violations": 6,
+          "near_ties": 9
+        },
+        {
+          "domain": "hold",
+          "prompt": 0,
+          "violations": 3,
+          "near_ties": 4,
+          "orig_ms": 8.762325256828248,
+          "ms": 3.250296284833292,
+          "speedup": 2.715053222704259,
+          "spread": 0.026847838213780423
+        },
+        {
+          "domain": "hold",
+          "prompt": 1,
+          "violations": 2,
+          "near_ties": 10
+        },
+        {
+          "domain": "hold",
+          "prompt": 2,
+          "violations": 2,
+          "near_ties": 8
+        },
+        {
+          "domain": "hold",
+          "prompt": 3,
+          "violations": 0,
+          "near_ties": 4
+        },
+        {
+          "domain": "code",
+          "prompt": 0,
+          "violations": 0,
+          "near_ties": 1,
+          "orig_ms": 8.762555940883367,
+          "ms": 3.228309691421629,
+          "speedup": 2.7159643809658354,
+          "spread": 0.008542611691920493
+        },
+        {
+          "domain": "code",
+          "prompt": 1,
+          "violations": 2,
+          "near_ties": 4
+        },
+        {
+          "domain": "code",
+          "prompt": 2,
+          "violations": 0,
+          "near_ties": 2
+        },
+        {
+          "domain": "code",
+          "prompt": 3,
+          "violations": 2,
+          "near_ties": 1
+        }
+      ],
+      "violations": 43,
+      "near_ties": 68,
+      "ms_per_token": 3.235815093273253,
+      "orig_ms_per_token": 8.772567949270014,
+      "speedup": 2.723403841641566,
+      "spread": 0.059529772975217846
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "radan-engine"
+version = "0.1.0"
+description = "Radan engine: exact, fast single-user LLM decoding (Qwen3 / Llama, Gemma 4, Qwen3.5 / 3.8) on one CUDA GPU"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+dependencies = [
+  "torch>=2.7",
+  "transformers>=4.51",
+  "safetensors",
+  "numpy",
+  "triton>=3.3; platform_system != 'Windows'",
+  "triton-windows>=3.3; platform_system == 'Windows'",
+]
+
+[project.optional-dependencies]
+packed = ["compressed-tensors"]   # Qwen3.5 / 3.8 packed INT4 checkpoints (e.g. RedHatAI/Qwen3.8-27B-INT4)
+
+[project.scripts]
+radan-engine = "radan_engine.__main__:main"
+
+[project.urls]
+Repository = "https://github.com/raja-gamevrs/predictive-layer-execution/tree/main/radan-engine"
+
+[tool.setuptools.packages.find]
+where = ["src"]
