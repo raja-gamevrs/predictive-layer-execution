@@ -61,6 +61,10 @@ def run_config(args, name, model, draft, k, prompts, log):
            "--port", str(args.port), "--no-webui", "-ctk", args.kv, "-ctv", args.kv] + args.extra.split()
     if draft == "mtp":  # the model's own MTP / NextN layer from its GGUF (llama.cpp's draft-mtp)
         cmd += ["--spec-type", "draft-mtp", "--spec-draft-n-max", str(k)]
+    elif isinstance(draft, tuple):  # follow-ups L / M: ("draft-mtp" | "draft-dspark" | "draft-simple", draft GGUF)
+        cmd += ["-md", draft[1], "-ngld", "99", "--spec-type", draft[0], "--spec-draft-n-max", str(k)]
+        if draft[0] == "draft-simple":
+            cmd += ["-ctkd", args.kv, "-ctvd", args.kv]
     elif draft:
         cmd += ["-md", draft, "-ngld", "99", "--spec-type", "draft-simple", "--spec-draft-n-max", str(k),
                 "-ctkd", args.kv, "-ctvd", args.kv]
@@ -114,6 +118,10 @@ def main():
     ap.add_argument("--domains", nargs="+", default=["cal", "hold", "code"])
     ap.add_argument("--target-label", default="bf16", help="name of the --bf16 target in the results (e.g. q8_0)")
     ap.add_argument("--mtp-ks", type=int, nargs="*", default=[], help="also llama.cpp's MTP speculation (draft-mtp) on the first --quant / --bf16 model")
+    ap.add_argument("--spec", nargs=2, metavar=("TYPE", "GGUF"), help="follow-ups L / M: a draft model of this llama.cpp "
+                    "spec type (draft-mtp for a Gemma 4 assistant, draft-dspark for Inkling's DSpark, draft-simple)")
+    ap.add_argument("--spec-ks", type=int, nargs="*", default=[], help="k values for --spec")
+    ap.add_argument("--label", default="", help="suffix of the output file name")
     ap.add_argument("--no-check", action="store_true", help="skip the greedy check (follow-up J amended: tokens/s only)")
     ap.add_argument("--extra", default="", help="extra llama-server arguments, e.g. YaRN flags")
     ap.add_argument("--max-gb", type=float, default=31.0,
@@ -141,16 +149,19 @@ def main():
     logdir = Path(args.server).parent.parent / "runs"
     draft = None if args.no_spec else (args.draft or (args.quant[0] if args.quant else None))
     res = {"model": cfg["model"]["id"], "revision": cfg["model"]["revision"], "args": vars(args), "rows": []}
-    tag = ("" if args.context is None else f"_ctx{args.context}") + ("" if args.kv == "f16" else f"_kv{args.kv}") +         ("" if args.target_label == "bf16" else f"_{args.target_label}")
+    tag = ("" if args.context is None else f"_ctx{args.context}") + ("" if args.kv == "f16" else f"_kv{args.kv}") +         ("" if args.target_label == "bf16" else f"_{args.target_label}") + args.label
     path = out / f"{run_name(cfg)}_llamacpp{tag}.json"
     configs = ([(args.target_label, args.bf16, None, 0)] if args.bf16 else []) + [(Path(q).stem.split("-")[-1], q, None, 0) for q in args.quant]
     configs += [(f"{args.target_label}+draft k={k}", args.bf16, draft, k) for k in args.ks] if draft and args.bf16 else []
     mtp_model = args.bf16 or (args.quant[0] if args.quant else None)
     configs += [(f"mtp k={k}", mtp_model, "mtp", k) for k in args.mtp_ks]
+    if args.spec:
+        configs += [(f"{args.spec[0]} k={k}", mtp_model, (args.spec[0], args.spec[1]), k) for k in args.spec_ks]
     for name, model, d, k in configs:
         log = logdir / f"server_{run_name(cfg)}_{name.replace(' ', '_').replace('=', '')}.log"
         ctx_tokens = (args.context or 512) + args.n + 64
-        est = (Path(model).stat().st_size + (Path(d).stat().st_size if d and d != "mtp" else 0)) / 1e9 +             (1.1 if d == "mtp" else 2 if d else 1) * args.kv_bytes_per_token * ctx_tokens / 1e9   # MTP adds one layer's KV, a draft model a whole cache
+        dfile = d[1] if isinstance(d, tuple) else (d if d and d != "mtp" else None)
+        est = (Path(model).stat().st_size + (Path(dfile).stat().st_size if dfile else 0)) / 1e9 +             (1.1 if d == "mtp" or (isinstance(d, tuple) and d[0] != "draft-simple") else 2 if d else 1) * args.kv_bytes_per_token * ctx_tokens / 1e9   # MTP adds one layer's KV, a draft model a whole cache
         if args.kv_bytes_per_token and est > args.max_gb:
             res.setdefault("not_run", []).append({"config": name, "error": f"estimated {est:.1f} GB > {args.max_gb} GB"})
             print(f"{name}: not run (estimated {est:.1f} GB of GPU memory)", flush=True)

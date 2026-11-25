@@ -1,0 +1,95 @@
+{
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "args": {
+    "config": "configs/qwen38_27b_int4.yaml",
+    "contexts": [
+      4096,
+      32768,
+      131072
+    ],
+    "modes": [
+      "int8",
+      "int4"
+    ],
+    "n": 256,
+    "chunk": 1024,
+    "out": "results/processed/decode_levers"
+  },
+  "rows": [
+    {
+      "context": 4096,
+      "mode": "bf16",
+      "ppl": 6.27053353592322
+    },
+    {
+      "context": 4096,
+      "mode": "int8",
+      "ppl": 6.270020767878294,
+      "kl_mean": 0.0006171411368995905,
+      "kl_max": 0.01682896539568901,
+      "top1": 0.9921875,
+      "violations": 0,
+      "near_ties": 8,
+      "passes": true
+    },
+    {
+      "context": 4096,
+      "mode": "int4",
+      "ppl": 6.29503143497224,
+      "kl_mean": 0.002429458312690258,
+      "kl_max": 0.053594522178173065,
+      "top1": 0.96484375,
+      "violations": 0,
+      "near_ties": 2,
+      "passes": false
+    },
+    {
+      "context": 32768,
+      "mode": "bf16",
+      "ppl": 5.103204857525204
+    },
+    {
+      "context": 32768,
+      "mode": "int8",
+      "ppl": 5.102094132367825,
+      "kl_mean": 0.0005176704726181924,
+      "kl_max": 0.006935605779290199,
+      "top1": 0.99609375,
+      "violations": 0,
+      "near_ties": 8,
+      "passes": true
+    },
+    {
+      "context": 32768,
+      "mode": "int4",
+      "ppl": 5.092368899568169,
+      "kl_mean": 0.002429648069664836,
+      "kl_max": 0.04617603123188019,
+      "top1": 0.98828125,
+      "violations": 0,
+      "near_ties": 11,
+      "passes": false
+    },
+    {
+      "context": 131072,
+      "mode": "bf16",
+      "ppl": 8.090244095579436
+    },
+    {
+      "context": 131072,
+      "mode": "int8",
+      "ppl": 8.084995429717049,
+      "kl_mean": 0.0006068567745387554,
+      "kl_max": 0.007568683475255966,
+      "top1": 0.98828125,
+      "violations": 0,
+      "near_ties": 8,
+      "passes": false
+    },
+    {
+      "context": 131072,
+      "mode": "int4",
+      "error": "does not fit"
+    }
+  ]
+}

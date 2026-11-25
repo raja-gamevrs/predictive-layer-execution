@@ -1239,6 +1239,71 @@ the faster exact setting of the two engines (Gemma's draft column excluded).
 - Gemma at 128k did not fit beside its 4-bit draft; rerun without the draft (`quantize_q8_target(draft=False)`,
   prefill chunks of 256, `gemma-4-12B_tps_q8_fused_128k.json`): 80.0 tokens/s against llama.cpp's 68.5 (1.17×).
 
+## Follow-up L: the KV cache at long context (pre-registered 2026-11-25, before any code or run)
+
+Written before any of it exists, at the user's direction (Qwen3-4B dropped; Qwen3.8-27B, Gemma 4 12B, Inkling 2
+Mini and Gemma 4 26B-A4B). Follow-up I promised this pre-registration and it was never written; the matched runs
+(J, K, F3a, H) all used a BF16 KV cache in both engines. Bytes read per token from the cache at 128k context,
+from the model shapes: Qwen3.8 16 full-attention layers × 4 KV heads × 256 × 2 (K, V) × 2 B = 64 KiB/token, 8.6
+GB per step (~4.8 ms at 1.79 TB/s, against a 28.9 ms step); Gemma 4 12B 8 global layers × 1 KV head × 512 (the
+40 sliding layers keep 1,024 slots), ~2 GB (~1.2 ms of 12.5 ms). **Predictions written now:** KV compression can
+give Qwen3.8 at most ~15% at 128k and Gemma 4 12B at most ~10%; most of Qwen3.8's long-context slowdown (+15 ms
+from 2k to 128k) is not bytes but our attention kernel, which reads the whole allocated cache through batched
+matmuls with a dense mask.
+
+**L1, a decode-attention kernel (exact).** A Triton split-KV ("flash-decoding") attention for 1–16 query rows
+that reads only the filled part of the cache, BF16 K/V, fp32 softmax. It replaces `bmm_attention` in the
+one-token step and the verify pass of Qwen35Decoder (and Gemma's global layers). Exact in the usual sense
+(greedy check at 2k: 0 violations against the same model's teacher-forced pass). **Counts** at a context if
+≥ 5% faster than the current step there.
+
+**L2, an 8-bit KV cache (lossy).** K and V stored as int8 in blocks of 32 along the head dimension with one FP16
+scale per block (llama.cpp's q8_0 layout), written at the same time as today's BF16 entries, read by the L1
+kernel with dequantisation in registers. **L3, a 4-bit KV cache, TurboQuant-style (lossy).** K and V rotated by
+a fixed random orthogonal (Hadamard × random signs) matrix along the head dimension, then 4-bit symmetric codes
+in blocks of 32 with an FP16 scale; queries are rotated by the same matrix (q·k is unchanged) and the attention
+output is rotated back. (TurboQuant, Zandieh et al. 2025, adds a 1-bit QJL residual for unbiased inner products;
+that residual is not implemented here and the method is labelled "TurboQuant-style".)
+- **Quality, both:** at 4k, 32k and 128k (Qwen3.8; Gemma 4 12B to the context that fits), one WikiText holdout
+  prompt and its true 256-token continuation, teacher-forced through the decode step with the compressed cache
+  against the BF16 cache: mean KL of the next-token distributions, top-1 agreement, and the greedy generation's
+  violations against the BF16-KV model. **Passes quality** at a context if mean KL ≤ 0.01 and top-1 agreement
+  ≥ 99% (the bar used for INT4 weights in L6), and **counts** if it also is ≥ 5% faster than L1 there.
+- **Speed:** stable tokens/s at 2k–128k as in follow-up J; Qwen3.8 also with its MTP draft (H2, k = 4).
+
+*Note 2026-11-25, before any llama.cpp run of L:* to keep the runs to a few hours, the llama.cpp KV-type runs use
+2k, 8k, 32k and 128k (not all seven contexts); this repo's L1–L3 runs keep all seven.
+
+**llama.cpp, same models (reported only).** `-ctk / -ctv` bf16, q8_0 and q4_0 at 2k–128k for Qwen3.8 (the
+matched Q4_0 GGUF, plain and MTP), Gemma 4 12B (matched Q8_0), Gemma 4 26B-A4B (Google's QAT Q4_0 GGUF, plain and
+with its official assistant draft) and Inkling 2 Mini (Q4_K_M). Quality with `llama-perplexity` on WikiText-2
+test at 32k context, one chunk: perplexity and KL against the bf16-KV run (`--kl-divergence`).
+
+## Follow-up M: looped models (pre-registered 2026-11-25, before any code or run)
+
+Inkling 2 Mini runs its layers 6–18 three times per token (a fixed loop, `loop_config.num_passes = 3`); this
+repo's engine does not run it, llama.cpp b12720 does (`inkling2_loop`, the pass count read from the GGUF's
+metadata; a fixed loop needs ≥ 2 passes). Everything here is measured in llama.cpp, exactness reported as
+llama.cpp's greedy output with and without the draft (identical tokens or not), 256 tokens, one prompt per
+context, 2 runs.
+- **M1, the model's own draft.** Inkling ships an MTP / DSpark draft (`mtp.safetensors`); llama.cpp exports it
+  with `convert_hf_to_gguf.py --dspark` and runs it with `--spec-type draft-dspark`. Tokens/s and acceptance at
+  2k–64k against plain decoding.
+- **M2, a fewer-passes draft (new for looped models).** The draft is the same model with 2 loop passes instead
+  of 3 (a GGUF copy with only the loop-count key changed), quantised further (Q3_K_S) so that both fit in 32 GB,
+  run with `--spec-type draft-simple`. A looped model's draft needs no training: fewer passes of its own core.
+  Tokens/s and acceptance at 2k–32k.
+- *Note 2026-11-25, before any M run:* a Q3_K_S draft (12.6 GB) and the Q4_K_M target (17.5 GB) do not fit in
+  32 GB together, so M2's draft is Q2_K (10.9 GB) with 2 passes (`Inkling-2-Mini-Q2_K-2pass.gguf`). Nothing else
+  changes.
+- *Note 2026-11-25, before any M run, after a literature search (`docs/looped_models_survey.md`):* M1 adds a
+  draft-length sweep, `--spec-draft-n-max` 1, 2, 3, 4, 6 and 8, at 2k and 32k (bf16 KV); M2 adds a control
+  draft, Q2_K with all 3 passes, to separate fewer passes from fewer bits. The KV-type runs keep k = 8.
+- **M3, how much each pass matters (quality only).** Perplexity of the 2-pass model against the 3-pass model
+  (`llama-perplexity`, WikiText-2 test, 4k context), to judge adaptive pass counts (early exit) for later work.
+- **Counts** (M1, M2): ≥ 1.1× plain decoding with identical greedy output, at a context.
+- Gemma 4 26B-A4B is not looped; it gets L's llama.cpp runs and its assistant draft only.
+
 ## Prior work (added 2026-11-24, after all runs above)
 
 None of the levers here is new. Each reimplements a published or widely shipped technique. What this
@@ -1299,3 +1364,23 @@ What is specific to this work:
 - Zhao et al. QSpec: Speculative Decoding with Complementary Quantization Schemes. EMNLP 2025. https://aclanthology.org/2025.emnlp-main.240/
 - Tiwari et al. QuantSpec: Self-Speculative Decoding with Hierarchical Quantized KV Cache. ICML 2025. https://proceedings.mlr.press/v267/tiwari25b.html
 - Georganas, Kalamkar, Kozlov, Heinecke. ML-SpecQD: Multi-Level Speculative Decoding with Quantized Drafts. arXiv 2503.13565, 2025. https://arxiv.org/abs/2503.13565
+
+### Status of follow-ups L and M, 2026-11-25 (runs stopped at the user's direction; testing resumes Monday)
+
+Done (results in `results/processed/decode_levers/`):
+- **L1:** Qwen3.8 with the Triton split-KV kernel and a BF16 cache, 2k–64k with MTP, 128k plain
+  (`Qwen3.8-27B-INT4_tps_kv_bf16.json`). The step is exact at 2k (fused step 0 violations, MTP 0 violations).
+- **L2 / L3 speed:** Qwen3.8 int8 and int4 caches, 2k–128k (`..._tps_kv_int8.json`, `..._tps_kv_int4.json`).
+- **L2 / L3 quality:** Qwen3.8 at 4k, 32k and 128k (`Qwen3.8-27B-INT4_kv_quality.json`):
+  - int8 passes at 4k (KL 0.0006, top-1 99.2%) and 32k (0.0005, 99.6%) but misses at 128k (0.0006, 98.8%);
+    0 violations everywhere.
+  - int4 fails at 4k (0.0024, 96.5%) and 32k (0.0024, 98.8%). Its 128k run ran out of memory and the
+    rerun is pending.
+- **llama.cpp KV types:** Qwen3.8 (plain + MTP), Gemma 4 12B Q8_0, Gemma 4 26B-A4B QAT (plain + assistant
+  draft) and Inkling (plain + DSpark k = 8). 2k with bf16 / q8_0 / q4_0 caches and 8k with bf16 are complete;
+  8k with q8_0 is partial (`llamacpp_b12720/kv/`).
+
+Not run yet:
+- Our engine: Gemma 4 12B (KV store wired in, untested), and Qwen3.8 MTP at 128k with 512-row prefill chunks.
+- llama.cpp: KV types at 8k (rest), 32k and 128k.
+- M1's draft-length sweep, M2 (2-pass and 3-pass Q2_K drafts), M3 and the `llama-perplexity` KL checks.

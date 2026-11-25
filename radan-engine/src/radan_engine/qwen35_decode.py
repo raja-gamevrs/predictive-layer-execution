@@ -218,8 +218,19 @@ class Qwen35Decoder:
         self.cos, self.sin = emb.cos().to(self.dtype), emb.sin().to(self.dtype)
         sign = torch.cat([-torch.ones(self.rot // 2), torch.ones(self.rot // 2)]).to(self.dev, self.dtype)
         self.sin_signed = self.sin * sign
+        self.kv = None
+        if getattr(self, "kv_mode", None):        # follow-up L: KVStore (Triton decode attention, optional int8 / int4)
+            from radan_engine.kv import KVStore
+            self.kv = KVStore(self.n_attn, self.nkv, max_len, self.hd, self.kv_mode, self.dev)
+            self.k_cache = self.v_cache = torch.zeros(1, 1, 1, 1, 1, device=self.dev, dtype=self.dtype)
+            return
         self.k_cache = torch.zeros(self.n_attn, 1, self.nkv, max_len, self.hd, device=self.dev, dtype=self.dtype)
         self.v_cache = torch.zeros_like(self.k_cache)
+
+    def set_kv(self, mode):
+        """Follow-up L: None (BF16 cache, batched-matmul attention), "bf16" (Triton split-KV attention), "int8", "int4"."""
+        self.kv_mode = mode
+        self.set_max_len(self.max_len)
 
     def prefill_chunked(self, ids: torch.Tensor, start: int = 0, chunk: int = 2048, logits_rows: int = 1, w4: bool = False):
         """As Qwen3Decoder.prefill_chunked; the DeltaNet layers run each chunk with Transformers' chunked delta
@@ -283,6 +294,8 @@ class Qwen35Decoder:
         gate = gate.reshape(T, -1)
         k = int4_linear(x, L["k"]).view(T, self.nkv, self.hd)
         v = int4_linear(x, L["v"]).view(T, self.nkv, self.hd)
+        if self.kv is not None:
+            return self._attention_kv(L, j, T, q, k, v, gate, pos_idx, mask, prefill)
         if self.fuse and T <= 16 and not prefill and not self.extending:   # one-token steps and verify passes
             cos, sin = self.cos[pos_idx][:, None], self.sin[pos_idx][:, None]
             q, k = fused("_f_qk_rope")(q, k, L["qn"], L["kn"], cos, sin, self.rot, self.eps)
@@ -388,6 +401,30 @@ class Qwen35Decoder:
         return int4_linear(on.to(x.dtype).reshape(T, -1), L["out"])
 
     # ---- forward -----------------------------------------------------------------------------------
+    def _attention_kv(self, L, j, T, q, k, v, gate, pos_idx, mask, prefill):
+        """Follow-up L: K / V go to the KVStore (quantised there for int8 / int4); one-token steps and verify passes
+        use its split-KV kernel, prefill chunks dense attention over its (dequantised) prefix."""
+        if T <= 16:
+            cos, sin = self.cos[pos_idx][:, None], self.sin[pos_idx][:, None]
+            q, k = fused("_f_qk_rope")(q, k, L["qn"], L["kn"], cos, sin, self.rot, self.eps)   # (nh, T, hd), (nkv, T, hd)
+        else:                                                   # prefill chunks: the reference norm + RoPE
+            q, k = self.norm(q, L["qn"]), self.norm(k, L["kn"])
+            q, k = self._rope(q, pos_idx).transpose(0, 1), self._rope(k, pos_idx).transpose(0, 1)
+        self.kv.write(j, pos_idx, k.transpose(0, 1), v)
+        scale = self.hd ** -0.5
+        if T <= 16 and not prefill and not self.extending:
+            out = self.kv.attend(j, q, pos_idx[:1], scale)                      # (nh, T, hd)
+            return int4_linear(fused("_f_gate")(out.transpose(0, 1).reshape(T, -1), gate), L["o"])
+        end = int(pos_idx[-1]) + 1
+        kd, vd = self.kv.dense(j, end)
+        with sdpa_kernel([SDPBackend.CUDNN_ATTENTION, SDPBackend.EFFICIENT_ATTENTION, SDPBackend.MATH]):
+            if prefill:
+                out = F.scaled_dot_product_attention(q[None], kd[None], vd[None], is_causal=True, enable_gqa=True, scale=scale)
+            else:
+                out = F.scaled_dot_product_attention(q[None], kd[None], vd[None], attn_mask=mask[..., :end], enable_gqa=True, scale=scale)
+        out = out[0].transpose(0, 1).reshape(T, -1) * torch.sigmoid(gate)
+        return int4_linear(out, L["o"])
+
     def forward(self, ids, pos_idx, mask, exact_first: bool = False, skip_attn=(), skip_mlp=(), w4: bool = False,
                 prefill: bool = False):
         assert not w4 and self.plan.mode == "none" and not skip_attn and not skip_mlp, "not implemented for Qwen3.5 blocks"

@@ -1,0 +1,12 @@
+# Gemma 4 26B-A4B (mixture of experts, 4B active), instruction-tuned, Google's QAT Q4_0 GGUF; benchmarked in llama.cpp
+# only (this repo's decoders run dense Gemma 4). Tokenizer from the official assistant draft's folder (same vocabulary).
+# License: Apache-2.0. Downloaded 2026-11-25 (approved): gemma-4-26B_q4_0-it.gguf at revision
+# d1c082be9cf3c8a514acf63b8761f4b41935842e, assistant at 6e5aaaf4c42b98394530b8fda2e95cadd65c151c (sha256-checked).
+model:
+  id: google/gemma-4-26B-A4B-it-qat-q4_0
+  revision: d1c082be9cf3c8a514acf63b8761f4b41935842e
+  path: G:/models/google/gemma-4-26B-A4B-it-assistant
+  gguf: G:/models/google/gemma-4-26B-A4B-it-qat-q4_0-gguf/gemma-4-26B_q4_0-it.gguf
+  dtype: bfloat16
+device: cuda:0
+seed: 0

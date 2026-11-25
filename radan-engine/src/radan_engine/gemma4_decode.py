@@ -194,6 +194,17 @@ class Gemma4Decoder:
             self.v_cache[t] = torch.zeros_like(self.k_cache[t])
         self.ring_pos = torch.full((self.window,), -1, dtype=torch.long, device=self.dev)
         self._ring_mask = None
+        self.kv = None
+        if getattr(self, "kv_mode", None):   # follow-up L: the global (full-attention) layers' cache in a KVStore
+            from radan_engine.kv import KVStore
+            hd, nkv = self.geom["full"]
+            self.kv = KVStore(self.count["full"], nkv, max_len, hd, self.kv_mode, self.dev)
+            self.k_cache["full"] = self.v_cache["full"] = torch.zeros(self.count["full"], 1, 1, 1, 1, device=self.dev, dtype=self.dtype)
+
+    def set_kv(self, mode):
+        """Follow-up L: None (BF16, batched matmuls), "bf16" (Triton split-KV attention), "int8", "int4"; global layers."""
+        self.kv_mode = mode
+        self.set_max_len(self.max_len)
 
     def _ring_prepare(self, pos_idx):
         """Once per forward with a ring: the sliding layers' additive mask. One row: the slot is written
@@ -320,6 +331,20 @@ class Gemma4Decoder:
                 kc[0].index_copy_(1, pos_idx % W, k)
                 vc[0].index_copy_(1, pos_idx % W, v)
             out = out[0].transpose(0, 1).reshape(T, nq)
+            return int4_linear(out, self.w4[i]["o"]) if w4 else self._lin(out, i, "o")
+        if self.kv is not None:
+            self.kv.write(j, pos_idx, k.transpose(0, 1), v.transpose(0, 1))
+            if T <= 16 and not prefill:
+                o = self.kv.attend(j, q, pos_idx[:1], 1.0)                      # (nh, T, hd)
+            else:
+                end = int(pos_idx[-1]) + 1
+                kd, vd = self.kv.dense(j, end)
+                with sdpa_kernel([SDPBackend.CUDNN_ATTENTION, SDPBackend.EFFICIENT_ATTENTION, SDPBackend.MATH]):
+                    if prefill:
+                        o = F.scaled_dot_product_attention(q[None], kd[None], vd[None], is_causal=True, enable_gqa=True, scale=1.0)[0]
+                    else:
+                        o = F.scaled_dot_product_attention(q[None], kd[None], vd[None], attn_mask=mask[..., :end], enable_gqa=True, scale=1.0)[0]
+            out = o.transpose(0, 1).reshape(T, nq)
             return int4_linear(out, self.w4[i]["o"]) if w4 else self._lin(out, i, "o")
         kc[0].index_copy_(1, pos_idx, k)
         vc[0].index_copy_(1, pos_idx, v)

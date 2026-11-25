@@ -46,6 +46,7 @@ def main():
     ap.add_argument("--save-draft-codes", help="Gemma + q8: where to save the INT4 draft's codes (for llama.cpp's Q4_1)")
     ap.add_argument("--tag")
     ap.add_argument("--mtp-ks", type=int, nargs="*", default=[], help="Qwen3.5/3.8: MTP self-spec with these k (follow-up H)")
+    ap.add_argument("--kv-mode", choices=["bf16", "int8", "int4"], help="follow-up L: KVStore cache + Triton decode attention")
     ap.add_argument("--mtp-head", choices=["bf16", "int4"], default="bf16", help="MTP draft's LM head (follow-up H2: int4 copy)")
     ap.add_argument("--prefill-chunk", type=int, default=2048, help="rows per prefill chunk (smaller: less attention memory)")
     ap.add_argument("--out", default="results/processed/decode_levers")
@@ -54,6 +55,8 @@ def main():
     model, tok = load(cfg)
     slack = 64 + 8 * (args.k + 1)
     dec = make_decoder(model, 1024)
+    if args.kv_mode:
+        dec.set_kv(args.kv_mode)
     has_draft = bool({"l7b", "l7bc"} & set(args.settings)) and hasattr(dec, "load_int4_codes")
     if has_draft:
         with torch.inference_mode():
